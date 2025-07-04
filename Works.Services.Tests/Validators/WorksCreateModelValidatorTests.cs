@@ -10,7 +10,7 @@ namespace Works.Services.Tests.Validators;
 /// </summary>
 public class WorksCreateModelValidatorTests
 {
-    private readonly WorksModelValidator validator;
+    private readonly WorksCreateModelValidator validator;
 
     /// <summary>
     /// ctor
