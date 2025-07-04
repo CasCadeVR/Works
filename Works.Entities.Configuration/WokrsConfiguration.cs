@@ -8,6 +8,9 @@ namespace Works.Entities.Configuration
     /// </summary>
     public class WokrsConfiguration : IEntityTypeConfiguration<Work>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public void Configure(EntityTypeBuilder<Work> builder)
         {
             builder.ToTable("Works");

@@ -4,11 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Works.Context.Contracts\Works.Context.Contracts.csproj" />
+    <ProjectReference Include="..\Works.Context.Tests\Works.Context.Tests.csproj" />
+    <ProjectReference Include="..\Works.Repository\Works.Repository.csproj" />
   </ItemGroup>
 
 </Project>

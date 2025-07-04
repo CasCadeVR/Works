@@ -12,7 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Works.Common\Works.Common.csproj" />
     <ProjectReference Include="..\Works.Context\Works.Context.csproj" />
+    <ProjectReference Include="..\Works.Repository\Works.Repository.csproj" />
+    <ProjectReference Include="..\Works.Services\Works.Services.csproj" />
   </ItemGroup>
 
 </Project>
