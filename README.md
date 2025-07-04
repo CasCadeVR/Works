@@ -1,6 +1,6 @@
-# Акт сдачи-приёмки выполненных работ
+# Товарная накладная
 
-![Акт сдачи-приёмки выполненных работ](target.png "Накладная")
+![Накладная](target.png "Накладная")
 
 ## Схема базы данных
 ```mermaid
@@ -8,36 +8,39 @@
 title: Order example
 ---
 erDiagram
-    CUSTOMER ||--o{ ACT: any
-    EXECUTOR ||--o{ ACT: any
-    WORKS }|..|{ ACT_WORKS: any
-    ACT_WORKS }|..|{ ACT: any
+    SELLER ||--o{ ORDER: any
+    BUYER ||--o{ ORDER: any
+    GOODS }|..|{ ORDER_GOODS: any
+    ORDER_GOODS }|..|{ ORDER: any
+    EMPLOEES }|..|{ ORDER: any
 ```
 
 ## Реализация API
-### CRUD работ
+### CRUD товаров
 |verb|url|description|request|response|codes|
 |-|-|-|-|-|-|
-|GET|api/goods/|Получает список всех работ| | `[workRequestApiModel]` | 200 OK |
-|GET|api/goods/{id}|Получает работ с идентификатором id | fromRoute: id | `workApiModel` | 200 OK<br/>404 NotFound |
-|POST|api/goods/|Добавляет новый работ| fromBody: `workRequestApiModel` | `workApiModel` | 200 OK |
-|PUT|api/goods/{id}|Редактируем работ с идентификатором id| fromRoute: id <br/>fromBody: `workRequestApiModel` | `workApiModel` | 200 OK<br/>404 NotFound |
-|DELETE|api/goods/{id}|Удаляет работ с идентификатором id | fromRoute: id | | 200 OK<br/>404 NotFound |
+|GET|api/works/|Получает список всех товаров| | `[goodApiModel]` | 200 OK |
+|GET|api/works/{id}|Получает товар с идентификатором id | fromRoute: id | `goodApiModel` | 200 OK<br/>404 NotFound |
+|POST|api/works/|Добавляет новый товар| fromBody: `goodRequestApiModel` | `goodApiModel` | 200 OK |
+|PUT|api/works/{id}|Редактируем товар с идентификатором id| fromRoute: id <br/>fromBody: `goodRequestApiModel` | `goodApiModel` | 200 OK<br/>404 NotFound |
+|DELETE|api/works/{id}|Удаляет товар с идентификатором id | fromRoute: id | | 200 OK<br/>404 NotFound |
 
 
 ```javascript
-// workApiModel
+// goodItem
 {
   id: 1,
-  name: "Работа 1",
-  description: "описание работы 1"
+  name: "Товар 1",
+  description: "описание товара 1",
+  price: 10000
 }
 ```
 ```javascript
 
-// workRequestApiModel
+// goodRequestApiModel
 {
-  name: "Работа 1",
-  description: "описание работы 1"
+  name: "Товар 1",
+  description: "описание товара 1",
+  price: 10000
 }
 ```
