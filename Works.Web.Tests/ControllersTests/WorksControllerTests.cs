@@ -7,7 +7,7 @@ namespace Works.Web.Tests.ControllersTests;
 /// <summary>
 /// Тесты сценариев <see cref="WorksController"/>
 /// </summary>
-[CollectionDefinition(nameof(WorksCollections))]
+[Collection(nameof(WorksCollections))]
 public class WorksControllerTests
 {
 
