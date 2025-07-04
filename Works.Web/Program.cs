@@ -84,6 +84,7 @@ namespace Works.Web
 
             app.UseHttpsRedirection();
 
+
             app.UseAuthorization();
 
             app.MapControllers();
