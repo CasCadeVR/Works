@@ -1,13 +1,13 @@
-﻿namespace Works.Entities
+﻿using Works.Context.Contracts;
+
+namespace Works.Entities
 {
     /// <summary>
     /// Сущность работы
     /// </summary>
-    public class Work
+    public class Work : IEntityWithId, IEntityWithAudit, IEntitySoftDeleted
     {
-        /// <summary>
-        /// Идентификатор работы
-        /// </summary>
+        /// <inheritdoc cref="IEntityWithId.Id"/>
         public Guid Id { get; set; }
 
         /// <summary>
@@ -23,21 +23,15 @@
         /// <summary>
         /// Цена работы за 1 единицу измерения
         /// </summary>
-        public int Price { get; set; } = 0;
+        public decimal Price { get; set; } = 0;
 
-        /// <summary>
-        /// Дата создания записи
-        /// </summary>
+        /// <inheritdoc cref="IEntityWithAudit.CreatedAt"/>
         public DateTimeOffset CreatedAt { get; set; }
 
-        /// <summary>
-        /// Дата изменения записи
-        /// </summary>
+        /// <inheritdoc cref="IEntityWithAudit.UpdatedAt"/>
         public DateTimeOffset UpdatedAt { get; set; }
 
-        /// <summary>
-        /// Дата удалени записи
-        /// </summary>
+        /// <inheritdoc cref="IEntitySoftDeleted.DeletedAt"/>
         public DateTimeOffset? DeletedAt { get; set; }
     }
 }
