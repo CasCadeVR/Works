@@ -1,6 +1,6 @@
-# Товарная накладная
+# Акт сдачи-приёмки выполненных работ
 
-![Накладная](target.png "Накладная")
+![Акт сдачи-приёмки выполненных работ](target.png "Накладная")
 
 ## Схема базы данных
 ```mermaid
@@ -8,39 +8,38 @@
 title: Order example
 ---
 erDiagram
-    SELLER ||--o{ ORDER: any
-    BUYER ||--o{ ORDER: any
-    GOODS }|..|{ ORDER_GOODS: any
-    ORDER_GOODS }|..|{ ORDER: any
-    EMPLOEES }|..|{ ORDER: any
+    CUSTOMER ||--o{ ACT: any
+    EXECUTOR ||--o{ ACT: any
+    WORKS }|..|{ ACT_WORKS: any
+    ACT_WORKS }|..|{ ACT: any
 ```
 
 ## Реализация API
-### CRUD товаров
+### CRUD работ
 |verb|url|description|request|response|codes|
 |-|-|-|-|-|-|
-|GET|api/works/|Получает список всех товаров| | `[goodApiModel]` | 200 OK |
-|GET|api/works/{id}|Получает товар с идентификатором id | fromRoute: id | `goodApiModel` | 200 OK<br/>404 NotFound |
-|POST|api/works/|Добавляет новый товар| fromBody: `goodRequestApiModel` | `goodApiModel` | 200 OK |
-|PUT|api/works/{id}|Редактируем товар с идентификатором id| fromRoute: id <br/>fromBody: `goodRequestApiModel` | `goodApiModel` | 200 OK<br/>404 NotFound |
-|DELETE|api/works/{id}|Удаляет товар с идентификатором id | fromRoute: id | | 200 OK<br/>404 NotFound |
+|GET|api/works/|Получает список всех работ| | `[workRequestApiModel]` | 200 OK |
+|GET|api/works/{id}|Получает работ с идентификатором id | fromRoute: id | `workApiModel` | 200 OK<br/>404 NotFound |
+|POST|api/works/|Добавляет новый работ| fromBody: `workRequestApiModel` | `workApiModel` | 200 OK |
+|PUT|api/works/{id}|Редактируем работ с идентификатором id| fromRoute: id <br/>fromBody: `workRequestApiModel` | `workApiModel` | 200 OK<br/>404 NotFound |
+|DELETE|api/works/{id}|Удаляет работ с идентификатором id | fromRoute: id | | 200 OK<br/>404 NotFound |
 
 
 ```javascript
-// goodItem
+// workApiModel
 {
   id: 1,
-  name: "Товар 1",
-  description: "описание товара 1",
+  name: "Работа 1",
+  description: "описание работы 1",
   price: 10000
 }
 ```
 ```javascript
 
-// goodRequestApiModel
+// workRequestApiModel
 {
-  name: "Товар 1",
-  description: "описание товара 1",
+  name: "Работа 1",
+  description: "описание работы 1",
   price: 10000
 }
 ```
