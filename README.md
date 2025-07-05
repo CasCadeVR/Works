@@ -18,7 +18,7 @@ erDiagram
 ### CRUD работ
 |verb|url|description|request|response|codes|
 |-|-|-|-|-|-|
-|GET|api/works/|Получает список всех работ| | `[workRequestApiModel]` | 200 OK |
+|GET|api/works/|Получает список всех работ| | `[workApiModel]` | 200 OK |
 |GET|api/works/{id}|Получает работ с идентификатором id | fromRoute: id | `workApiModel` | 200 OK<br/>404 NotFound |
 |POST|api/works/|Добавляет новый работ| fromBody: `workRequestApiModel` | `workApiModel` | 200 OK |
 |PUT|api/works/{id}|Редактируем работ с идентификатором id| fromRoute: id <br/>fromBody: `workRequestApiModel` | `workApiModel` | 200 OK<br/>404 NotFound |
