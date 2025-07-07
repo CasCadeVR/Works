@@ -2,6 +2,7 @@
 using Works.Entities;
 using Works.Services.Contracts.Models.Customers;
 using Works.Services.Contracts.Models.Works;
+using Works.Services.Contracts.Models.Executors;
 
 namespace Works.Services.Infrastructure;
 
@@ -20,5 +21,8 @@ public class ServiceProfile : Profile
 
         CreateMap<CustomerModel, CustomerCreateModel>(MemberList.Destination).ReverseMap();
         CreateMap<Customer, CustomerModel>(MemberList.Destination).ReverseMap();
+
+        CreateMap<ExecutorModel, ExecutorCreateModel>(MemberList.Destination).ReverseMap();
+        CreateMap<Executor, ExecutorModel>(MemberList.Destination).ReverseMap();
     }
 }

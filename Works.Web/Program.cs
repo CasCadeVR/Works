@@ -63,6 +63,10 @@ namespace Works.Web
             builder.Services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             builder.Services.AddScoped<ICustomerServices, CustomerService>();
 
+            builder.Services.AddScoped<IExecutorReadRepository, ExecutorReadRepository>();
+            builder.Services.AddScoped<IExecutorWriteRepository, ExecutorWriteRepository>();
+            builder.Services.AddScoped<IExecutorServices, ExecutorServices>();
+
             var addedControllers = builder.Services.AddControllers(opt =>
             {
                 opt.Filters.Add<WorksExceptionFilter>();

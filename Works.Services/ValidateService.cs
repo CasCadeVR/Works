@@ -5,6 +5,8 @@ using Works.Services.Contracts.Models.Works;
 using Works.Services.Validators.Works;
 using Works.Services.Validators.Customers;
 using Works.Services.Contracts.Models.Customers;
+using Works.Services.Contracts.Models.Executors;
+using Works.Services.Validators.Executors;
 
 namespace Works.Services;
 
@@ -20,10 +22,13 @@ public class ValidateService : IValidateService
     {
         validators = new Dictionary<Type, IValidator>();
         validators.TryAdd(typeof(WorksModel), new WorksModelValidator());
-        validators.TryAdd(typeof(CustomerModel), new CustomerModelValidator());
-
         validators.TryAdd(typeof(WorksCreateModel), new WorksCreateModelValidator());
+
+        validators.TryAdd(typeof(CustomerModel), new CustomerModelValidator());
         validators.TryAdd(typeof(CustomerCreateModel), new CustomerCreateModelValidator());
+
+        validators.TryAdd(typeof(ExecutorModel), new ExecutorModelValidator());
+        validators.TryAdd(typeof(ExecutorCreateModel), new ExecutorCreateModelValidator());
     }
     
     async Task IValidateService.Validate<TModel>(TModel model, CancellationToken cancellationToken)

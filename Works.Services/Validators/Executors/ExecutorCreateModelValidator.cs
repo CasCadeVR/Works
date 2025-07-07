@@ -1,37 +1,37 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts.Models.Customers;
+using Works.Services.Contracts.Models.Executors;
 
-namespace Works.Services.Validators.Customers;
+namespace Works.Services.Validators.Executors;
 
 /// <summary>
-/// Валидация <see cref="CustomerModel"/>
+/// Валидация <see cref="ExecutorCreateModel"/>
 /// </summary>
-public class CustomerModelValidator : AbstractValidator<CustomerModel>
+public class ExecutorCreateModelValidator : AbstractValidator<ExecutorCreateModel>
 {
     private const int MinLength = 3;
     private const int MaxLength = 255;
-    private const int INNMinLength = 10;
-    private const int INNMaxLength = 12;
+    private const int OGRNLength = 13;
 
     /// <summary>
     /// ctor
     /// </summary>
-    public CustomerModelValidator()
+    public ExecutorCreateModelValidator()
     {
-        RuleFor(customer => customer.FIO)
+        RuleFor(executor => executor.FIO)
             .NotEmpty().WithMessage("ФИО не может быть пустым")
             .Length(MinLength, MaxLength).WithMessage($"Длина ФИО должно быть от {MinLength} до {MaxLength}");
 
-        RuleFor(customer => customer.Occupation)
+        RuleFor(executor => executor.Occupation)
             .NotNull().WithMessage("Должность не может быть пустым")
             .Length(MinLength, MaxLength).WithMessage($"Длина должности должна быть от {MinLength} до {MaxLength}");
 
-        RuleFor(customer => customer.Firm)
+        RuleFor(executor => executor.Firm)
             .NotNull().WithMessage("Фирма не может быть пустым")
             .Length(MinLength, MaxLength).WithMessage($"Длина фирмы должна быть от {MinLength} до {MaxLength}");
 
-        RuleFor(customer => customer.INN)
-            .NotNull().WithMessage("ИНН не может быть пустым")
-            .Length(INNMinLength, INNMaxLength).WithMessage($"ИНН должен быть длиной для физических лиц {INNMaxLength} цифр, а для юридических — из {INNMinLength}");
+        RuleFor(executor => executor.OGRN)
+            .NotNull().WithMessage("ОГРН не может быть пустым")
+            .Length(OGRNLength).WithMessage($"ОГРН должен быть длиной {OGRNLength} цифр");
     }
 }
+

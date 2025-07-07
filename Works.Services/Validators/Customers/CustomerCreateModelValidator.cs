@@ -10,7 +10,8 @@ public class CustomerCreateModelValidator : AbstractValidator<CustomerCreateMode
 {
     private const int MinLength = 3;
     private const int MaxLength = 255;
-    private const int INNLength = 16;
+    private const int INNMinLength = 10;
+    private const int INNMaxLength = 12;
 
     /// <summary>
     /// ctor
@@ -31,7 +32,7 @@ public class CustomerCreateModelValidator : AbstractValidator<CustomerCreateMode
 
         RuleFor(customer => customer.INN)
             .NotNull().WithMessage("ИНН не может быть пустым")
-            .Length(INNLength).WithMessage($"ИНН должен быть длиной {INNLength}");
+            .Length(INNMinLength, INNMaxLength).WithMessage($"ИНН должен быть длиной для физических лиц {INNMaxLength} цифр, а для юридических — из {INNMinLength}");
     }
 }
 
