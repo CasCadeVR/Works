@@ -1,8 +1,8 @@
 ﻿using Works.Context.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Works.Repository.Contracts;
+using Works.Repository.Contracts.IReadRepositories;
 
-namespace Works.Repository;
+namespace Works.Repository.ReadRepositories;
 
 /// <inheritdoc cref="IWorksReadRepository"/>
 public class WorksReadRepository : IWorksReadRepository

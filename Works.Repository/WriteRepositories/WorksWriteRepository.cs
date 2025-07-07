@@ -1,8 +1,8 @@
-﻿using Works.Repository.Contracts;
-using Works.Common;
+﻿using Works.Common;
 using Works.Context.Contracts;
+using Works.Repository.Contracts.IWriteRepositories;
 
-namespace Works.Repository;
+namespace Works.Repository.WriteRepositories;
 
 /// <inheritdoc cref="IWorksWriteRepository"/>
 public class WorksWriteRepository : BaseWriteRepository<Entities.Work>, IWorksWriteRepository

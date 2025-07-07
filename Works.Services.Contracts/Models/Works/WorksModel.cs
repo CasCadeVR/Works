@@ -1,12 +1,17 @@
-﻿namespace Works.Services.Contracts.Models;
+﻿namespace Works.Services.Contracts.Models.Works;
 
 /// <summary>
-/// Модель создания работы
+/// Модель работы
 /// </summary>
-public record WorksCreateModel()
+public class WorksModel()
 {
     /// <summary>
-    /// Наименование
+    /// Идентификатор
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Именования
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
@@ -18,5 +23,5 @@ public record WorksCreateModel()
     /// <summary>
     /// Цена
     /// </summary>
-    public decimal Price { get; set; } = 0;
+    public decimal Price { get; set; }
 }

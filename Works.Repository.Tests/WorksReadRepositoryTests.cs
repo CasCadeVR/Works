@@ -1,9 +1,10 @@
 ﻿using FluentAssertions;
 using Works.Context.Tests;
-using Works.Repository.Contracts;
 using Xunit;
 using Ahatornn.TestGenerator;
 using Works.Entities;
+using Works.Repository.Contracts.IReadRepositories;
+using Works.Repository.ReadRepositories;
 
 namespace Works.Repository.Tests;
 

@@ -20,14 +20,19 @@ public class WorksExceptionFilter : IExceptionFilter
         switch (exception)
         {
             case WorksNotFoundException ex:
-                SetDataToContext(new NotFoundObjectResult(new ApiExceptionDetail(ex.Message)), context);
+                SetDataToContext(new NotFoundObjectResult(new ApiExceptionDetail(ex.Message))
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                }, context);
                 break;
-            case WorksInvalideOperationException ex:
+
+            case WorksInvalidOperationException ex:
                 SetDataToContext(new BadRequestObjectResult(new ApiExceptionDetail(ex.Message))
                 {
                     StatusCode = StatusCodes.Status406NotAcceptable,
                 }, context);
                 break;
+
             case WorksValidationException ex:
                 SetDataToContext(new BadRequestObjectResult(new ApiValidationExceptionDetail()
                 {
@@ -37,6 +42,7 @@ public class WorksExceptionFilter : IExceptionFilter
                     StatusCode = StatusCodes.Status422UnprocessableEntity,
                 }, context);
                 break;
+
             default:
                 SetDataToContext(new BadRequestObjectResult(new ApiExceptionDetail(exception.Message)), context);
                 break;

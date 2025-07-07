@@ -3,11 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Works.Common;
 using Works.Context;
 using Works.Context.Contracts;
-using Works.Repository;
-using Works.Repository.Contracts;
+using Works.Repository.Contracts.IReadRepositories;
+using Works.Repository.Contracts.IWriteRepositories;
+using Works.Repository.ReadRepositories;
+using Works.Repository.WriteRepositories;
 using Works.Services;
 using Works.Services.Contracts;
+using Works.Services.Contracts.IServices;
 using Works.Services.Infrastructure;
+using Works.Services.Services;
 using Works.Web.Infrastructure;
 
 namespace Works.Web
@@ -36,9 +40,9 @@ namespace Works.Web
             builder.Services.AddScoped<IWriter>(x => x.GetRequiredService<WorksContext>());
             builder.Services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<WorksContext>());
             
-            builder.Services.AddScoped<IWorksServices, WorksServices>();
             builder.Services.AddSingleton<IValidateService, ValidateService>();
             builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
             builder.Services.AddSingleton(_ =>
             {
                 var mapConfig = new MapperConfiguration(cfg =>
@@ -53,6 +57,11 @@ namespace Works.Web
 
             builder.Services.AddScoped<IWorksReadRepository, WorksReadRepository>();
             builder.Services.AddScoped<IWorksWriteRepository, WorksWriteRepository>();
+            builder.Services.AddScoped<IWorksServices, WorksServices>();
+
+            builder.Services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
+            builder.Services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
+            builder.Services.AddScoped<ICustomerServices, CustomerService>();
 
             var addedControllers = builder.Services.AddControllers(opt =>
             {
@@ -85,7 +94,6 @@ namespace Works.Web
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

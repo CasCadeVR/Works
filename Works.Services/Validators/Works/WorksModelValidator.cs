@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts.Models;
+using Works.Services.Contracts.Models.Works;
 
-namespace Works.Services.Validators;
+namespace Works.Services.Validators.Works;
 
 /// <summary>
 /// Валидация <see cref="WorksModel"/>

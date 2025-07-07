@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Models;
+﻿namespace Works.Web.Models.Works;
 
 /// <summary>
 /// Модель работы
@@ -7,4 +7,4 @@
 /// <param name="Name">Именования</param>
 /// <param name="Description">Описание</param>
 /// <param name="Price">Цена</param>
-public record WorksApiModel(Guid Id, string Name, string Description, decimal Price);
+public record WorkApiModel(Guid Id, string Name, string Description, decimal Price);

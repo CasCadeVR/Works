@@ -6,12 +6,12 @@
 public interface IDateTimeProvider
 {
     /// <summary>
-    /// 
+    /// Текущее время по UTC
     /// </summary>
     DateTimeOffset UtcNow();
 
     /// <summary>
-    /// 
+    /// Текущее время
     /// </summary>
     DateTimeOffset Now();
 }

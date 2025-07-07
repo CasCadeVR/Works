@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 namespace Works.Context
 {
     /// <summary>
-    /// 
+    /// Создание контекста <see cref="WorksContext"/>
     /// </summary>
     public class WorksDesignTimeDbContextFactory : IDesignTimeDbContextFactory<WorksContext>
     {

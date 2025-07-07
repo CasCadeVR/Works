@@ -1,14 +1,14 @@
 ﻿namespace Works.Services.Contracts.Exceptions;
 
 /// <summary>
-/// Ошибка о ненахождении
+/// Ошибка работы о неправильной работе внутренней операции (операции сервера)
 /// </summary>
-public class WorksNotFoundException : WorksException
+public class WorksInvalidOperationException : WorksException
 {
     /// <summary>
     /// ctor
     /// </summary>
-    public WorksNotFoundException(string message)
+    public WorksInvalidOperationException(string message)
     {
         Message = message;
     }

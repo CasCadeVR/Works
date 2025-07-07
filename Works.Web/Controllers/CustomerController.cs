@@ -2,27 +2,27 @@
 using AutoMapper;
 using Works.Services.Contracts;
 using Works.Web.Models.Exceptions;
-using Works.Services.Contracts.Models.Works;
+using Works.Services.Contracts.Models.Customers;
 using Works.Services.Contracts.IServices;
-using Works.Web.Models.Works;
+using Works.Web.Models.Customers;
 
 namespace Works.Web.Controllers
 {
     /// <summary>
-    /// CRUD контроллер по работе с работами
+    /// CRUD контроллер по работе с заказчиками
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class WorksController : ControllerBase
+    public class CustomerController : ControllerBase
     {
-        private readonly IWorksServices service;
+        private readonly ICustomerServices service;
         private readonly IValidateService validateService;
         private readonly IMapper mapper;
 
         /// <summary>
         /// ctor
         /// </summary>
-        public WorksController(IWorksServices service, IValidateService validateService, IMapper mapper)
+        public CustomerController(ICustomerServices service, IValidateService validateService, IMapper mapper)
         {
             this.service = service;
             this.validateService = validateService;
@@ -30,71 +30,71 @@ namespace Works.Web.Controllers
         }
 
         /// <summary>
-        /// Получает работу по идентификатору
+        /// Получает заказчика по идентификатору
         /// </summary>
-        /// GET: /api/Works/c2331ea8-a98d-4c3e-baea-d88f5665947
+        /// GET: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(WorkApiModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await service.GetById(id, cancellationToken);
 
-            return Ok(mapper.Map<WorkApiModel>(result));
+            return Ok(mapper.Map<CustomerApiModel>(result));
         }
 
         /// <summary>
-        /// Получает список всех работ
+        /// Получает список всех заказчиков
         /// </summary>
-        /// GET: /api/Works/
+        /// GET: /api/Customer/
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<WorkApiModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CustomerApiModel>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll(CancellationToken cancellationToken)
         {
             var result = await service.GetAll(cancellationToken);
 
-            return Ok(mapper.Map<IEnumerable<WorkApiModel>>(result));
+            return Ok(mapper.Map<IEnumerable<CustomerApiModel>>(result));
         }
 
         /// <summary>
-        /// Добавляет новую работу
+        /// Добавляет нового заказчика
         /// </summary>
-        /// POST: /api/Works/
+        /// POST: /api/Customer/
         [HttpPost]
-        [ProducesResponseType(typeof(WorkApiModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<ActionResult> Create(WorksRequestApiModel request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(CustomerRequestApiModel request, CancellationToken cancellationToken)
         {
-            var requsetModel = mapper.Map<WorksCreateModel>(request);
+            var requsetModel = mapper.Map<CustomerCreateModel>(request);
             await validateService.Validate(requsetModel, CancellationToken.None);
             var result = await service.Create(requsetModel, cancellationToken);
 
-            return Ok(mapper.Map<WorkApiModel>(result));
+            return Ok(mapper.Map<CustomerApiModel>(result));
         }
 
         /// <summary>
-        /// Редактирует работу
+        /// Редактирует заказчика
         /// </summary>
-        /// PUT: /api/Works/c2331ea8-a98d-4c3e-baea-d88f5665947
+        /// PUT: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]
-        [ProducesResponseType(typeof(WorkApiModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]WorksRequestApiModel request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] CustomerRequestApiModel request, CancellationToken cancellationToken)
         {
-            var requsetModel = mapper.Map<WorksModel>(request);
+            var requsetModel = mapper.Map<CustomerModel>(request);
             await validateService.Validate(requsetModel, CancellationToken.None);
             requsetModel.Id = id;
 
             var result = await service.Update(requsetModel, cancellationToken);
 
-            return Ok(mapper.Map<WorkApiModel>(result));
+            return Ok(mapper.Map<CustomerApiModel>(result));
         }
 
         /// <summary>
-        /// Удаляет работу по идентификатору
+        /// Удаляет заказчика по идентификатору
         /// </summary>
-        /// DELETE: /api/Works/c2331ea8-a98d-4c3e-baea-d88f5665947
+        /// DELETE: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]

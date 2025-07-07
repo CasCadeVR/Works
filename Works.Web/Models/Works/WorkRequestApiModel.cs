@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Models;
+﻿namespace Works.Web.Models.Works;
 
 /// <summary>
 /// Модель создания работы

@@ -1,18 +1,18 @@
 ﻿namespace Works.Services.Contracts.Exceptions;
 
 /// <summary>
-/// 
+/// Модель о возникщей ошибке
 /// </summary>
 public class InvalidateItemModel
 {
     /// <summary>
-    /// 
+    /// Статический конструктор
     /// </summary>
     public static InvalidateItemModel New(string field, string message)
-        => new InvalidateItemModel( field,  message);
+        => new InvalidateItemModel(field, message);
 
     /// <summary>
-    /// 
+    /// ctor
     /// </summary>
     public InvalidateItemModel(string field, string message)
     {
@@ -21,12 +21,12 @@ public class InvalidateItemModel
     }
 
     /// <summary>
-    /// 
+    /// Поле
     /// </summary>
     public string Field { get; } =string.Empty;
 
     /// <summary>
-    /// 
+    /// Сообщение об ошибке
     /// </summary>
     public string Message { get; } = string.Empty;
 }

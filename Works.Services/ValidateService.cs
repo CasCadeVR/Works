@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using Works.Services.Contracts;
 using Works.Services.Contracts.Exceptions;
-using Works.Services.Contracts.Models;
-using Works.Services.Validators;
+using Works.Services.Contracts.Models.Works;
+using Works.Services.Validators.Works;
+using Works.Services.Validators.Customers;
+using Works.Services.Contracts.Models.Customers;
 
 namespace Works.Services;
 
@@ -17,8 +19,11 @@ public class ValidateService : IValidateService
     public ValidateService()
     {
         validators = new Dictionary<Type, IValidator>();
-        validators.TryAdd(typeof(WorksCreateModel), new WorksCreateModelValidator());
         validators.TryAdd(typeof(WorksModel), new WorksModelValidator());
+        validators.TryAdd(typeof(CustomerModel), new CustomerModelValidator());
+
+        validators.TryAdd(typeof(WorksCreateModel), new WorksCreateModelValidator());
+        validators.TryAdd(typeof(CustomerCreateModel), new CustomerCreateModelValidator());
     }
     
     async Task IValidateService.Validate<TModel>(TModel model, CancellationToken cancellationToken)
@@ -26,7 +31,7 @@ public class ValidateService : IValidateService
     {
         if (!validators.TryGetValue(model.GetType(), out var validator))
         {
-            throw new WorksInvalideOperationException($"Не найден запрашиваемый валидатор : {model.GetType()}");
+            throw new WorksInvalidOperationException($"Не найден запрашиваемый валидатор : {model.GetType()}");
         }
 
         var context = new ValidationContext<TModel>(model);

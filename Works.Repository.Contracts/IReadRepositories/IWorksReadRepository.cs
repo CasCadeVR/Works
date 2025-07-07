@@ -1,4 +1,4 @@
-﻿namespace Works.Repository.Contracts;
+﻿namespace Works.Repository.Contracts.IReadRepositories;
 
 /// <summary>
 /// Репозиторий чтения сущности <see cref="Entities.Work"/>

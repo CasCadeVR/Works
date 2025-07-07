@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Works.Context.Contracts;
-using Works.Repository.Contracts;
-using Works.Services.Contracts;
+using Works.Repository.Contracts.IReadRepositories;
+using Works.Repository.Contracts.IWriteRepositories;
 using Works.Services.Contracts.Exceptions;
-using Works.Services.Contracts.Models;
+using Works.Services.Contracts.IServices;
+using Works.Services.Contracts.Models.Works;
 
-namespace Works.Services
+namespace Works.Services.Services
 {
     /// <inheritdoc cref="IWorksServices"/>
     public class WorksServices : IWorksServices
@@ -29,7 +30,15 @@ namespace Works.Services
             this.readRepository = readRepository;
             this.writeRepository = writeRepository;
         }
-        
+
+        async Task<WorksModel> IWorksServices.GetById(Guid id, CancellationToken cancellationToken)
+        {
+            var entity = await readRepository.GetById(id, cancellationToken)
+                 ?? throw new WorksNotFoundException($"Не удалось найти работу с иденитификатором {id}");
+
+            return mapper.Map<WorksModel>(entity);
+        }
+
         async Task<IReadOnlyCollection<WorksModel>> IWorksServices.GetAll(CancellationToken cancellationToken)
         {
             var items = await readRepository.GetAll(cancellationToken);
@@ -41,7 +50,7 @@ namespace Works.Services
             var result = new Entities.Work
             {
                 Id = Guid.NewGuid(),
-                Name = model.Name, 
+                Name = model.Name,
                 Description = model.Description,
                 Price = model.Price,
                 CreatedAt = DateTime.Now,
@@ -57,7 +66,7 @@ namespace Works.Services
         async Task<WorksModel> IWorksServices.Update(WorksModel model, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(model.Id, cancellationToken)
-                ?? throw new WorksNotFoundException($"Не удалось найти товар с иденитификатором {model.Id}");
+                ?? throw new WorksNotFoundException($"Не удалось найти работу с иденитификатором {model.Id}");
 
             entity.Name = model.Name;
             entity.Description = model.Description;
@@ -68,6 +77,15 @@ namespace Works.Services
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return mapper.Map<WorksModel>(entity);
+        }
+
+        async Task IWorksServices.Delete(Guid id, CancellationToken cancellationToken)
+        {
+            var entity = await readRepository.GetById(id, cancellationToken)
+               ?? throw new WorksNotFoundException($"Не удалось найти работу с иденитификатором {id}");
+
+            writeRepository.Delete(entity);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }
