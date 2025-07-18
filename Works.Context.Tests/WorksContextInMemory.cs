@@ -23,8 +23,9 @@ public abstract class WorksContextInMemory: IAsyncDisposable
     protected WorksContextInMemory()
     {
         var optionsBuilder = new DbContextOptionsBuilder<WorksContext>()
-            .UseInMemoryDatabase($"GoodsTests{Guid.NewGuid()}")
+            .UseInMemoryDatabase($"WorksTests{Guid.NewGuid()}")
             .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+
         Context = new WorksContext(optionsBuilder.Options);
     }
 

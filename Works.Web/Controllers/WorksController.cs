@@ -65,9 +65,9 @@ namespace Works.Web.Controllers
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult> Create(WorksRequestApiModel request, CancellationToken cancellationToken)
         {
-            var requsetModel = mapper.Map<WorksCreateModel>(request);
-            await validateService.Validate(requsetModel, CancellationToken.None);
-            var result = await service.Create(requsetModel, cancellationToken);
+            var requestModel = mapper.Map<WorksCreateModel>(request);
+            await validateService.Validate(requestModel, CancellationToken.None);
+            var result = await service.Create(requestModel, cancellationToken);
 
             return Ok(mapper.Map<WorkApiModel>(result));
         }
@@ -82,11 +82,13 @@ namespace Works.Web.Controllers
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]WorksRequestApiModel request, CancellationToken cancellationToken)
         {
-            var requsetModel = mapper.Map<WorksModel>(request);
-            await validateService.Validate(requsetModel, CancellationToken.None);
-            requsetModel.Id = id;
+            var requestCreateModel = mapper.Map<WorksCreateModel>(request);
+            await validateService.Validate(requestCreateModel, CancellationToken.None);
 
-            var result = await service.Update(requsetModel, cancellationToken);
+            var requestModel = mapper.Map<WorksModel>(request);
+            requestModel.Id = id;
+
+            var result = await service.Update(requestModel, cancellationToken);
 
             return Ok(mapper.Map<WorkApiModel>(result));
         }

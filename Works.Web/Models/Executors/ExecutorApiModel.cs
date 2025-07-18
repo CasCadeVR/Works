@@ -8,4 +8,10 @@
 /// <param name="Occupation">Должность</param>
 /// <param name="Firm">Фирма</param>
 /// <param name="OGRN">ОГРН</param>
-public record ExecutorApiModel(Guid Id, string FIO, string Occupation, string Firm, string OGRN);
+public record ExecutorApiModel(
+    Guid Id, 
+    string FIO, 
+    string Occupation, 
+    string Firm, 
+    string OGRN
+);

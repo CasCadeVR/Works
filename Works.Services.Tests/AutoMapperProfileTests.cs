@@ -25,7 +25,7 @@ public class AutoMapperProfileTests
     }
 
     /// <summary>
-    /// Тест на пустую ошибку наименования
+    /// Тест на правильную настройку <see cref="ServiceProfile"/>
     /// </summary>
     [Fact]
     public void ValideMapperConfiguration()

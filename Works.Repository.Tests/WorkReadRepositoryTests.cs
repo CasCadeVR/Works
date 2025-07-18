@@ -11,14 +11,14 @@ namespace Works.Repository.Tests;
 /// <summary>
 /// Тесты на <see cref="WorksReadRepository"/>
 /// </summary>
-public class WorksReadRepositoryTests : WorksContextInMemory
+public class WorkReadRepositoryTests : WorksContextInMemory
 {
     private readonly IWorksReadRepository worksReadRepository;
 
     /// <summary>
     /// ctor
     /// </summary>
-    public WorksReadRepositoryTests()
+    public WorkReadRepositoryTests()
     {
         worksReadRepository = new WorksReadRepository(Context);
     }
@@ -40,45 +40,45 @@ public class WorksReadRepositoryTests : WorksContextInMemory
     }
 
     /// <summary>
-    /// Проверяет, что GetById вернёт null при мягком удалении <see cref="Work"/>
+    /// Проверяет, что GetById вернёт <see cref="Work"/> при его добавлении 
+    /// </summary>
+    [Fact]
+    public async Task GetByIdShouldReturnValue()
+    {
+        // Arrange
+        var work = TestEntityProvider.Shared.Create<Work>();
+        await Context.AddAsync(work);
+        await UnitOfWork.SaveChangesAsync();
+
+        // Act
+        var result = await worksReadRepository.GetById(work.Id, CancellationToken.None);
+
+        // Assert
+        result.Should()
+            .NotBeNull()
+            .And.BeEquivalentTo(work);
+    }
+
+    /// <summary>
+    /// Проверяет, что GetById вернёт null при мягком удалении
     /// </summary>
     [Fact]
     public async Task GetByIdShouldReturnNullByDelete()
     {
         // Arrange
-        var goods = TestEntityProvider.Shared.Create<Work>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(goods);
+        var work = TestEntityProvider.Shared.Create<Work>(x => x.DeletedAt = DateTimeOffset.UtcNow);
+        await Context.AddAsync(work);
         await UnitOfWork.SaveChangesAsync();
 
         // Act
-        var result = await worksReadRepository.GetById(goods.Id, CancellationToken.None);
+        var result = await worksReadRepository.GetById(work.Id, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();
     }
 
     /// <summary>
-    /// Проверяет, что GetById вернёт null при добавлении <see cref="Work"/>
-    /// </summary>
-    [Fact]
-    public async Task GetByIdShouldReturnValue()
-    {
-        // Arrange
-        var goods = TestEntityProvider.Shared.Create<Work>();
-        await Context.AddAsync(goods);
-        await UnitOfWork.SaveChangesAsync();
-
-        // Act
-        var result = await worksReadRepository.GetById(goods.Id, CancellationToken.None);
-
-        // Assert
-        result.Should()
-            .NotBeNull()
-            .And.BeEquivalentTo(goods);
-    }
-
-    /// <summary>
-    /// Проверяет, что GetById вернёт null при добавлении <see cref="Work"/>
+    /// Проверяет, что GetAll вернёт пустой список
     /// </summary>
     [Fact]
     public async Task GetAllShouldBeEmpty()
@@ -91,22 +91,22 @@ public class WorksReadRepositoryTests : WorksContextInMemory
     }
 
     /// <summary>
-    /// Проверяет, что GetById вернёт null при добавлении <see cref="Work"/>
+    /// Проверяет, что GetAll вернёт список при добавлении нескольких <see cref="Work"/>
     /// </summary>
     [Fact]
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var goods1 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "1");
-        var goods2 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "2");
-        var goods3 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
-        var goods4 = TestEntityProvider.Shared.Create<Work>(x =>
+        var work1 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "1");
+        var work2 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "2");
+        var work3 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
+        var work4 = TestEntityProvider.Shared.Create<Work>(x =>
         {
             x.Name = "3";
             x.DeletedAt = DateTimeOffset.UtcNow;
         });
 
-        await Context.AddRangeAsync(goods1, goods2, goods3, goods4);
+        await Context.AddRangeAsync(work1, work2, work3, work4);
         await UnitOfWork.SaveChangesAsync();
 
         // Act

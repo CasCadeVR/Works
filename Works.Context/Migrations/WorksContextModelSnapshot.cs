@@ -22,6 +22,71 @@ namespace Works.Context.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Works.Entities.Act", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ActNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ExecutorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("NDS")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ExecutorId");
+
+                    b.HasIndex(new[] { "ActNumber" }, "IX_Act_DeletedAt")
+                        .IsUnique()
+                        .HasFilter("\"DeletedAt\" IS NULL");
+
+                    b.ToTable("Act", (string)null);
+                });
+
+            modelBuilder.Entity("Works.Entities.ActWork", b =>
+                {
+                    b.Property<Guid>("WorkId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ActId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ActualPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("WorkId", "ActId");
+
+                    b.HasIndex("ActId");
+
+                    b.ToTable("ActWork", (string)null);
+                });
+
             modelBuilder.Entity("Works.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -66,7 +131,7 @@ namespace Works.Context.Migrations
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("Works.Entities.Executor", b =>
@@ -113,7 +178,7 @@ namespace Works.Context.Migrations
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
-                    b.ToTable("Executors", (string)null);
+                    b.ToTable("Executor", (string)null);
                 });
 
             modelBuilder.Entity("Works.Entities.Work", b =>
@@ -140,6 +205,11 @@ namespace Works.Context.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("UnitOfMeasure")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -149,7 +219,50 @@ namespace Works.Context.Migrations
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
-                    b.ToTable("Works", (string)null);
+                    b.ToTable("Work", (string)null);
+                });
+
+            modelBuilder.Entity("Works.Entities.Act", b =>
+                {
+                    b.HasOne("Works.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Works.Entities.Executor", "Executor")
+                        .WithMany()
+                        .HasForeignKey("ExecutorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Executor");
+                });
+
+            modelBuilder.Entity("Works.Entities.ActWork", b =>
+                {
+                    b.HasOne("Works.Entities.Act", "Act")
+                        .WithMany("Works")
+                        .HasForeignKey("ActId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Works.Entities.Work", "Work")
+                        .WithMany()
+                        .HasForeignKey("WorkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Act");
+
+                    b.Navigation("Work");
+                });
+
+            modelBuilder.Entity("Works.Entities.Act", b =>
+                {
+                    b.Navigation("Works");
                 });
 #pragma warning restore 612, 618
         }

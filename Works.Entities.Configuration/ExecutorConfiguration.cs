@@ -13,7 +13,7 @@ namespace Works.Entities.Configuration
         /// </summary>
         public void Configure(EntityTypeBuilder<Executor> builder)
         {
-            builder.ToTable("Executors");
+            builder.ToTable("Executor");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.OGRN).IsRequired();

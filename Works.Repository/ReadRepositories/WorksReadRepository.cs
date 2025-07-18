@@ -1,6 +1,7 @@
 ﻿using Works.Context.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Works.Repository.Contracts.IReadRepositories;
+using Works.Entities;
 
 namespace Works.Repository.ReadRepositories;
 
@@ -17,15 +18,23 @@ public class WorksReadRepository : IWorksReadRepository
         this.reader = reader;
     }
 
-    Task<Entities.Work?> IWorksReadRepository.GetById(Guid id, CancellationToken cancellationToken)
-         => reader.Read<Entities.Work>()
+    Task<Work?> IWorksReadRepository.GetById(Guid id, CancellationToken cancellationToken)
+         => reader.Read<Work>()
         .NotDeletedAt()
         .ById(id)
         .FirstOrDefaultAsync(cancellationToken);
 
-    Task<IReadOnlyCollection<Entities.Work>> IWorksReadRepository.GetAll(CancellationToken cancellationToken)
-        => reader.Read<Entities.Work>()
+    Task<IReadOnlyCollection<Work>> IWorksReadRepository.GetByIds(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken)
+    => reader.Read<Work>()
+        .NotDeletedAt()
+        .ByIds(ids)
+        .OrderBy(x => x.Name)
+        .ToReadOnlyCollectionAsync(cancellationToken);
+
+    Task<IReadOnlyCollection<Work>> IWorksReadRepository.GetAll(CancellationToken cancellationToken)
+        => reader.Read<Work>()
         .NotDeletedAt()
         .OrderBy(x => x.Name)
         .ToReadOnlyCollectionAsync(cancellationToken);
+
 }

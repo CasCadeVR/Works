@@ -24,4 +24,9 @@ public class WorksModel()
     /// Цена
     /// </summary>
     public decimal Price { get; set; }
+
+    /// <summary>
+    /// Единица измерения
+    /// </summary>
+    public string UnitOfMeasure { get; set; } = string.Empty;
 }

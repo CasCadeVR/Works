@@ -25,6 +25,11 @@ namespace Works.Entities
         /// </summary>
         public decimal Price { get; set; } = 0;
 
+        /// <summary>
+        /// Единица измерения
+        /// </summary>
+        public string UnitOfMeasure { get; set; } = string.Empty;
+
         /// <inheritdoc cref="IEntityWithAudit.CreatedAt"/>
         public DateTimeOffset CreatedAt { get; set; }
 

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Works.Services.Contracts.Models.Executors;
 
-namespace Works.Services.Validators.Executors;
+namespace Works.Services.Validators;
 
 /// <summary>
 /// Валидация <see cref="ExecutorCreateModel"/>

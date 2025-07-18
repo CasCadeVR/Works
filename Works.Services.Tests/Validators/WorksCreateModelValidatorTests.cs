@@ -1,12 +1,12 @@
 ﻿using FluentValidation.TestHelper;
-using Works.Services.Contracts.Models;
-using Works.Services.Validators.Works;
+using Works.Services.Contracts.Models.Works;
+using Works.Services.Validators;
 using Xunit;
 
 namespace Works.Services.Tests.Validators;
 
 /// <summary>
-/// Тесты для <see cref="CustomerModelValidator"/>
+/// Тесты для <see cref="WorksCreateModelValidator"/>
 /// </summary>
 public class WorksCreateModelValidatorTests
 {

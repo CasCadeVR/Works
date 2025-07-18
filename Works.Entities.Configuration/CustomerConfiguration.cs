@@ -13,7 +13,7 @@ namespace Works.Entities.Configuration
         /// </summary>
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder.ToTable("Customers");
+            builder.ToTable("Customer");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.INN).IsRequired();

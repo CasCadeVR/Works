@@ -13,12 +13,15 @@ namespace Works.Entities.Configuration
         /// </summary>
         public void Configure(EntityTypeBuilder<Work> builder)
         {
-            builder.ToTable("Works");
+            builder.ToTable("Work");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(250);
+
+            builder.Property(x => x.UnitOfMeasure)
+                .HasMaxLength(50);
 
             builder.HasIndex(x => x.Name, $"IX_{nameof(Work)}_{nameof(Work.DeletedAt)}")
                 .IsUnique()

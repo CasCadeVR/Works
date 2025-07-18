@@ -53,6 +53,7 @@ namespace Works.Services.Services
                 Name = model.Name,
                 Description = model.Description,
                 Price = model.Price,
+                UnitOfMeasure = model.UnitOfMeasure,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 DeletedAt = null,
@@ -71,6 +72,7 @@ namespace Works.Services.Services
             entity.Name = model.Name;
             entity.Description = model.Description;
             entity.Price = model.Price;
+            entity.UnitOfMeasure = model.UnitOfMeasure;
             entity.UpdatedAt = DateTime.Now;
 
             writeRepository.Update(entity);

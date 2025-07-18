@@ -3,6 +3,8 @@ using Works.Entities;
 using Works.Services.Contracts.Models.Customers;
 using Works.Services.Contracts.Models.Works;
 using Works.Services.Contracts.Models.Executors;
+using Works.Services.Contracts.Models.ActWorks;
+using Works.Services.Contracts.Models.Acts;
 
 namespace Works.Services.Infrastructure;
 
@@ -24,5 +26,19 @@ public class ServiceProfile : Profile
 
         CreateMap<ExecutorModel, ExecutorCreateModel>(MemberList.Destination).ReverseMap();
         CreateMap<Executor, ExecutorModel>(MemberList.Destination).ReverseMap();
+
+        CreateMap<ActWorksModel, ActWorksCreateModel>(MemberList.Destination).ReverseMap();
+        CreateMap<ActWorksCreateModel, ActWork>(MemberList.Destination).ReverseMap();
+            //.ForMember(x => x.Work, opt => opt.Ignore())
+            //.ForMember(x => x.ActId, opt => opt.Ignore())
+            //.ForMember(x => x.Act, opt => opt.Ignore());
+        CreateMap<ActWork, ActWorksModel>(MemberList.Destination)
+            .ForMember(x => x.Work, opt => opt.MapFrom(y => y.Work)).ReverseMap();
+
+        CreateMap<ActModel, ActCreateModel>(MemberList.Destination).ReverseMap();
+        CreateMap<Act, ActModel>(MemberList.Destination)
+            .ForMember(x => x.Customer, opt => opt.MapFrom(y => y.Customer))
+            .ForMember(x => x.Executor, opt => opt.MapFrom(y => y.Executor))
+            .ForMember(x => x.Works, opt => opt.MapFrom(y => y.Works));
     }
 }

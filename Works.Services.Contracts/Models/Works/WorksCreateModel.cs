@@ -19,4 +19,9 @@ public record WorksCreateModel()
     /// Цена
     /// </summary>
     public decimal Price { get; set; } = 0;
+
+    /// <summary>
+    /// Единица измерения
+    /// </summary>
+    public string UnitOfMeasure { get; set; } = string.Empty;
 }
