@@ -28,10 +28,12 @@ public class ServiceProfile : Profile
         CreateMap<Executor, ExecutorModel>(MemberList.Destination).ReverseMap();
 
         CreateMap<ActWorksModel, ActWorksCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ActWorksCreateModel, ActWork>(MemberList.Destination).ReverseMap();
-            //.ForMember(x => x.Work, opt => opt.Ignore())
-            //.ForMember(x => x.ActId, opt => opt.Ignore())
-            //.ForMember(x => x.Act, opt => opt.Ignore());
+        CreateMap<ActWork, ActWorksCreateModel>(MemberList.Destination);
+        CreateMap<ActWorksCreateModel, ActWork>(MemberList.Destination)
+            .ForMember(x => x.Work, opt => opt.Ignore())
+            .ForMember(x => x.ActId, opt => opt.Ignore())
+            .ForMember(x => x.Act, opt => opt.Ignore());
+
         CreateMap<ActWork, ActWorksModel>(MemberList.Destination)
             .ForMember(x => x.Work, opt => opt.MapFrom(y => y.Work)).ReverseMap();
 

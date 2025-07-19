@@ -33,6 +33,13 @@ public class WorksExceptionFilter : IExceptionFilter
                 }, context);
                 break;
 
+            case WorksDuplicateException ex:
+                SetDataToContext(new BadRequestObjectResult(new ApiExceptionDetail(ex.Message))
+                {
+                    StatusCode = StatusCodes.Status409Conflict,
+                }, context);
+                break;
+
             case WorksValidationException ex:
                 SetDataToContext(new BadRequestObjectResult(new ApiValidationExceptionDetail()
                 {

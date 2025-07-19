@@ -5,7 +5,6 @@ using Works.Services.Validators;
 using Works.Services.Contracts.Models.Works;
 using Works.Services.Contracts.Models.Customers;
 using Works.Services.Contracts.Models.Executors;
-using Works.Services.Contracts.Models.ActWorks;
 using Works.Services.Contracts.Models.Acts;
 
 namespace Works.Services;
@@ -24,7 +23,6 @@ public class ValidateService : IValidateService
         validators.TryAdd(typeof(WorksCreateModel), new WorksCreateModelValidator());
         validators.TryAdd(typeof(CustomerCreateModel), new CustomerCreateModelValidator());
         validators.TryAdd(typeof(ExecutorCreateModel), new ExecutorCreateModelValidator());
-        validators.TryAdd(typeof(ActWorksCreateModel), new ActWorksCreateModelValidator());
         validators.TryAdd(typeof(ActCreateModel), new ActCreateModelValidator());
     }
     

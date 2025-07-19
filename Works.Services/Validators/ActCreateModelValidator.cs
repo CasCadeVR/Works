@@ -22,18 +22,10 @@ public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
             .NotEmpty()
             .WithMessage("Дата заполнения не может быть в будущем");
 
-        RuleFor(act => act.ExecutorId)
-            .NotEmpty()
-            .WithMessage("Идентификатор исполнителя не может быть пустым");
-
-        RuleFor(act => act.CustomerId)
-            .NotEmpty()
-            .WithMessage("Идентификатор заказчика не может быть пустым");
-
         RuleFor(act => act.NDS)
             .GreaterThan(0)
             .WithMessage("НДС не может быть меньше нуля");
     }
 
-    private bool NotBeInFuture(DateTime time) => time <= DateTime.UtcNow;
+    private bool NotBeInFuture(DateTime time) => time >= DateTime.UtcNow;
 }

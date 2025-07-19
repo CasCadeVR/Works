@@ -74,7 +74,7 @@ namespace Works.Services.Services
               .Where(g => g.Count() > 1)
               .Select(y => y.Key).Count() != 0)
             {
-                throw new WorksInvalidOperationException($"Нельзя использовать одну и ту же работу более 1 раза");
+                throw new WorksDuplicateException($"Нельзя использовать одну и ту же работу более 1 раза");
             }
 
             if (targetWorks.Count != model.Works.Count)
@@ -110,6 +110,9 @@ namespace Works.Services.Services
 
         async Task<ActModel> IActServices.Update(ActModel model, CancellationToken cancellationToken)
         {
+            var entity = await readRepository.GetById(model.Id, cancellationToken)
+               ?? throw new WorksNotFoundException($"Не удалось найти акт с иденитификатором {model.Id}");
+
             var targetCustomer = await customerReadRepository.GetById(model.Customer.Id, cancellationToken)
                ?? throw new WorksNotFoundException($"Не удалось найти заказчика с иденитификатором {model.Customer.Id}");
 
@@ -122,16 +125,13 @@ namespace Works.Services.Services
               .Where(g => g.Count() > 1)
               .Select(y => y.Key).Count() != 0)
             {
-                throw new WorksInvalidOperationException($"Нельзя использовать одну и ту же работу более 1 раза");
+                throw new WorksDuplicateException($"Нельзя использовать одну и ту же работу более 1 раза");
             }
 
             if (targetWorks.Count != model.Works.Count)
                 foreach (var work in model.Works)
                     if (!targetWorks.Select(x => x.Id).Contains(work.Work.Id))
                         throw new WorksNotFoundException($"Не удалось найти работы с иденитификаторами {work.Work.Id}");
-
-            var entity = await readRepository.GetById(model.Id, cancellationToken)
-                ?? throw new WorksNotFoundException($"Не удалось найти акт с иденитификатором {model.Id}");
 
             entity.ActNumber = model.ActNumber;
             entity.Date = model.Date;

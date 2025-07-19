@@ -64,6 +64,8 @@ namespace Works.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ActApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status409Conflict)]
+
         public async Task<ActionResult> Create(ActRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestModel = mapper.Map<ActCreateModel>(request);
@@ -81,6 +83,7 @@ namespace Works.Web.Controllers
         [ProducesResponseType(typeof(ActApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]ActRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestCreateModel = mapper.Map<ActCreateModel>(request);
