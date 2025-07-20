@@ -1,6 +1,6 @@
 ﻿using Works.Common;
 
-namespace Works.Web.Infrastructure;
+namespace Works.Web.Contracts.Infrastructure;
 
 /// <summary>
 /// <inheritdoc cref="IDateTimeProvider"/>

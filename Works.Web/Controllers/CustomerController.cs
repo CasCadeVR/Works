@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Works.Services.Contracts;
-using Works.Web.Models.Exceptions;
+using Works.Web.Contracts.Models.Exceptions;
 using Works.Services.Contracts.Models.Customers;
 using Works.Services.Contracts.IServices;
-using Works.Web.Models.Customers;
+using Works.Web.Contracts.Models.Customers;
 
 namespace Works.Web.Controllers
 {
@@ -73,7 +73,7 @@ namespace Works.Web.Controllers
         }
 
         /// <summary>
-        /// Редактирует заказчика
+        /// Редактирует заказчика по идентификатору
         /// </summary>
         /// PUT: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]

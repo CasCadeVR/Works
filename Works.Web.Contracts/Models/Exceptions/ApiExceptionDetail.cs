@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Models.Exceptions;
+﻿namespace Works.Web.Contracts.Models.Exceptions;
 
 /// <summary>
 /// Информация об ошибке работы АПИ

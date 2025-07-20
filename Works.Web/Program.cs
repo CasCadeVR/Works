@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Works.Common;
 using Works.Context;
 using Works.Context.Contracts;
+using Works.Export.Contracts;
 using Works.Repository.Contracts.IReadRepositories;
 using Works.Repository.Contracts.IWriteRepositories;
 using Works.Repository.ReadRepositories;
@@ -12,7 +13,7 @@ using Works.Services.Contracts;
 using Works.Services.Contracts.IServices;
 using Works.Services.Infrastructure;
 using Works.Services.Services;
-using Works.Web.Infrastructure;
+using Works.Web.Contracts.Infrastructure;
 
 namespace Works.Web
 {
@@ -72,6 +73,8 @@ namespace Works.Web
             builder.Services.AddScoped<IActServices, ActServices>();
 
             builder.Services.AddScoped<IActWorkWriteRepository, ActWorkWriteRepository>();
+
+            builder.Services.AddScoped<IExporter, ExcelExporter>();
 
             var addedControllers = builder.Services.AddControllers(opt =>
             {

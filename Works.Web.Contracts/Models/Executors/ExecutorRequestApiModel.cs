@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Models.Executors;
+﻿namespace Works.Web.Contracts.Models.Executors;
 
 /// <summary>
 /// Модель создания исполнителя

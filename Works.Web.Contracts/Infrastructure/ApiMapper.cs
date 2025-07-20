@@ -4,13 +4,13 @@ using Works.Services.Contracts.Models.Customers;
 using Works.Services.Contracts.Models.Executors;
 using Works.Services.Contracts.Models.ActWorks;
 using Works.Services.Contracts.Models.Acts;
-using Works.Web.Models.Works;
-using Works.Web.Models.Customers;
-using Works.Web.Models.Executors;
-using Works.Web.Models.ActWorks;
-using Works.Web.Models.Acts;
+using Works.Web.Contracts.Models.Works;
+using Works.Web.Contracts.Models.Customers;
+using Works.Web.Contracts.Models.Executors;
+using Works.Web.Contracts.Models.ActWorks;
+using Works.Web.Contracts.Models.Acts;
 
-namespace Works.Web.Infrastructure;
+namespace Works.Web.Contracts.Infrastructure;
 
 /// <summary>
 /// Маппер для АПИ

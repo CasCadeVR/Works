@@ -1,9 +1,10 @@
 ﻿using Works.Services.Contracts.Exceptions;
-using Works.Web.Models.Exceptions;
+using Works.Web.Contracts.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Http;
 
-namespace Works.Web.Infrastructure;
+namespace Works.Web.Contracts.Infrastructure;
 
 /// <summary>
 /// Фильтр обработки ошибок

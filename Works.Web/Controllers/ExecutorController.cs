@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Works.Services.Contracts;
-using Works.Web.Models.Exceptions;
+using Works.Web.Contracts.Models.Exceptions;
 using Works.Services.Contracts.Models.Executors;
 using Works.Services.Contracts.IServices;
-using Works.Web.Models.Executors;
+using Works.Web.Contracts.Models.Executors;
 
 namespace Works.Web.Controllers
 {
@@ -71,7 +71,7 @@ namespace Works.Web.Controllers
         }
 
         /// <summary>
-        /// Редактирует исполнителя
+        /// Редактирует исполнителя по идентификатору
         /// </summary>
         /// PUT: /api/Executor/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]

@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Models.ActWorks;
+﻿namespace Works.Web.Contracts.Models.ActWorks;
 
 /// <summary>
 /// Модель работы для акта

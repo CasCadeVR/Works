@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Models.Customers;
+﻿namespace Works.Web.Contracts.Models.Customers;
 
 /// <summary>
 /// Модель заказчика

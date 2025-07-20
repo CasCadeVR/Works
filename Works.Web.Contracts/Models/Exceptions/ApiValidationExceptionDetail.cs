@@ -1,6 +1,6 @@
 ﻿using Works.Services.Contracts.Exceptions;
 
-namespace Works.Web.Models.Exceptions;
+namespace Works.Web.Contracts.Models.Exceptions;
 
 /// <summary>
 /// 

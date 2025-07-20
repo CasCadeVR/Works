@@ -1,6 +1,6 @@
-﻿using Works.Web.Models.ActWorks;
+﻿using Works.Web.Contracts.Models.ActWorks;
 
-namespace Works.Web.Models.Acts;
+namespace Works.Web.Contracts.Models.Acts;
 
 /// <summary>
 /// Модель создания акта

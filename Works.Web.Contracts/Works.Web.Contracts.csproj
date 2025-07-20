@@ -7,17 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.18" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Works.Web\Works.Web.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.integration.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Works.Services.Contracts\Works.Services.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

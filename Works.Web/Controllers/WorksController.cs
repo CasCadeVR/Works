@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Works.Services.Contracts;
-using Works.Web.Models.Exceptions;
+using Works.Web.Contracts.Models.Exceptions;
 using Works.Services.Contracts.Models.Works;
 using Works.Services.Contracts.IServices;
-using Works.Web.Models.Works;
+using Works.Web.Contracts.Models.Works;
 
 namespace Works.Web.Controllers
 {
@@ -73,7 +73,7 @@ namespace Works.Web.Controllers
         }
 
         /// <summary>
-        /// Редактирует работу
+        /// Редактирует работу по идентификатору
         /// </summary>
         /// PUT: /api/Works/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]

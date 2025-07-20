@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Works.Entities;
+using Works.Export.Contracts;
 using Works.Services.Contracts;
-using Works.Web.Models.Exceptions;
-using Works.Services.Contracts.Models.Acts;
 using Works.Services.Contracts.IServices;
-using Works.Web.Models.Acts;
+using Works.Services.Contracts.Models.Acts;
+using Works.Web.Contracts.Models.Acts;
+using Works.Web.Contracts.Models.Exceptions;
 
 namespace Works.Web.Controllers
 {
@@ -16,17 +18,35 @@ namespace Works.Web.Controllers
     public class ActController : ControllerBase
     {
         private readonly IActServices service;
+        private readonly IExporter exporter;
         private readonly IValidateService validateService;
         private readonly IMapper mapper;
 
         /// <summary>
         /// ctor
         /// </summary>
-        public ActController(IActServices service, IValidateService validateService, IMapper mapper)
+        public ActController(IActServices service, IExporter exporter, IValidateService validateService, IMapper mapper)
         {
             this.service = service;
+            this.exporter = exporter;
             this.validateService = validateService;
             this.mapper = mapper;
+        }
+
+        /// <summary>
+        /// Экспортирует акт по идентификатору в Excel
+        /// </summary>
+        /// GET: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
+        [HttpGet("{id:guid}/export")]
+        [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ExportById([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var result = await service.GetById(id, cancellationToken);
+            var excelBytes = exporter.Export(mapper.Map<ActApiModel>(result));
+            var fileName = $"Act_{result.ActNumber}_{DateTime.Now:yyyy-MM-dd}.xlsx";
+
+            return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
         /// <summary>
@@ -76,7 +96,7 @@ namespace Works.Web.Controllers
         }
 
         /// <summary>
-        /// Редактирует акт
+        /// Редактирует акт по идентификатору
         /// </summary>
         /// PUT: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]
