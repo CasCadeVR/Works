@@ -115,7 +115,8 @@ erDiagram
 |verb|url|description|request|response|codes|
 |-|-|-|-|-|-|
 |GET|api/Act/|Получает список всех актов| | `[ActApiModel]` | 200 OK |
-|GET|api/Act/{id}|Получает акт по идентификатору id | fromRoute: id | `ActApiModel` | 200 OK<br/>404 NotFound |
+|GET|api/Act/{id}|Получает акт по идентификатору id | fromRoute: id | File .xlsx | 200 OK<br/>404 NotFound |
+|GET|api/Act/{id}/export| Экспортирует акт по идентификатору id | fromRoute: id | `ActApiModel` | 200 OK<br/>404 NotFound |
 |POST|api/Act/|Добавляет новый акт| fromBody: `ActRequestApiModel` | `ActApiModel` | 200 OK<br/>422 UnprocessableEntity<br/>409 Conflict |
 |PUT|api/Act/{id}|Редактирует акт по идентификатору id| fromRoute: id <br/>fromBody: `ActRequestApiModel` | `ActApiModel` | 200 OK<br/>404 NotFound<br/>422 UnprocessableEntity<br/>409 Conflict  |
 |DELETE|api/Act/{id}|Удаляет акт по идентификатору id | fromRoute: id | | 200 OK<br/>404 NotFound |
