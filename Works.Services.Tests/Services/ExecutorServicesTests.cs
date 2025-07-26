@@ -187,14 +187,7 @@ public class ExecutorServicesTests : WorksContextInMemory
         await UnitOfWork.SaveChangesAsync();
 
         // Act
-        var model = TestEntityProvider.Shared.Create<ExecutorModel>(x =>
-        {
-            x.Id = executor.Id;
-            x.FIO = "Иванов Иван Иванович";
-            x.OGRN = "1234567890123";
-            x.Firm = "ООО ЛОМО";
-            x.Occupation = "Программист";
-        });
+        var model = TestEntityProvider.Shared.Create<ExecutorModel>(x => x.Id = executor.Id);
 
         var result = await service.Update(model, CancellationToken.None);
 

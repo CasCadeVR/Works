@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Goods.Web.Tests;
+using Works.Web.Tests;
 
 namespace Works.Web.Tests.Infrastructures;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Works.Context;
+using Works.Web.Tests.Client;
 using Xunit;
 
 namespace Works.Web.Tests.Infrastructures;
@@ -33,6 +34,15 @@ public class WorksApiFixture: IAsyncLifetime
             var scope = factory.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
             context = scope.ServiceProvider.GetRequiredService<WorksContext>();
             return context;
+        }
+    }
+
+    internal IWorksApiClient WebClient
+    {
+        get
+        {
+            var client = factory.CreateClient();
+            return new WorksApiClient(string.Empty, client);
         }
     }
 

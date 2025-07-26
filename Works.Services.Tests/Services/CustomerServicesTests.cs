@@ -187,14 +187,7 @@ public class CustomerServicesTests : WorksContextInMemory
         await UnitOfWork.SaveChangesAsync();
 
         // Act
-        var model = TestEntityProvider.Shared.Create<CustomerModel>(x =>
-        {
-            x.Id = customer.Id;
-            x.FIO = "Иванов Иван Иванович";
-            x.INN = "1234567890123";
-            x.Firm = "ООО ЛОМО";
-            x.Occupation = "Программист";
-        });
+        var model = TestEntityProvider.Shared.Create<CustomerModel>(x => x.Id = customer.Id);
 
         var result = await service.Update(model, CancellationToken.None);
 

@@ -187,13 +187,7 @@ public class WorksServicesTests : WorksContextInMemory
         await UnitOfWork.SaveChangesAsync();
 
         // Act
-        var model = TestEntityProvider.Shared.Create<WorksModel>(x =>
-        {
-            x.Id = work.Id;
-            x.Name = "newName";
-            x.Description = "newDescription";
-            x.Price = 10;
-        });
+        var model = TestEntityProvider.Shared.Create<WorksModel>(x => x.Id = work.Id);
         var result = await service.Update(model, CancellationToken.None);
 
         // Assert

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace Goods.Web.Tests;
+namespace Works.Web.Tests;
  static internal class WebHostBuilderHelper
 {
     public static void ConfigureTestAppConfiguration(this IWebHostBuilder builder)

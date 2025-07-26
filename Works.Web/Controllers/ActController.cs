@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Works.Entities;
 using Works.Export.Contracts;
 using Works.Services.Contracts;
 using Works.Services.Contracts.IServices;
@@ -34,7 +33,7 @@ namespace Works.Web.Controllers
         }
 
         /// <summary>
-        /// Экспортирует акт по идентификатору в Excel
+        /// Экспортирует акт по идентификатору
         /// </summary>
         /// GET: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpGet("{id:guid}/export")]
@@ -44,7 +43,7 @@ namespace Works.Web.Controllers
         {
             var result = await service.GetById(id, cancellationToken);
             var excelBytes = exporter.Export(mapper.Map<ActApiModel>(result));
-            var fileName = $"Act_{result.ActNumber}_{DateTime.Now:yyyy-MM-dd}.xlsx";
+            var fileName = $"Act_{result.ActNumber}_{result.Date:yyyy-MM-dd}.xlsx";
 
             return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }

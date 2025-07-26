@@ -86,7 +86,7 @@ public class ActCreateModelValidatorTests
         var model = new ActCreateModel()
         {
             ActNumber = "1",
-            Date = DateTime.UtcNow,
+            Date = DateTime.UtcNow.AddDays(1),
             NDS = 14.4M,
         };
 
