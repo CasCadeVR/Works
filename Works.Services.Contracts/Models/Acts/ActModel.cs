@@ -48,9 +48,14 @@ public class ActModel()
     /// НДС (в процентах)
     /// </summary>
     public decimal NDS { get; set; }
+    
+    /// <summary>
+    /// Полная сумма c ндс
+    /// </summary>
+    public decimal PriceNDS => TotalPrice * NDS / 100;
 
     /// <summary>
     /// Полная сумма c ндс
     /// </summary>
-    public decimal TotalPriceNDS => TotalPrice * NDS;
+    public decimal TotalPriceNDS => TotalPrice + PriceNDS;
 }

@@ -2608,6 +2608,9 @@ namespace Works.Web.Tests.Client
         [Newtonsoft.Json.JsonProperty("nds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Nds { get; set; } = default!;
 
+        [Newtonsoft.Json.JsonProperty("priceNDS", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double PriceNDS { get; set; } = default!;
+
         [Newtonsoft.Json.JsonProperty("totalPriceNDS", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double TotalPriceNDS { get; set; } = default!;
 

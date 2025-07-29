@@ -86,10 +86,5 @@ public class ApiMapper : Profile
                 NDS = src.NDS,
             })
             .ForMember(dest => dest.Works, opt => opt.MapFrom(src => src.Works));
-        //.ForMember(x => x.Id, opt => opt.Ignore())
-        //.ForMember(x => x.TotalPrice, opt => opt.Ignore())
-        //.ForMember(x => x.Executor, opt => opt.ConvertUsing())
-        //.ForMember(x => x.Customer, opt => opt.Ignore())
-        //.ForMember(x => x.TotalPriceNDS, opt => opt.Ignore());
     }
 }

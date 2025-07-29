@@ -21,6 +21,7 @@ namespace Works.Web.Contracts.Models.Acts;
 /// <param name="Works">Список работ</param>
 /// <param name="TotalPrice">Полная сумма без НДС</param>
 /// <param name="NDS">НДС</param>
+/// <param name="PriceNDS">сумма НДС</param>
 /// <param name="TotalPriceNDS">Полная сумма с НДС</param>
 public record ActApiModel(
     Guid Id,
@@ -39,5 +40,6 @@ public record ActApiModel(
     ICollection<ActWorksApiModel> Works,
     decimal TotalPrice,
     decimal NDS,
+    decimal PriceNDS,
     decimal TotalPriceNDS
 );
