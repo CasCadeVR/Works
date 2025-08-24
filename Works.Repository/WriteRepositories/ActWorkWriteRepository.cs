@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Works.Context.Contracts;
-using Works.Entities;
-using Works.Repository.Contracts.IWriteRepositories;
+using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 
-namespace Works.Repository.WriteRepositories;
+namespace CasCadeVR.Works.Repository.WriteRepositories;
 
 /// <inheritdoc cref="IActWorkWriteRepository"/>
 public class ActWorkWriteRepository : IActWorkWriteRepository
@@ -11,7 +11,7 @@ public class ActWorkWriteRepository : IActWorkWriteRepository
     private readonly IWriter writer;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ActWorkWriteRepository"/>
     /// </summary>
     public ActWorkWriteRepository(IWriter writer)
     {

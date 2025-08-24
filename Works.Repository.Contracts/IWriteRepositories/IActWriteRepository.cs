@@ -1,6 +1,6 @@
-﻿using Works.Context.Contracts;
+﻿using CasCadeVR.Works.Context.Contracts;
 
-namespace Works.Repository.Contracts.IWriteRepositories;
+namespace CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 
 /// <summary>
 /// Репозиторий записи <see cref="Entities.Act"/>

@@ -1,6 +1,6 @@
-﻿using Works.Web.Contracts.Models.ActWorks;
+﻿using CasCadeVR.Works.Web.Contracts.Models.ActWorks;
 
-namespace Works.Web.Contracts.Models.Acts;
+namespace CasCadeVR.Works.Web.Contracts.Models.Acts;
 
 /// <summary>
 /// Модель создания акта
@@ -26,7 +26,7 @@ namespace Works.Web.Contracts.Models.Acts;
 public record ActApiModel(
     Guid Id,
     string ActNumber,
-    DateTime Date,
+    DateOnly Date,
     Guid ExecutorId,
     string ExecutorFIO,
     string ExecutorOccupation,

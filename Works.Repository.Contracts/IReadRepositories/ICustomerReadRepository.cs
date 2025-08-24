@@ -1,4 +1,4 @@
-﻿namespace Works.Repository.Contracts.IReadRepositories;
+﻿namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 
 /// <summary>
 /// Репозиторий чтения сущности <see cref="Entities.Customer"/>

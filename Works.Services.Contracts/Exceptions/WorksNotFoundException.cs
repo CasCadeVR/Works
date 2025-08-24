@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Exceptions;
+﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
 /// Ошибка о ненахождении
@@ -6,7 +6,7 @@
 public class WorksNotFoundException : WorksException
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksNotFoundException"/>
     /// </summary>
     public WorksNotFoundException(string message)
     {

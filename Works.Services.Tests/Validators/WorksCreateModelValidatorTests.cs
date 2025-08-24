@@ -1,9 +1,9 @@
 ﻿using FluentValidation.TestHelper;
-using Works.Services.Contracts.Models.Works;
-using Works.Services.Validators;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Validators;
 using Xunit;
 
-namespace Works.Services.Tests.Validators;
+namespace CasCadeVR.Works.Services.Tests.Validators;
 
 /// <summary>
 /// Тесты для <see cref="WorksCreateModelValidator"/>
@@ -13,7 +13,7 @@ public class WorksCreateModelValidatorTests
     private readonly WorksCreateModelValidator validator;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksCreateModelValidatorTests"/>
     /// </summary>
     public WorksCreateModelValidatorTests()
     {

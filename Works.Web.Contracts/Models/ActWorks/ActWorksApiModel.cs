@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Contracts.Models.ActWorks;
+﻿namespace CasCadeVR.Works.Web.Contracts.Models.ActWorks;
 
 /// <summary>
 /// Модель работы для акта

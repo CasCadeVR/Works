@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Exceptions;
+﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
 /// Модель о возникщей ошибке
@@ -12,7 +12,7 @@ public class InvalidateItemModel
         => new InvalidateItemModel(field, message);
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="InvalidateItemModel"/>
     /// </summary>
     public InvalidateItemModel(string field, string message)
     {

@@ -1,6 +1,6 @@
-﻿using Works.Services.Contracts.Models.Works;
+﻿using CasCadeVR.Works.Services.Contracts.Models.Works;
 
-namespace Works.Services.Contracts.Models.ActWorks;
+namespace CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 
 /// <summary>
 /// Модель работы для акта

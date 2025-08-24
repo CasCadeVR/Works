@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts;
-using Works.Services.Contracts.Exceptions;
-using Works.Services.Validators;
-using Works.Services.Contracts.Models.Works;
-using Works.Services.Contracts.Models.Customers;
-using Works.Services.Contracts.Models.Executors;
-using Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Validators;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
 
-namespace Works.Services;
+namespace CasCadeVR.Works.Services;
 
 /// <inheritdoc cref="IValidateService"/>
 public class ValidateService : IValidateService
@@ -15,7 +15,7 @@ public class ValidateService : IValidateService
     private readonly IDictionary<Type, IValidator> validators;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ValidateService"/>
     /// </summary>
     public ValidateService()
     {

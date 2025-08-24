@@ -1,14 +1,14 @@
-﻿using Works.Common;
-using Works.Context.Contracts;
-using Works.Repository.Contracts.IWriteRepositories;
+﻿using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 
-namespace Works.Repository.WriteRepositories;
+namespace CasCadeVR.Works.Repository.WriteRepositories;
 
 /// <inheritdoc cref="ICustomerWriteRepository"/>
 public class CustomerWriteRepository : BaseWriteRepository<Entities.Customer>, ICustomerWriteRepository
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="CustomerWriteRepository"/>
     /// </summary>
     public CustomerWriteRepository(IWriter writer, IDateTimeProvider dateTimeProvider)
         : base(writer, dateTimeProvider) { }

@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<RootNamespace>CasCadeVR.Works.Context.Contracts</RootNamespace>
+	<AssemblyName>Works.Context.Contracts</AssemblyName>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -12,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Works.Common\Works.Common.csproj" />
+    <ProjectReference Include="..\Works.Entities.Contracts\Works.Entities.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

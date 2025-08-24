@@ -1,20 +1,20 @@
 ﻿using Ahatornn.TestGenerator;
 using AutoMapper;
-using Works.Common;
-using Works.Context.Tests;
-using Works.Repository.ReadRepositories;
-using Works.Repository.WriteRepositories;
+using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Context.Tests;
+using CasCadeVR.Works.Repository.ReadRepositories;
+using CasCadeVR.Works.Repository.WriteRepositories;
 using FluentAssertions;
-using Works.Services.Infrastructure;
+using CasCadeVR.Works.Services.Infrastructure;
 using Moq;
 using Xunit;
-using Works.Entities;
-using Works.Services.Contracts.Exceptions;
-using Works.Services.Contracts.Models.Executors;
-using Works.Services.Services;
-using Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Services;
+using CasCadeVR.Works.Services.Contracts.IServices;
 
-namespace Works.Services.Tests.Services;
+namespace CasCadeVR.Works.Services.Tests.Services;
 
 /// <summary>
 /// Тесты на <see cref="ExecutorServices"/>
@@ -24,7 +24,7 @@ public class ExecutorServicesTests : WorksContextInMemory
     private readonly IExecutorServices service;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ExecutorServicesTests"/>
     /// </summary>
     public ExecutorServicesTests()
     {

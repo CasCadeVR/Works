@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Works.Context.Migrations
+namespace CasCadeVR.Works.Context.Migrations
 {
     /// <inheritdoc />
     public partial class addedExecutor : Migration

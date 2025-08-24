@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Works.Context.Contracts;
+namespace CasCadeVR.Works.Context.Contracts;
 
 /// <summary>
-/// 
+/// Интерфейс создания и модификации записей в контексте базы данных
 /// </summary>
 public interface IDBWriter<in TEntity> where TEntity : class
 {

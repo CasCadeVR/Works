@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Works.Services.Infrastructure;
+using CasCadeVR.Works.Services.Infrastructure;
 using Xunit;
 
-namespace Works.Services.Tests;
+namespace CasCadeVR.Works.Services.Tests;
 
 /// <summary>
 /// Тесты для <see cref="ServiceProfile"/>
@@ -12,7 +12,7 @@ public class AutoMapperProfileTests
     private readonly IMapper mapper;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="AutoMapperProfileTests"/>
     /// </summary>
     public AutoMapperProfileTests()
     {

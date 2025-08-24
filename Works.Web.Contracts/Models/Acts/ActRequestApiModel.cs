@@ -1,6 +1,6 @@
-﻿using Works.Web.Contracts.Models.ActWorks;
+﻿using CasCadeVR.Works.Web.Contracts.Models.ActWorks;
 
-namespace Works.Web.Contracts.Models.Acts;
+namespace CasCadeVR.Works.Web.Contracts.Models.Acts;
 
 /// <summary>
 /// Модель создания акта
@@ -12,8 +12,8 @@ namespace Works.Web.Contracts.Models.Acts;
 /// <param name="Works">Список работ</param>
 /// <param name="NDS">НДС</param>
 public record ActRequestApiModel(
-    string ActNumber, 
-    DateTime Date, 
+    string ActNumber,
+    DateOnly Date, 
     Guid ExecutorId, 
     Guid CustomerId, 
     ICollection<ActWorksRequestApiModel> Works, 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Works.Context
+namespace CasCadeVR.Works.Context
 {
     /// <summary>
     /// Создание контекста <see cref="WorksContext"/>

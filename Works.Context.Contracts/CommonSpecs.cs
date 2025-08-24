@@ -1,7 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore;
+using CasCadeVR.Works.Entities.Contracts;
 
-namespace Works.Context.Contracts;
+namespace CasCadeVR.Works.Context.Contracts;
 
 /// <summary>
 /// Общие спецификации чтения
@@ -28,8 +29,8 @@ public static class CommonSpecs
     public static IQueryable<TEntity> ByIds<TEntity>(this IQueryable<TEntity> query, IReadOnlyCollection<Guid> ids)
         where TEntity : class, IEntityWithId
     {
-        var qty = ids.Count;
-        return qty switch
+        var idsQuanity = ids.Count;
+        return idsQuanity switch
         {
             0 => query.Where(x => false),
             1 => query.ById(ids.First()),

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Works.Context.Contracts;
-using Works.Repository.Contracts.IReadRepositories;
-using Works.Repository.Contracts.IWriteRepositories;
-using Works.Services.Contracts.Exceptions;
-using Works.Services.Contracts.IServices;
-using Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
 
-namespace Works.Services.Services
+namespace CasCadeVR.Works.Services.Services
 {
     /// <inheritdoc cref="IWorksServices"/>
     public class WorksServices : IWorksServices
@@ -17,7 +17,7 @@ namespace Works.Services.Services
         private readonly IWorksWriteRepository writeRepository;
 
         /// <summary>
-        /// ctor
+        /// Инициализирует новый экземпляр <see cref="WorksServices"/>
         /// </summary>
         public WorksServices(
             IMapper mapper,

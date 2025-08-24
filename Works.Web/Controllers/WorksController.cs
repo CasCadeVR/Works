@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Works.Services.Contracts;
-using Works.Web.Contracts.Models.Exceptions;
-using Works.Services.Contracts.Models.Works;
-using Works.Services.Contracts.IServices;
-using Works.Web.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Contracts;
+using CasCadeVR.Works.Web.Contracts.Models.Exceptions;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Web.Contracts.Models.Works;
 
-namespace Works.Web.Controllers
+namespace CasCadeVR.Works.Web.Controllers
 {
     /// <summary>
     /// CRUD контроллер по работе с работами
@@ -20,7 +20,7 @@ namespace Works.Web.Controllers
         private readonly IMapper mapper;
 
         /// <summary>
-        /// ctor
+        /// Инициализирует новый экземпляр <see cref="WorksController"/>
         /// </summary>
         public WorksController(IWorksServices service, IValidateService validateService, IMapper mapper)
         {

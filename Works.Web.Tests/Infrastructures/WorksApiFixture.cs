@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Works.Context;
-using Works.Web.Tests.Client;
+using CasCadeVR.Works.Context;
+using CasCadeVR.Works.Web.Tests.Client;
 using Xunit;
 
-namespace Works.Web.Tests.Infrastructures;
+namespace CasCadeVR.Works.Web.Tests.Infrastructures;
 
 /// <summary>
 /// Модификация фикстуры для интеграционных тестов

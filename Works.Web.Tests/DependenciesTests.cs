@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
 using FluentAssertions;
-using Works.Web.Controllers;
+using CasCadeVR.Works.Web.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Works.Web.Tests;
+namespace CasCadeVR.Works.Web.Tests;
 
 /// <summary>
 /// 

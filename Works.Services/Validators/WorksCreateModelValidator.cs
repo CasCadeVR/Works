@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
 
-namespace Works.Services.Validators;
+namespace CasCadeVR.Works.Services.Validators;
 
 /// <summary>
 /// Валидация <see cref="WorksCreateModel"/>
@@ -12,7 +12,7 @@ public class WorksCreateModelValidator : AbstractValidator<WorksCreateModel>
     private const int MaxLength = 255;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksCreateModelValidator"/>
     /// </summary>
     public WorksCreateModelValidator()
     {

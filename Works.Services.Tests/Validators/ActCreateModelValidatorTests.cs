@@ -1,9 +1,9 @@
 ﻿using FluentValidation.TestHelper;
-using Works.Services.Contracts.Models.Acts;
-using Works.Services.Validators;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Validators;
 using Xunit;
 
-namespace Works.Services.Tests.Validators;
+namespace CasCadeVR.Works.Services.Tests.Validators;
 
 /// <summary>
 /// Тесты для <see cref="ActCreateModelValidator"/>
@@ -13,7 +13,7 @@ public class ActCreateModelValidatorTests
     private readonly ActCreateModelValidator validator;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ActCreateModelValidatorTests"/>
     /// </summary>
     public ActCreateModelValidatorTests()
     {
@@ -47,7 +47,7 @@ public class ActCreateModelValidatorTests
         // Arrange
         var model = new ActCreateModel
         {
-            Date = DateTime.UtcNow.AddDays(-3),
+            Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-3)),
         };
 
         // Act
@@ -86,7 +86,7 @@ public class ActCreateModelValidatorTests
         var model = new ActCreateModel()
         {
             ActNumber = "1",
-            Date = DateTime.UtcNow.AddDays(1),
+            Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)),
             NDS = 14.4M,
         };
 

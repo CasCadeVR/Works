@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using Ahatornn.TestGenerator;
+﻿using Ahatornn.TestGenerator;
 using FluentAssertions;
-using Works.Context;
-using Works.Entities;
-using Works.Web.Controllers;
-using Works.Web.Tests.Client;
-using Works.Web.Tests.Infrastructures;
+using CasCadeVR.Works.Context;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Web.Controllers;
+using CasCadeVR.Works.Web.Tests.Client;
+using CasCadeVR.Works.Web.Tests.Infrastructures;
 using Xunit;
 
-namespace Works.Web.Tests.ControllersTests;
+namespace CasCadeVR.Works.Web.Tests.ControllersTests;
 
 /// <summary>
 /// Тесты сценариев <see cref="ActController"/>
@@ -42,7 +40,7 @@ public class ActControllerTests
 
         var act = TestEntityProvider.Shared.Create<Act>(x => 
         {
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = customer;
             x.Executor = executor;
             x.Works = new List<ActWork>()
@@ -89,7 +87,7 @@ public class ActControllerTests
             .And.BeEquivalentTo(expectedresult, opt => opt
                 .Excluding(x => x.Date));
 
-        result.Date.Date.Should().Be(expectedresult.Date.Date);
+        result.Date.Should().Be(expectedresult.Date);
     }
 
     /// <summary>
@@ -106,7 +104,7 @@ public class ActControllerTests
         var act1 = TestEntityProvider.Shared.Create<Act>(x =>
         {
             x.ActNumber = "1";
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = customer;
             x.Executor = executor;
             x.Works = new List<ActWork>()
@@ -116,7 +114,7 @@ public class ActControllerTests
         var act2 = TestEntityProvider.Shared.Create<Act>(x =>
         {
             x.ActNumber = "2";
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = customer;
             x.Executor = executor;
             x.Works = new List<ActWork>()
@@ -126,7 +124,7 @@ public class ActControllerTests
         var act3 = TestEntityProvider.Shared.Create<Act>(x =>
         {
             x.ActNumber = "3";
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = customer;
             x.Executor = executor;
             x.Works = new List<ActWork>()
@@ -136,7 +134,7 @@ public class ActControllerTests
         var act4 = TestEntityProvider.Shared.Create<Act>(x =>
         {
             x.ActNumber = "4";
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = customer;
             x.Executor = executor;
             x.Works = new List<ActWork>()
@@ -174,6 +172,7 @@ public class ActControllerTests
 
         var request = TestEntityProvider.Shared.Create<ActRequestApiModel>(x =>
         {
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.CustomerId = customer.Id;
             x.ExecutorId = executor.Id;
             x.Works = new List<ActWorksRequestApiModel>()
@@ -203,7 +202,7 @@ public class ActControllerTests
         var act = TestEntityProvider.Shared.Create<Act>(x =>
         {
             x.ActNumber = "1";
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = customer;
             x.Executor = executor;
             x.Works = new List<ActWork>()
@@ -216,7 +215,7 @@ public class ActControllerTests
         var request = TestEntityProvider.Shared.Create<ActRequestApiModel>(x =>
         {
             x.ActNumber = "2";
-            x.Date = DateTime.UtcNow.AddDays(3);
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(3));
             x.CustomerId = customer.Id;
             x.ExecutorId = executor.Id;
             x.Works = new List<ActWorksRequestApiModel>()

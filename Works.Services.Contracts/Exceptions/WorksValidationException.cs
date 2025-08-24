@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Exceptions;
+﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
 /// Ошибка при непрохождении валидации
@@ -6,7 +6,7 @@
 public class WorksValidationException : WorksException
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksValidationException"/>
     /// </summary>
     public WorksValidationException(IEnumerable<InvalidateItemModel> errors)
     {

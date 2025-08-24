@@ -13,8 +13,9 @@
 
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>latest</LangVersion>	
 	</PropertyGroup>
+	
 	<ItemGroup Condition=" $(MSBuildProjectName.EndsWith('.Tests')) ">
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
 		<PackageReference Include="xunit" Version="2.7.0"/>

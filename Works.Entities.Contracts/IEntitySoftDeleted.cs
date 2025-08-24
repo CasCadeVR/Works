@@ -1,12 +1,12 @@
-﻿namespace Works.Context.Contracts;
+﻿namespace CasCadeVR.Works.Entities.Contracts;
 
 /// <summary>
-/// Сущность с удалением
+/// Сущность с "мягким" удалением
 /// </summary>
 public interface IEntitySoftDeleted
 {
     /// <summary>
-    /// Дата удалени
+    /// Дата удаления
     /// </summary>
     public DateTimeOffset? DeletedAt { get; set; }
 }

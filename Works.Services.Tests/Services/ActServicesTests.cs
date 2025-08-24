@@ -1,24 +1,24 @@
 ﻿using Ahatornn.TestGenerator;
 using AutoMapper;
-using Works.Common;
-using Works.Context.Tests;
-using Works.Repository.ReadRepositories;
-using Works.Repository.WriteRepositories;
+using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Context.Tests;
+using CasCadeVR.Works.Repository.ReadRepositories;
+using CasCadeVR.Works.Repository.WriteRepositories;
 using FluentAssertions;
-using Works.Services.Infrastructure;
+using CasCadeVR.Works.Services.Infrastructure;
 using Moq;
 using Xunit;
-using Works.Entities;
-using Works.Services.Contracts.Exceptions;
-using Works.Services.Contracts.Models.Acts;
-using Works.Services.Services;
-using Works.Services.Contracts.IServices;
-using Works.Services.Contracts.Models.ActWorks;
-using Works.Services.Contracts.Models.Executors;
-using Works.Services.Contracts.Models.Customers;
-using Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Services;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
 
-namespace Works.Services.Tests.Services;
+namespace CasCadeVR.Works.Services.Tests.Services;
 
 /// <summary>
 /// Тесты на <see cref="WorksServices"/>
@@ -28,7 +28,7 @@ public class ActServicesTests : WorksContextInMemory
     private readonly IActServices service;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ActServicesTests"/>
     /// </summary>
     public ActServicesTests()
     {
@@ -284,7 +284,7 @@ public class ActServicesTests : WorksContextInMemory
         {
             x.Id = act.Id;
             x.ActNumber = "1";
-            x.Date = DateTime.UtcNow;
+            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
             x.Customer = TestEntityProvider.Shared.Create<CustomerModel>(x => {
                 x.Id = customer.Id;
                 x.FIO = customer.FIO;
@@ -316,6 +316,7 @@ public class ActServicesTests : WorksContextInMemory
             )};
             x.NDS = 14.4m;
         });
+
         var result = await service.Update(model, CancellationToken.None);
 
         // Assert

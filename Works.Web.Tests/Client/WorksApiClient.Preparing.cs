@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Works.Web.Tests.Client;
+namespace CasCadeVR.Works.Web.Tests.Client;
 
 partial class WorksApiClient
 {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
 
-namespace Works.Services.Validators;
+namespace CasCadeVR.Works.Services.Validators;
 
 /// <summary>
 /// Валидация <see cref="ExecutorCreateModel"/>
@@ -13,7 +13,7 @@ public class ExecutorCreateModelValidator : AbstractValidator<ExecutorCreateMode
     private const int OGRNLength = 13;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ExecutorCreateModelValidator"/>
     /// </summary>
     public ExecutorCreateModelValidator()
     {

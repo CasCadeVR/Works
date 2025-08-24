@@ -1,6 +1,6 @@
-﻿using Works.Context.Contracts;
+﻿using CasCadeVR.Works.Entities.Contracts;
 
-namespace Works.Entities;
+namespace CasCadeVR.Works.Entities;
 
 /// <summary>
 /// Сущность акта
@@ -18,7 +18,7 @@ public class Act : IEntityWithId, IEntityWithAudit, IEntitySoftDeleted
     /// <summary>
     /// Дата подписания
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     /// <summary>
     /// Идентификатор <see cref="Executor"/>

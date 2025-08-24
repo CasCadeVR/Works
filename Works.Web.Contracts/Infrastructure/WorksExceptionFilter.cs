@@ -1,10 +1,10 @@
-﻿using Works.Services.Contracts.Exceptions;
-using Works.Web.Contracts.Models.Exceptions;
+﻿using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Web.Contracts.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Http;
 
-namespace Works.Web.Contracts.Infrastructure;
+namespace CasCadeVR.Works.Web.Contracts.Infrastructure;
 
 /// <summary>
 /// Фильтр обработки ошибок

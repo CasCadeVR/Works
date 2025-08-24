@@ -1,6 +1,6 @@
-﻿using Works.Web.Contracts.Models.Acts;
+﻿using CasCadeVR.Works.Web.Contracts.Models.Acts;
 
-namespace Works.Export.Contracts;
+namespace CasCadeVR.Works.Export.Contracts;
 
 /// <summary>
 /// Интерфейс экспорта

@@ -1,15 +1,15 @@
 ﻿using System.Data;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Works.Context.Contracts;
-using Works.Entities;
-using Works.Repository.Contracts.IReadRepositories;
-using Works.Repository.Contracts.IWriteRepositories;
-using Works.Services.Contracts.Exceptions;
-using Works.Services.Contracts.IServices;
-using Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
 
-namespace Works.Services.Services
+namespace CasCadeVR.Works.Services.Services
 {
     /// <inheritdoc cref="IWorksServices"/>
     public class ActServices : IActServices
@@ -20,11 +20,11 @@ namespace Works.Services.Services
         private readonly IWorksReadRepository workReadRepository;
         private readonly ICustomerReadRepository customerReadRepository;
         private readonly IExecutorReadRepository executorReadRepository;
-        private readonly IActWorkWriteRepository actWorkwriteRepository;
+        private readonly IActWorkWriteRepository actWorkWriteRepository;
         private readonly IActWriteRepository writeRepository;
 
         /// <summary>
-        /// ctor
+        /// Инициализирует новый экземпляр <see cref="ActServices"/>
         /// </summary>
         public ActServices(
             IMapper mapper,
@@ -42,7 +42,7 @@ namespace Works.Services.Services
             this.workReadRepository = workReadRepository;
             this.customerReadRepository = customerReadRepository;
             this.executorReadRepository = executorReadRepository;
-            this.actWorkwriteRepository = actWorkwriteRepository;
+            this.actWorkWriteRepository = actWorkwriteRepository;
             this.writeRepository = writeRepository;
         }
 
@@ -70,7 +70,9 @@ namespace Works.Services.Services
 
             var targetWorks = await workReadRepository.GetByIds(model.Works.Select(x => x.WorkId).ToList(), cancellationToken);
 
-            if (model.Works.Select(x => x.WorkId).ToList().GroupBy(x => x)
+            var modelWorkIds = model.Works.Select(x => x.WorkId);
+
+            if (modelWorkIds.GroupBy(x => x)
               .Where(g => g.Count() > 1)
               .Select(y => y.Key).Count() != 0)
             {
@@ -78,9 +80,15 @@ namespace Works.Services.Services
             }
 
             if (targetWorks.Count != model.Works.Count)
+            {
                 foreach (var work in model.Works)
+                {
                     if (!targetWorks.Select(x => x.Id).Contains(work.WorkId))
+                    {
                         throw new WorksNotFoundException($"Не удалось найти работы с иденитификаторами {work.WorkId}");
+                    }
+                }
+            }
 
             var result = new Act
             {
@@ -100,7 +108,7 @@ namespace Works.Services.Services
             {
                 actWork.Act = result;
                 actWork.Work = targetWorks.First(x => x.Id == actWork.WorkId);
-                actWorkwriteRepository.Add(actWork);
+                actWorkWriteRepository.Add(actWork);
             }
 
             writeRepository.Add(result);
@@ -110,7 +118,7 @@ namespace Works.Services.Services
 
         async Task<ActModel> IActServices.Update(ActModel model, CancellationToken cancellationToken)
         {
-            var entity = await readRepository.GetById(model.Id, cancellationToken)
+            var databaseEntity = await readRepository.GetById(model.Id, cancellationToken)
                ?? throw new WorksNotFoundException($"Не удалось найти акт с иденитификатором {model.Id}");
 
             var targetCustomer = await customerReadRepository.GetById(model.Customer.Id, cancellationToken)
@@ -133,46 +141,46 @@ namespace Works.Services.Services
                     if (!targetWorks.Select(x => x.Id).Contains(work.Work.Id))
                         throw new WorksNotFoundException($"Не удалось найти работы с иденитификаторами {work.Work.Id}");
 
-            entity.ActNumber = model.ActNumber;
-            entity.Date = model.Date;
-            entity.Customer = targetCustomer;
-            entity.CustomerId = model.Customer.Id;
-            entity.Executor = targetExecutor;
-            entity.ExecutorId = model.Executor.Id;
-            entity.NDS = model.NDS;
-            entity.UpdatedAt = DateTime.Now;
+            databaseEntity.ActNumber = model.ActNumber;
+            databaseEntity.Date = model.Date;
+            databaseEntity.Customer = targetCustomer;
+            databaseEntity.CustomerId = model.Customer.Id;
+            databaseEntity.Executor = targetExecutor;
+            databaseEntity.ExecutorId = model.Executor.Id;
+            databaseEntity.NDS = model.NDS;
+            databaseEntity.UpdatedAt = DateTime.Now;
 
             var modelWorks = mapper.Map<ICollection<ActWork>>(model.Works);
 
             foreach (var actWork in modelWorks)
             {
-                if (entity.Works.Select(x => x.WorkId).Contains(actWork.WorkId))
+                if (databaseEntity.Works.Select(x => x.WorkId).Contains(actWork.WorkId))
                 {
-                    var existingActWork = entity.Works.First(w => w.WorkId == actWork.WorkId);
+                    var existingActWork = databaseEntity.Works.First(w => w.WorkId == actWork.WorkId);
                     existingActWork.Quantity = actWork.Quantity;
                     existingActWork.ActualPrice = actWork.ActualPrice;
-                    actWorkwriteRepository.Update(existingActWork);
+                    actWorkWriteRepository.Update(existingActWork);
                     continue;
                 }
 
-                actWork.Act = entity;
+                actWork.Act = databaseEntity;
                 actWork.Work = targetWorks.First(x => x.Id == actWork.WorkId);
-                actWorkwriteRepository.Add(actWork);
-                entity.Works.Add(actWork);
+                actWorkWriteRepository.Add(actWork);
+                databaseEntity.Works.Add(actWork);
             }
 
             var actWorksToKeep = modelWorks.Select(w => w.WorkId);
-            var actWorksToDelete = entity.Works.Where(w => !actWorksToKeep.Contains(w.WorkId)).ToList();
+            var actWorksToDelete = databaseEntity.Works.Where(w => !actWorksToKeep.Contains(w.WorkId)).ToList();
 
             foreach (var actWork in actWorksToDelete)
             {
-                entity.Works.Remove(actWork);
-                actWorkwriteRepository.Delete(actWork);
+                databaseEntity.Works.Remove(actWork);
+                actWorkWriteRepository.Delete(actWork);
             }
 
-            writeRepository.Update(entity);
+            writeRepository.Update(databaseEntity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return mapper.Map<ActModel>(entity);
+            return mapper.Map<ActModel>(databaseEntity);
         }
 
         async Task IActServices.Delete(Guid id, CancellationToken cancellationToken)

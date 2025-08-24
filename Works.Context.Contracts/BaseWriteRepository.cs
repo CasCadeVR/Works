@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Works.Common;
+using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Entities.Contracts;
 
-namespace Works.Context.Contracts;
+namespace CasCadeVR.Works.Context.Contracts;
 
 /// <summary>
 /// Базовый класс репозитория записи данных
@@ -12,7 +13,7 @@ public abstract class BaseWriteRepository<T> : IDBWriter<T> where T : class
     private readonly IDateTimeProvider dateTimeProvider;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="BaseWriteRepository{T}"/>
     /// </summary>
     protected BaseWriteRepository(IWriter writer, IDateTimeProvider dateTimeProvider)
     {

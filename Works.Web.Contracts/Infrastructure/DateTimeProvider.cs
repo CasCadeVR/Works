@@ -1,6 +1,6 @@
-﻿using Works.Common;
+﻿using CasCadeVR.Works.Common;
 
-namespace Works.Web.Contracts.Infrastructure;
+namespace CasCadeVR.Works.Web.Contracts.Infrastructure;
 
 /// <summary>
 /// <inheritdoc cref="IDateTimeProvider"/>

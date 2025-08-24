@@ -1,6 +1,6 @@
-﻿using Works.Services.Contracts.Models.ActWorks;
+﻿using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 
-namespace Works.Services.Contracts.Models.Acts;
+namespace CasCadeVR.Works.Services.Contracts.Models.Acts;
 
 /// <summary>
 /// Модель акта
@@ -15,7 +15,7 @@ public class ActCreateModel()
     /// <summary>
     /// Дата подписания
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     /// <summary>
     /// Идентификатор исполнителя

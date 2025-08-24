@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Models.Executors;
+﻿namespace CasCadeVR.Works.Services.Contracts.Models.Executors;
 
 /// <summary>
 /// Модель исполнителя

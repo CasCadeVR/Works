@@ -1,6 +1,4 @@
-﻿using Works.Context.Contracts;
-
-namespace Works.Entities;
+﻿namespace CasCadeVR.Works.Entities;
 
 /// <summary>
 /// Сущность работы для акта

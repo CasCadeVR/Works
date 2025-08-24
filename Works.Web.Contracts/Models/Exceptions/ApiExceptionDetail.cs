@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Contracts.Models.Exceptions;
+﻿namespace CasCadeVR.Works.Web.Contracts.Models.Exceptions;
 
 /// <summary>
 /// Информация об ошибке работы АПИ
@@ -6,7 +6,7 @@
 public class ApiExceptionDetail
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ApiExceptionDetail"/>
     /// </summary>
     public ApiExceptionDetail(string message)
     {

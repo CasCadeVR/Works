@@ -1,8 +1,8 @@
-﻿using Works.Context.Contracts;
+﻿using CasCadeVR.Works.Context.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Works.Context.Tests;
+namespace CasCadeVR.Works.Context.Tests;
 
 /// <summary>
 /// Класс <see cref="WorksContext"/> для тестов с базой в памяти. Один контекст на тест

@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Exceptions;
+﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
 /// Ошибка работы о неправильной работе внутренней операции (операции сервера)
@@ -6,7 +6,7 @@
 public class WorksInvalidOperationException : WorksException
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksInvalidOperationException"/>
     /// </summary>
     public WorksInvalidOperationException(string message)
     {

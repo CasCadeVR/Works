@@ -1,14 +1,14 @@
-﻿using Works.Services.Contracts.Exceptions;
+﻿using CasCadeVR.Works.Services.Contracts.Exceptions;
 
-namespace Works.Web.Contracts.Models.Exceptions;
+namespace CasCadeVR.Works.Web.Contracts.Models.Exceptions;
 
 /// <summary>
-/// 
+/// Информация об ошибке валидации модели АПИ
 /// </summary>
 public class ApiValidationExceptionDetail
 {
     /// <summary>
-    /// 
+    /// Список ошибок валидации модели АПИ
     /// </summary>
     public IEnumerable<InvalidateItemModel> Errors { get; set; } = Array.Empty<InvalidateItemModel>();
 }

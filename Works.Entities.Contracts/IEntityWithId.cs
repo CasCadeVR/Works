@@ -1,4 +1,4 @@
-﻿namespace Works.Context.Contracts;
+﻿namespace CasCadeVR.Works.Entities.Contracts;
 
 /// <summary>
 /// Сущность с идентификатором

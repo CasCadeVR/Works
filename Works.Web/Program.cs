@@ -1,21 +1,21 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Works.Common;
-using Works.Context;
-using Works.Context.Contracts;
-using Works.Export.Contracts;
-using Works.Repository.Contracts.IReadRepositories;
-using Works.Repository.Contracts.IWriteRepositories;
-using Works.Repository.ReadRepositories;
-using Works.Repository.WriteRepositories;
-using Works.Services;
-using Works.Services.Contracts;
-using Works.Services.Contracts.IServices;
-using Works.Services.Infrastructure;
-using Works.Services.Services;
-using Works.Web.Contracts.Infrastructure;
+using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Context;
+using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Export.Contracts;
+using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
+using CasCadeVR.Works.Repository.ReadRepositories;
+using CasCadeVR.Works.Repository.WriteRepositories;
+using CasCadeVR.Works.Services;
+using CasCadeVR.Works.Services.Contracts;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Infrastructure;
+using CasCadeVR.Works.Services.Services;
+using CasCadeVR.Works.Web.Contracts.Infrastructure;
 
-namespace Works.Web
+namespace CasCadeVR.Works.Web
 {
     /// <summary>
     /// ¬ходна€ точка программы
@@ -28,8 +28,6 @@ namespace Works.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -86,7 +84,6 @@ namespace Works.Web
                 addedControllers.AddControllersAsServices();
             }
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(c =>
@@ -97,7 +94,6 @@ namespace Works.Web
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -105,11 +101,8 @@ namespace Works.Web
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.Run();
         }
     }

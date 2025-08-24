@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Works.Context;
+using CasCadeVR.Works.Context;
 
 #nullable disable
 
-namespace Works.Context.Migrations
+namespace CasCadeVR.Works.Context.Migrations
 {
     [DbContext(typeof(WorksContext))]
     [Migration("20250521160646_InitialCreate")]

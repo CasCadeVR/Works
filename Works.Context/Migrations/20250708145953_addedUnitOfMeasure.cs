@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Works.Context.Migrations
+namespace CasCadeVR.Works.Context.Migrations
 {
     /// <inheritdoc />
     public partial class addedUnitOfMeasure : Migration

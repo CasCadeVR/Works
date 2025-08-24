@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<RootNamespace>CasCadeVR.Works.Web.Contracts</RootNamespace>
+	<AssemblyName>Works.Web.Contracts</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

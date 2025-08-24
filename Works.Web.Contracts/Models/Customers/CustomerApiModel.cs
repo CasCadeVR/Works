@@ -1,4 +1,4 @@
-﻿namespace Works.Web.Contracts.Models.Customers;
+﻿namespace CasCadeVR.Works.Web.Contracts.Models.Customers;
 
 /// <summary>
 /// Модель заказчика

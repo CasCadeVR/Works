@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Works.Web.Tests.Infrastructures;
+namespace CasCadeVR.Works.Web.Tests.Infrastructures;
 
 /// <summary>
 /// Коллекция для интеграционных тестов

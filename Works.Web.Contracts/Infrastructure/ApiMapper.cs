@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
-using Works.Services.Contracts.Models.Works;
-using Works.Services.Contracts.Models.Customers;
-using Works.Services.Contracts.Models.Executors;
-using Works.Services.Contracts.Models.ActWorks;
-using Works.Services.Contracts.Models.Acts;
-using Works.Web.Contracts.Models.Works;
-using Works.Web.Contracts.Models.Customers;
-using Works.Web.Contracts.Models.Executors;
-using Works.Web.Contracts.Models.ActWorks;
-using Works.Web.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Web.Contracts.Models.Works;
+using CasCadeVR.Works.Web.Contracts.Models.Customers;
+using CasCadeVR.Works.Web.Contracts.Models.Executors;
+using CasCadeVR.Works.Web.Contracts.Models.ActWorks;
+using CasCadeVR.Works.Web.Contracts.Models.Acts;
 
-namespace Works.Web.Contracts.Infrastructure;
+namespace CasCadeVR.Works.Web.Contracts.Infrastructure;
 
 /// <summary>
 /// Маппер для АПИ
@@ -18,7 +18,7 @@ namespace Works.Web.Contracts.Infrastructure;
 public class ApiMapper : Profile
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ApiMapper"/>
     /// </summary>
     public ApiMapper()
     {

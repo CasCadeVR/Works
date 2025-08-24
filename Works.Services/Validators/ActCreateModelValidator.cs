@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
 
-namespace Works.Services.Validators;
+namespace CasCadeVR.Works.Services.Validators;
 
 /// <summary>
 /// Валидация <see cref="ActCreateModel"/>
@@ -9,7 +9,7 @@ namespace Works.Services.Validators;
 public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ActCreateModelValidator"/>
     /// </summary>
     public ActCreateModelValidator()
     {
@@ -18,7 +18,7 @@ public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
             .WithMessage("Номер акта не должен быть пустым");
 
         RuleFor(act => act.Date)
-            .Must(NotBeInFuture)
+            .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow))
             .NotEmpty()
             .WithMessage("Дата заполнения не может быть в будущем");
 
@@ -26,6 +26,4 @@ public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
             .GreaterThan(0)
             .WithMessage("НДС не может быть меньше нуля");
     }
-
-    private bool NotBeInFuture(DateTime time) => time >= DateTime.UtcNow;
 }

@@ -1,4 +1,4 @@
-﻿using Works.Context;
+﻿using CasCadeVR.Works.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Works.Web.Tests;
+using CasCadeVR.Works.Web.Tests;
 
-namespace Works.Web.Tests.Infrastructures;
+namespace CasCadeVR.Works.Web.Tests.Infrastructures;
 
 /// <summary>
 /// Модифицированная фабрика для интеграционных тестов

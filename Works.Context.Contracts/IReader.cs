@@ -1,4 +1,4 @@
-﻿namespace Works.Context.Contracts;
+﻿namespace CasCadeVR.Works.Context.Contracts;
 
 /// <summary>
 /// Интерфейс получение записей из контекста

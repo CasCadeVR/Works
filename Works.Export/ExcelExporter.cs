@@ -1,9 +1,9 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Works.Export;
-using Works.Export.Contracts;
-using Works.Web.Contracts.Models.Acts;
+using CasCadeVR.Works.Export;
+using CasCadeVR.Works.Export.Contracts;
+using CasCadeVR.Works.Web.Contracts.Models.Acts;
 
 /// <summary>
 /// Экспорт для Excel
@@ -134,7 +134,6 @@ public class ExcelExporter : IExporter
                 )
             ),
             new CellFormats(
-                // Index 0
                 new CellFormat()
                 {
                     FontId = 0,
@@ -143,8 +142,6 @@ public class ExcelExporter : IExporter
                     Alignment = new Alignment() { Horizontal = HorizontalAlignmentValues.Center },
                     ApplyAlignment = true
                 },
-
-                // Index 1
                 new CellFormat()
                 {
                     FontId = 1,
@@ -154,8 +151,6 @@ public class ExcelExporter : IExporter
                     ApplyFont = true,
                     ApplyAlignment = true
                 },
-
-                // Index 2
                 new CellFormat()
                 {
                     FontId = 0,
@@ -168,8 +163,6 @@ public class ExcelExporter : IExporter
                     ApplyNumberFormat = true,
                     ApplyAlignment = true
                 },
-
-                // Index 3
                 new CellFormat()
                 {
                     FontId = 2,
@@ -242,7 +235,7 @@ public class ExcelExporter : IExporter
         sheetData.Append(new Row());
 
         sheetData.Append(CreateRow(["составили настоящий акт о том, что Исполнителем были выполнены следующие работы"]));
-        sheetData.Append(CreateRow([$"(оказаны следующие услуги) по договору №{act.ActNumber} от {act.Date.Date.ToShortTimeString()} {act.Date.Year.ToString()} г."]));
+        sheetData.Append(CreateRow([$"(оказаны следующие услуги) по договору №{act.ActNumber} от {act.Date.ToShortDateString()} {act.Date.Year.ToString()} г."]));
     }
 
     private void AddWorksTable(SheetData sheetData, ActApiModel act)
@@ -302,19 +295,19 @@ public class ExcelExporter : IExporter
     {
         sheetData.Append(new Row());
 
-        var CustomerExecutorRow = new Row();
-        CustomerExecutorRow.Append(CreateIndentCells(2));
-        CustomerExecutorRow.Append(CreateCell("ИСПОЛНИТЕЛЬ", ExcelStyleIndexes.Header));
-        CustomerExecutorRow.Append(CreateCell("ЗАКАЗЧИК", ExcelStyleIndexes.Header));
-        sheetData.Append(CustomerExecutorRow);
+        var customerExecutorRow = new Row();
+        customerExecutorRow.Append(CreateIndentCells(2));
+        customerExecutorRow.Append(CreateCell("ИСПОЛНИТЕЛЬ", ExcelStyleIndexes.Header));
+        customerExecutorRow.Append(CreateCell("ЗАКАЗЧИК", ExcelStyleIndexes.Header));
+        sheetData.Append(customerExecutorRow);
 
         sheetData.Append(new Row());
 
-        var MPROW = new Row();
-        MPROW.Append(CreateIndentCells(2));
-        MPROW.Append(CreateCell("М.П.", ExcelStyleIndexes.Header));
-        MPROW.Append(CreateCell("М.П.", ExcelStyleIndexes.Header));
-        sheetData.Append(MPROW);
+        var signaturePlaceholderROW = new Row();
+        signaturePlaceholderROW.Append(CreateIndentCells(2));
+        signaturePlaceholderROW.Append(CreateCell("М.П.", ExcelStyleIndexes.Header));
+        signaturePlaceholderROW.Append(CreateCell("М.П.", ExcelStyleIndexes.Header));
+        sheetData.Append(signaturePlaceholderROW);
     }
 
     private Cell CreateCell(string value, ExcelStyleIndexes style = ExcelStyleIndexes.Normal)

@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Exceptions;
+﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
 /// Общая ошибка для работ
@@ -6,12 +6,12 @@
 public class WorksException : Exception
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksException"/>
     /// </summary>
     protected WorksException() { }
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksException"/> c аргументом для поля, в котором возникла ошибка
     /// </summary>
     protected WorksException(string field)
         => new WorksException(field);

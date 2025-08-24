@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<Nullable>enable</Nullable>
+	<RootNamespace>CasCadeVR.Works.Context</RootNamespace>
+	<AssemblyName>Works.Context</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

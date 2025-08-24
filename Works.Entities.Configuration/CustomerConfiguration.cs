@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Works.Entities.Configuration
+namespace CasCadeVR.Works.Entities.Configuration
 {
     /// <summary>
     /// Описывает конфигурацию для <see cref="Customer"/>

@@ -1,6 +1,6 @@
-﻿using Works.Context.Contracts;
+﻿using CasCadeVR.Works.Entities.Contracts;
 
-namespace Works.Entities
+namespace CasCadeVR.Works.Entities
 {
     /// <summary>
     /// Сущность исполнителя

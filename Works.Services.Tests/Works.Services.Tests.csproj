@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<RootNamespace>CasCadeVR.Works.Services.Tests</RootNamespace>
+	<AssemblyName>Works.Services.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

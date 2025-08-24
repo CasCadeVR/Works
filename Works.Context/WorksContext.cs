@@ -1,9 +1,9 @@
-﻿using Works.Entities.Configuration;
+﻿using CasCadeVR.Works.Entities.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Works.Context.Contracts;
+using CasCadeVR.Works.Context.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Works.Context
+namespace CasCadeVR.Works.Context
 {
     /// <summary>
     /// контекст базы данных работы с работами
@@ -11,7 +11,7 @@ namespace Works.Context
     public class WorksContext : DbContext, IReader, IWriter, IUnitOfWork
     {
         /// <summary>
-        /// ctor
+        /// Инициализирует новый экземпляр <see cref="WorksContext"/>
         /// </summary>
         public WorksContext(DbContextOptions<WorksContext> options) : base(options)
         {

@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts;
+﻿namespace CasCadeVR.Works.Services.Contracts;
 
 /// <summary>
 /// Сервис валидации

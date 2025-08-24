@@ -22,7 +22,7 @@
 #pragma warning disable 8625 // Disable "CS8625 Cannot convert null literal to non-nullable reference type"
 #pragma warning disable 8765 // Disable "CS8765 Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes)."
 
-namespace Works.Web.Tests.Client
+namespace CasCadeVR.Works.Web.Tests.Client
 {
     using System = global::System;
 
@@ -2567,7 +2567,7 @@ namespace Works.Web.Tests.Client
         public string? ActNumber { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Date { get; set; } = default!;
+        public System.DateOnly Date { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("executorId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid ExecutorId { get; set; } = default!;
@@ -2623,7 +2623,7 @@ namespace Works.Web.Tests.Client
         public string? ActNumber { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Date { get; set; } = default!;
+        public System.DateOnly Date { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("executorId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid ExecutorId { get; set; } = default!;

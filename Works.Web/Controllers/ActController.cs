@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Works.Export.Contracts;
-using Works.Services.Contracts;
-using Works.Services.Contracts.IServices;
-using Works.Services.Contracts.Models.Acts;
-using Works.Web.Contracts.Models.Acts;
-using Works.Web.Contracts.Models.Exceptions;
+using CasCadeVR.Works.Export.Contracts;
+using CasCadeVR.Works.Services.Contracts;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Web.Contracts.Models.Acts;
+using CasCadeVR.Works.Web.Contracts.Models.Exceptions;
 
-namespace Works.Web.Controllers
+namespace CasCadeVR.Works.Web.Controllers
 {
     /// <summary>
     /// CRUD контроллер по работе с актами
@@ -22,7 +22,7 @@ namespace Works.Web.Controllers
         private readonly IMapper mapper;
 
         /// <summary>
-        /// ctor
+        /// Инициализирует новый экземпляр <see cref="ActController"/>
         /// </summary>
         public ActController(IActServices service, IExporter exporter, IValidateService validateService, IMapper mapper)
         {

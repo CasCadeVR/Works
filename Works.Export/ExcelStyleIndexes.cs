@@ -1,4 +1,4 @@
-﻿namespace Works.Export;
+﻿namespace CasCadeVR.Works.Export;
 
 /// <summary>
 /// Стили для экспорта акта в Excel

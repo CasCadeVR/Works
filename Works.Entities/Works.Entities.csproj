@@ -4,7 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<RootNamespace>CasCadeVR.Works.Entities</RootNamespace>
+	<AssemblyName>Works.Entities</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

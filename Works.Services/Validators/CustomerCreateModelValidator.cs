@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
 
-namespace Works.Services.Validators;
+namespace CasCadeVR.Works.Services.Validators;
 
 /// <summary>
 /// Валидация <see cref="CustomerCreateModel"/>
@@ -14,7 +14,7 @@ public class CustomerCreateModelValidator : AbstractValidator<CustomerCreateMode
     private const int INNMaxLength = 12;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="CustomerCreateModelValidator"/>
     /// </summary>
     public CustomerCreateModelValidator()
     {

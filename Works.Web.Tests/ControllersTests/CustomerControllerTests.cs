@@ -1,14 +1,14 @@
 ﻿using Ahatornn.TestGenerator;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using FluentAssertions;
-using Works.Context;
-using Works.Entities;
-using Works.Web.Controllers;
-using Works.Web.Tests.Client;
-using Works.Web.Tests.Infrastructures;
+using CasCadeVR.Works.Context;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Web.Controllers;
+using CasCadeVR.Works.Web.Tests.Client;
+using CasCadeVR.Works.Web.Tests.Infrastructures;
 using Xunit;
 
-namespace Works.Web.Tests.ControllersTests;
+namespace CasCadeVR.Works.Web.Tests.ControllersTests;
 
 /// <summary>
 /// Тесты сценариев <see cref="CustomerController"/>

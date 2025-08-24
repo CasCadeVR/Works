@@ -1,9 +1,9 @@
-﻿using Works.Context.Contracts;
+﻿using CasCadeVR.Works.Context.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Works.Repository.Contracts.IReadRepositories;
-using Works.Entities;
+using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using CasCadeVR.Works.Entities;
 
-namespace Works.Repository.ReadRepositories;
+namespace CasCadeVR.Works.Repository.ReadRepositories;
 
 /// <inheritdoc cref="IWorksReadRepository"/>
 public class WorksReadRepository : IWorksReadRepository
@@ -11,7 +11,7 @@ public class WorksReadRepository : IWorksReadRepository
     private readonly IReader reader;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksReadRepository"/>
     /// </summary>
     public WorksReadRepository(IReader reader)
     {

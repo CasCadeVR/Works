@@ -1,6 +1,6 @@
-﻿using Works.Services.Contracts.Models.Executors;
+﻿using CasCadeVR.Works.Services.Contracts.Models.Executors;
 
-namespace Works.Services.Contracts.IServices;
+namespace CasCadeVR.Works.Services.Contracts.IServices;
 
 /// <summary>
 /// Сервис по работе с исполнителями

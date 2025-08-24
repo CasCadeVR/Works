@@ -1,4 +1,4 @@
-﻿namespace Works.Services.Contracts.Exceptions;
+﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
 /// Ошибка о дубликате
@@ -6,7 +6,7 @@
 public class WorksDuplicateException : WorksException
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="WorksDuplicateException"/>
     /// </summary>
     public WorksDuplicateException(string message)
     {

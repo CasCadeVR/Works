@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
-using Works.Context.Tests;
+using CasCadeVR.Works.Context.Tests;
 using Xunit;
 using Ahatornn.TestGenerator;
-using Works.Entities;
-using Works.Repository.Contracts.IReadRepositories;
-using Works.Repository.ReadRepositories;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using CasCadeVR.Works.Repository.ReadRepositories;
 
-namespace Works.Repository.Tests;
+namespace CasCadeVR.Works.Repository.Tests;
 
 /// <summary>
 /// Тесты на <see cref="ExecutorReadRepository"/>
@@ -16,7 +16,7 @@ public class ExecutorReadRepositoryTests : WorksContextInMemory
     private readonly IExecutorReadRepository executorReadRepository;
 
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ExecutorReadRepositoryTests"/>
     /// </summary>
     public ExecutorReadRepositoryTests()
     {

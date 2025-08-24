@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Works.Entities;
-using Works.Services.Contracts.Models.Customers;
-using Works.Services.Contracts.Models.Works;
-using Works.Services.Contracts.Models.Executors;
-using Works.Services.Contracts.Models.ActWorks;
-using Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
 
-namespace Works.Services.Infrastructure;
+namespace CasCadeVR.Works.Services.Infrastructure;
 
 /// <summary>
 /// Маппер для сервисной части
@@ -14,7 +14,7 @@ namespace Works.Services.Infrastructure;
 public class ServiceProfile : Profile
 {
     /// <summary>
-    /// ctor
+    /// Инициализирует новый экземпляр <see cref="ServiceProfile"/>
     /// </summary>
     public ServiceProfile()
     {

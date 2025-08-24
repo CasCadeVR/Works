@@ -1,8 +1,8 @@
-﻿using Works.Services.Contracts.Models.ActWorks;
-using Works.Services.Contracts.Models.Customers;
-using Works.Services.Contracts.Models.Executors;
+﻿using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
 
-namespace Works.Services.Contracts.Models.Acts;
+namespace CasCadeVR.Works.Services.Contracts.Models.Acts;
 
 /// <summary>
 /// Модель акта
@@ -22,7 +22,7 @@ public class ActModel()
     /// <summary>
     /// Дата подписания
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     /// <summary>
     /// Навигационное свойство <see cref="ExecutorModel"/>
