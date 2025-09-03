@@ -25,7 +25,7 @@ public interface IExecutorServices
     /// <summary>
     /// Редактирует существующий <see cref="ExecutorModel"/>
     /// </summary>
-    Task<ExecutorModel> Update(ExecutorModel model, CancellationToken cancellationToken);
+    Task<ExecutorModel> Update(Guid id, ExecutorCreateModel model, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет существующий <see cref="ExecutorModel"/>

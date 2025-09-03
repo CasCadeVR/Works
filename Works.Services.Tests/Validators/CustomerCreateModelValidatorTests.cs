@@ -24,7 +24,7 @@ public class CustomerCreateModelValidatorTests
     /// Тест на пустые поля
     /// </summary>
     [Fact]
-    public async Task ShouldEmptyFIOHaveErrorMessages()
+    public async Task EmptyShouldHaveErrorMessages()
     {
         // Arrange
         var model = new CustomerCreateModel();
@@ -33,60 +33,60 @@ public class CustomerCreateModelValidatorTests
         var result = await validator.TestValidateAsync(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FIO);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
         result.ShouldHaveValidationErrorFor(x => x.Firm);
         result.ShouldHaveValidationErrorFor(x => x.Occupation);
-        result.ShouldHaveValidationErrorFor(x => x.INN);
+        result.ShouldHaveValidationErrorFor(x => x.TaxPayerId);
     }
 
     /// <summary>
     /// Тест на минимальную ошибку
     /// </summary>
     [Fact]
-    public async Task ShouldShortFIOHaveErrorMessages()
+    public async Task ShortShouldHaveErrorMessages()
     {
         // Arrange
         var model = new CustomerCreateModel
         {
-            FIO = "12",
+            FullName = "12",
             Firm = "12",
             Occupation = "12",
-            INN = "12",
+            TaxPayerId = "12",
         };
 
         // Act
         var result = await validator.TestValidateAsync(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FIO);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
         result.ShouldHaveValidationErrorFor(x => x.Firm);
         result.ShouldHaveValidationErrorFor(x => x.Occupation);
-        result.ShouldHaveValidationErrorFor(x => x.INN);
+        result.ShouldHaveValidationErrorFor(x => x.TaxPayerId);
     }
 
     /// <summary>
     /// Тест на максимальную ошибку
     /// </summary>
     [Fact]
-    public async Task ShouldFIOLongHaveErrorMessages()
+    public async Task LongShouldHaveErrorMessages()
     {
         // Arrange
         var model = new CustomerCreateModel()
         {
-            FIO = new string('1', 300),
+            FullName = new string('1', 300),
             Firm = new string('1', 300),
             Occupation = new string('1', 300),
-            INN = new string('1', 11),
+            TaxPayerId = new string('1', 11),
         };
 
         // Act
         var result = await validator.TestValidateAsync(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FIO);
+        result.ShouldHaveValidationErrorFor(x => x.FullName);
         result.ShouldHaveValidationErrorFor(x => x.Firm);
         result.ShouldHaveValidationErrorFor(x => x.Occupation);
-        result.ShouldHaveValidationErrorFor(x => x.INN);
+        result.ShouldHaveValidationErrorFor(x => x.TaxPayerId);
     }
 
     /// <summary>
@@ -98,10 +98,10 @@ public class CustomerCreateModelValidatorTests
         // Arrange
         var model = new CustomerCreateModel()
         {
-            FIO = "Мизулин Константин Николаевич",
+            FullName = "Мизулин Константин Николаевич",
             Firm = "ООО ЛОМО",
             Occupation = "Уборщик",
-            INN = "123456789012"
+            TaxPayerId = "123456789012"
 
         };
 
@@ -109,9 +109,9 @@ public class CustomerCreateModelValidatorTests
         var result = await validator.TestValidateAsync(model);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.FIO);
+        result.ShouldNotHaveValidationErrorFor(x => x.FullName);
         result.ShouldNotHaveValidationErrorFor(x => x.Occupation);
         result.ShouldNotHaveValidationErrorFor(x => x.Firm);
-        result.ShouldNotHaveValidationErrorFor(x => x.INN);
+        result.ShouldNotHaveValidationErrorFor(x => x.TaxPayerId);
     }
 }

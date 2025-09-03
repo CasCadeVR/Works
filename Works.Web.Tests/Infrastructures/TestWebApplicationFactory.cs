@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using CasCadeVR.Works.Web.Tests;
 
 namespace CasCadeVR.Works.Web.Tests.Infrastructures;
 
@@ -18,7 +17,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     /// <inheritdoc cref="WebApplicationFactory{TEntryPoint}.CreateHost"/>
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        builder.UseEnvironment("integration_tests");
+        builder.UseEnvironment("integration");
         return base.CreateHost(builder);
     }
 
@@ -37,7 +36,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
-            services.AddSingleton<DbContextOptions<WorksContext>>(provider =>
+            services.AddSingleton(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 var connectionString = configuration.GetConnectionString("IntergrationConnection");

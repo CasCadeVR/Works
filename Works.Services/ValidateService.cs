@@ -6,6 +6,7 @@ using CasCadeVR.Works.Services.Contracts.Models.Works;
 using CasCadeVR.Works.Services.Contracts.Models.Customers;
 using CasCadeVR.Works.Services.Contracts.Models.Executors;
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts.Models.UnitOfMeasure;
 
 namespace CasCadeVR.Works.Services;
 
@@ -20,6 +21,7 @@ public class ValidateService : IValidateService
     public ValidateService()
     {
         validators = new Dictionary<Type, IValidator>();
+        validators.TryAdd(typeof(UnitOfMeasureCreateModel), new UnitOfMeasureCreateModelValidator());
         validators.TryAdd(typeof(WorksCreateModel), new WorksCreateModelValidator());
         validators.TryAdd(typeof(CustomerCreateModel), new CustomerCreateModelValidator());
         validators.TryAdd(typeof(ExecutorCreateModel), new ExecutorCreateModelValidator());
@@ -31,7 +33,7 @@ public class ValidateService : IValidateService
     {
         if (!validators.TryGetValue(model.GetType(), out var validator))
         {
-            throw new WorksInvalidOperationException($"Не найден запрашиваемый валидатор : {model.GetType()}");
+            throw new InvalidOperationException($"Не найден запрашиваемый валидатор : {model.GetType()}");
         }
 
         var context = new ValidationContext<TModel>(model);
@@ -39,7 +41,7 @@ public class ValidateService : IValidateService
 
         if (!validationResult.IsValid)
         {
-            throw new WorksValidationException(validationResult.Errors.Select(x => InvalidateItemModel.New(x.PropertyName, x.ErrorMessage)));
+            throw new WorksValidationException(validationResult.Errors.Select(x => new InvalidateItemModel(x.PropertyName, x.ErrorMessage)));
         }
     }
 }

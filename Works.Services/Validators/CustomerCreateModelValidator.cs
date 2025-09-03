@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Entities.ValidationRules;
 
 namespace CasCadeVR.Works.Services.Validators;
 
@@ -8,33 +9,32 @@ namespace CasCadeVR.Works.Services.Validators;
 /// </summary>
 public class CustomerCreateModelValidator : AbstractValidator<CustomerCreateModel>
 {
-    private const int MinLength = 3;
-    private const int MaxLength = 255;
-    private const int INNMinLength = 10;
-    private const int INNMaxLength = 12;
-
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="CustomerCreateModelValidator"/>
     /// </summary>
     public CustomerCreateModelValidator()
     {
-        RuleFor(customer => customer.FIO)
+        RuleFor(customer => customer.FullName)
             .NotEmpty().WithMessage("ФИО не может быть пустым")
-            .Length(MinLength, MaxLength).WithMessage($"Длина ФИО должно быть от {MinLength} до {MaxLength}");
+            .Length(CustomerValidationRules.FullNameMinLength, CustomerValidationRules.FullNameMaxLength)
+            .WithMessage($"Длина ФИО должна быть от {CustomerValidationRules.FullNameMinLength} до {CustomerValidationRules.FullNameMaxLength}");
 
         RuleFor(customer => customer.Occupation)
-            .NotNull().WithMessage("Должность не может быть пустым")
-            .Length(MinLength, MaxLength).WithMessage($"Длина должности должна быть от {MinLength} до {MaxLength}");
+            .NotNull().WithMessage("Должность не может быть пустой")
+            .Length(CustomerValidationRules.OccupationMinLength, CustomerValidationRules.OccupationMaxLength)
+            .WithMessage($"Длина должности должна быть от {CustomerValidationRules.OccupationMinLength} до {CustomerValidationRules.OccupationMaxLength}");
 
         RuleFor(customer => customer.Firm)
-            .NotNull().WithMessage("Фирма не может быть пустым")
-            .Length(MinLength, MaxLength).WithMessage($"Длина фирмы должна быть от {MinLength} до {MaxLength}");
+            .NotNull().WithMessage("Фирма не может быть пустой")
+            .Length(CustomerValidationRules.FirmMinLength, CustomerValidationRules.FirmMaxLength)
+            .WithMessage($"Длина фирмы должна быть от {CustomerValidationRules.FirmMinLength} до {CustomerValidationRules.FirmMaxLength}");
 
-        RuleFor(customer => customer.INN)
+        RuleFor(customer => customer.TaxPayerId)
             .NotNull().WithMessage("ИНН не может быть пустым")
-            .Must(HaveValidLength).WithMessage($"ИНН должен быть длиной для физических лиц {INNMaxLength} цифр, а для юридических — из {INNMinLength}");
+            .Must(x => 
+                x.Length == CustomerValidationRules.TaxPayerIdLengthForIndividuals
+                || x.Length == CustomerValidationRules.TaxPayerIdLengthForLegalEntities)
+            .WithMessage($"ИНН должен быть длиной для физических лиц {CustomerValidationRules.TaxPayerIdLengthForIndividuals} цифр, а для юридических — {CustomerValidationRules.TaxPayerIdLengthForLegalEntities} цифр");
     }
-
-    private bool HaveValidLength(string inn) => inn.Length == INNMinLength || inn.Length == INNMaxLength;
 }
 

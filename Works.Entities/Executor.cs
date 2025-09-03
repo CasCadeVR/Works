@@ -5,15 +5,12 @@ namespace CasCadeVR.Works.Entities
     /// <summary>
     /// Сущность исполнителя
     /// </summary>
-    public class Executor : IEntityWithId, IEntityWithAudit, IEntitySoftDeleted
+    public class Executor :  DataBaseEntity
     {
-        /// <inheritdoc cref="IEntityWithId.Id"/>
-        public Guid Id { get; set; }
-
         /// <summary>
-        /// ФИО исполнителя
+        /// ФИО  исполнителя
         /// </summary>
-        public string FIO { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
 
         /// <summary>
         /// Должность исполнителя
@@ -28,15 +25,6 @@ namespace CasCadeVR.Works.Entities
         /// <summary>
         /// ОГРН исполнителя
         /// </summary>
-        public string OGRN { get; set; } = string.Empty;
-
-        /// <inheritdoc cref="IEntityWithAudit.CreatedAt"/>
-        public DateTimeOffset CreatedAt { get; set; }
-
-        /// <inheritdoc cref="IEntityWithAudit.UpdatedAt"/>
-        public DateTimeOffset UpdatedAt { get; set; }
-
-        /// <inheritdoc cref="IEntitySoftDeleted.DeletedAt"/>
-        public DateTimeOffset? DeletedAt { get; set; }
+        public string RegistrationNumber { get; set; } = string.Empty;
     }
 }

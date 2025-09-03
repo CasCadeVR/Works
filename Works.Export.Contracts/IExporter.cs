@@ -1,4 +1,5 @@
-﻿using CasCadeVR.Works.Web.Contracts.Models.Acts;
+﻿using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts.Models.Export;
 
 namespace CasCadeVR.Works.Export.Contracts;
 
@@ -10,5 +11,5 @@ public interface IExporter
     /// <summary>
     /// Экспортировать
     /// </summary>
-    public byte[] Export(ActApiModel act);
+    public ExportedData Export(ActModel act);
 }

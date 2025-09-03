@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CasCadeVR.Works.Entities.ValidationRules;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CasCadeVR.Works.Entities.Configuration
@@ -18,12 +19,13 @@ namespace CasCadeVR.Works.Entities.Configuration
 
             builder.Property(x => x.Name)
                 .IsRequired()
-                .HasMaxLength(250);
+                .HasMaxLength(WorkValidationRules.NameMaxLength);
 
-            builder.Property(x => x.UnitOfMeasure)
-                .HasMaxLength(50);
+            builder.HasOne(x => x.UnitOfMeasure)
+                .WithMany()
+                .HasForeignKey(x => x.UnitOfMeasureId);
 
-            builder.HasIndex(x => x.Name, $"IX_{nameof(Work)}_{nameof(Work.DeletedAt)}")
+            builder.HasIndex(x => x.Name, $"IX_{nameof(Work)}_{nameof(Work.Name)}")
                 .IsUnique()
                 .HasFilter($"\"{nameof(Work.DeletedAt)}\" IS NULL");
         }

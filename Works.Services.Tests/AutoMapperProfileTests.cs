@@ -28,7 +28,7 @@ public class AutoMapperProfileTests
     /// Тест на правильную настройку <see cref="ServiceProfile"/>
     /// </summary>
     [Fact]
-    public void ValideMapperConfiguration()
+    public void MapperConfigurationIsValid()
     {
         mapper.ConfigurationProvider.AssertConfigurationIsValid();
     }

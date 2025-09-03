@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 using CasCadeVR.Works.Services.Contracts.Exceptions;
@@ -34,7 +35,7 @@ namespace CasCadeVR.Works.Services.Services
         async Task<ExecutorModel> IExecutorServices.GetById(Guid id, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(id, cancellationToken)
-                 ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с иденитификатором {id}");
+                 ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {id}");
 
             return mapper.Map<ExecutorModel>(entity);
         }
@@ -47,33 +48,32 @@ namespace CasCadeVR.Works.Services.Services
 
         async Task<ExecutorModel> IExecutorServices.Create(ExecutorCreateModel model, CancellationToken cancellationToken)
         {
-            var result = new Entities.Executor
+            if (await readRepository.Any(x => x.RegistrationNumber == model.RegistrationNumber, cancellationToken))
             {
-                Id = Guid.NewGuid(),
-                FIO = model.FIO,
-                Occupation = model.Occupation,
-                Firm = model.Firm,
-                OGRN = model.OGRN,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                DeletedAt = null,
-            };
+                throw new WorksDuplicateException($"Исполнитель с регистрационным номером {model.RegistrationNumber} уже существует");
+            }
+
+            var result = mapper.Map<Executor>(model);
 
             writeRepository.Add(result);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return mapper.Map<ExecutorModel>(result);
         }
 
-        async Task<ExecutorModel> IExecutorServices.Update(ExecutorModel model, CancellationToken cancellationToken)
+        async Task<ExecutorModel> IExecutorServices.Update(Guid id, ExecutorCreateModel model, CancellationToken cancellationToken)
         {
-            var entity = await readRepository.GetById(model.Id, cancellationToken)
-                ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с иденитификатором {model.Id}");
+            if (await readRepository.Any(x => x.RegistrationNumber == model.RegistrationNumber, cancellationToken))
+            {
+                throw new WorksDuplicateException($"Исполнитель с регистрационным номером {model.RegistrationNumber} уже существует");
+            }
 
-            entity.FIO = model.FIO;
+            var entity = await readRepository.GetById(id, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {id}");
+
+            entity.FullName = model.FullName;
             entity.Occupation = model.Occupation;
             entity.Firm = model.Firm;
-            entity.OGRN = model.OGRN;
-            entity.UpdatedAt = DateTime.Now;
+            entity.RegistrationNumber = model.RegistrationNumber;
 
             writeRepository.Update(entity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -84,7 +84,7 @@ namespace CasCadeVR.Works.Services.Services
         async Task IExecutorServices.Delete(Guid id, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(id, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с иденитификатором {id}");
+               ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {id}");
 
             writeRepository.Delete(entity);
             await unitOfWork.SaveChangesAsync(cancellationToken);

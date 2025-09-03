@@ -1,9 +1,8 @@
 ﻿using CasCadeVR.Works.Context.Contracts;
-using CasCadeVR.Works.Entities;
 
 namespace CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 
 /// <summary>
-/// Репозиторий записи <see cref="ActWork"/>
+/// Репозиторий записи <see cref="Entities.ActWork"/>
 /// </summary>
-public interface IActWorkWriteRepository : IDBWriter<ActWork> { }
+public interface IActWorkWriteRepository : IDBWriter<Entities.ActWork> { }

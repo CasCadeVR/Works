@@ -4,14 +4,14 @@
 /// Модель заказчика
 /// </summary>
 /// <param name="Id">Идентификатор</param>
-/// <param name="FIO">ФИО</param>
+/// <param name="FullName">Фамилия, имя, отчество</param>
 /// <param name="Occupation">Должность</param>
 /// <param name="Firm">Фирма</param>
-/// <param name="INN">ИНН</param>
+/// <param name="TaxpayerId">ИНН</param>
 public record CustomerApiModel(
     Guid Id, 
-    string FIO, 
+    string FullName, 
     string Occupation, 
     string Firm, 
-    string INN
+    string TaxpayerId
 );

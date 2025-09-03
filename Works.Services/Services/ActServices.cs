@@ -1,13 +1,13 @@
-﻿using System.Data;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using CasCadeVR.Works.Context.Contracts;
 using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Export.Contracts;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 using CasCadeVR.Works.Services.Contracts.Exceptions;
 using CasCadeVR.Works.Services.Contracts.IServices;
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts.Models.Export;
 
 namespace CasCadeVR.Works.Services.Services
 {
@@ -15,6 +15,7 @@ namespace CasCadeVR.Works.Services.Services
     public class ActServices : IActServices
     {
         private readonly IMapper mapper;
+        private readonly IExporter exporter;
         private readonly IUnitOfWork unitOfWork;
         private readonly IActReadRepository readRepository;
         private readonly IWorksReadRepository workReadRepository;
@@ -28,28 +29,30 @@ namespace CasCadeVR.Works.Services.Services
         /// </summary>
         public ActServices(
             IMapper mapper,
+            IExporter exporter,
             IUnitOfWork unitOfWork,
             IActReadRepository readRepository,
             IWorksReadRepository workReadRepository,
             ICustomerReadRepository customerReadRepository,
             IExecutorReadRepository executorReadRepository,
-            IActWorkWriteRepository actWorkwriteRepository,
+            IActWorkWriteRepository actWorkWriteRepository,
             IActWriteRepository writeRepository)
         {
             this.mapper = mapper;
+            this.exporter = exporter;
             this.unitOfWork = unitOfWork;
             this.readRepository = readRepository;
             this.workReadRepository = workReadRepository;
             this.customerReadRepository = customerReadRepository;
             this.executorReadRepository = executorReadRepository;
-            this.actWorkWriteRepository = actWorkwriteRepository;
+            this.actWorkWriteRepository = actWorkWriteRepository;
             this.writeRepository = writeRepository;
         }
 
         async Task<ActModel> IActServices.GetById(Guid id, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(id, cancellationToken)
-                 ?? throw new WorksNotFoundException($"Не удалось найти акт с иденитификатором {id}");
+                 ?? throw new WorksNotFoundException($"Не удалось найти акт с идентификатором {id}");
 
             return mapper.Map<ActModel>(entity);
         }
@@ -60,136 +63,147 @@ namespace CasCadeVR.Works.Services.Services
             return mapper.Map<IReadOnlyCollection<ActModel>>(items);
         }
 
+        async Task<ExportedData> IActServices.Export(Guid id, CancellationToken cancellationToken)
+        {
+            var entity = await readRepository.GetById(id, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти акт с идентификатором {id}");
+
+            var entityModel = mapper.Map<ActModel>(entity);
+            var result = exporter.Export(entityModel);
+            
+            return result;
+        }
+
         async Task<ActModel> IActServices.Create(ActCreateModel model, CancellationToken cancellationToken)
         {
-            var targetCustomer = await customerReadRepository.GetById(model.CustomerId, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти заказчика с иденитификатором {model.CustomerId}");
+            await ValidateConnections(model, cancellationToken);
 
-            var targetExecutor = await executorReadRepository.GetById(model.ExecutorId, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с иденитификатором {model.CustomerId}");
-
-            var targetWorks = await workReadRepository.GetByIds(model.Works.Select(x => x.WorkId).ToList(), cancellationToken);
-
-            var modelWorkIds = model.Works.Select(x => x.WorkId);
-
-            if (modelWorkIds.GroupBy(x => x)
-              .Where(g => g.Count() > 1)
-              .Select(y => y.Key).Count() != 0)
-            {
-                throw new WorksDuplicateException($"Нельзя использовать одну и ту же работу более 1 раза");
-            }
-
-            if (targetWorks.Count != model.Works.Count)
-            {
-                foreach (var work in model.Works)
-                {
-                    if (!targetWorks.Select(x => x.Id).Contains(work.WorkId))
-                    {
-                        throw new WorksNotFoundException($"Не удалось найти работы с иденитификаторами {work.WorkId}");
-                    }
-                }
-            }
+            var modelActWorks = mapper.Map<ICollection<ActWork>>(model.ActWorks);
 
             var result = new Act
             {
-                Id = Guid.NewGuid(),
                 ActNumber = model.ActNumber,
                 Date = model.Date,
-                Customer = targetCustomer,
-                Executor = targetExecutor,
-                NDS = model.NDS,
-                Works = mapper.Map<ICollection<ActWork>>(model.Works),
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                DeletedAt = null,
+                CustomerId = model.CustomerId,
+                ExecutorId = model.ExecutorId,
+                ActWorks = modelActWorks,
             };
 
-            foreach (var actWork in result.Works)
+            foreach (var actWork in result.ActWorks)
             {
-                actWork.Act = result;
-                actWork.Work = targetWorks.First(x => x.Id == actWork.WorkId);
+                actWork.ActId = result.Id;
+                actWork.WorkId = actWork.WorkId;
                 actWorkWriteRepository.Add(actWork);
             }
 
             writeRepository.Add(result);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return mapper.Map<ActModel>(result);
+
+            var addedEntity = await readRepository.GetById(result.Id, cancellationToken)
+                ?? throw new InvalidOperationException($"Не удалось найти акт с идентификатором {result.Id}");
+
+            return mapper.Map<ActModel>(addedEntity);
         }
 
-        async Task<ActModel> IActServices.Update(ActModel model, CancellationToken cancellationToken)
+        async Task<ActModel> IActServices.Update(Guid id, ActCreateModel model, CancellationToken cancellationToken)
         {
-            var databaseEntity = await readRepository.GetById(model.Id, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти акт с иденитификатором {model.Id}");
+            var databaseEntity = await readRepository.GetById(id, cancellationToken)
+               ?? throw new WorksNotFoundException($"Не удалось найти акт с идентификатором {id}");
 
-            var targetCustomer = await customerReadRepository.GetById(model.Customer.Id, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти заказчика с иденитификатором {model.Customer.Id}");
-
-            var targetExecutor = await executorReadRepository.GetById(model.Executor.Id, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с иденитификатором {model.Executor.Id}");
-
-            var targetWorks = await workReadRepository.GetByIds(model.Works.Select(x => x.Work.Id).ToList(), cancellationToken);
-
-            if (model.Works.Select(x => x.Work.Id).ToList().GroupBy(x => x)
-              .Where(g => g.Count() > 1)
-              .Select(y => y.Key).Count() != 0)
-            {
-                throw new WorksDuplicateException($"Нельзя использовать одну и ту же работу более 1 раза");
-            }
-
-            if (targetWorks.Count != model.Works.Count)
-                foreach (var work in model.Works)
-                    if (!targetWorks.Select(x => x.Id).Contains(work.Work.Id))
-                        throw new WorksNotFoundException($"Не удалось найти работы с иденитификаторами {work.Work.Id}");
+            await ValidateConnections(model, cancellationToken);
 
             databaseEntity.ActNumber = model.ActNumber;
             databaseEntity.Date = model.Date;
-            databaseEntity.Customer = targetCustomer;
-            databaseEntity.CustomerId = model.Customer.Id;
-            databaseEntity.Executor = targetExecutor;
-            databaseEntity.ExecutorId = model.Executor.Id;
-            databaseEntity.NDS = model.NDS;
-            databaseEntity.UpdatedAt = DateTime.Now;
+            databaseEntity.CustomerId = model.CustomerId;
+            databaseEntity.ExecutorId = model.ExecutorId;
 
-            var modelWorks = mapper.Map<ICollection<ActWork>>(model.Works);
+            var modelActWorks = mapper.Map<ICollection<ActWork>>(model.ActWorks);
 
-            foreach (var actWork in modelWorks)
+            var existingActWorks = databaseEntity.ActWorks;
+            var existingActWorksDictionary = existingActWorks.ToDictionary(x => x.WorkId);
+
+            foreach (var actWork in modelActWorks)
             {
-                if (databaseEntity.Works.Select(x => x.WorkId).Contains(actWork.WorkId))
+                if (existingActWorksDictionary.TryGetValue(actWork.WorkId, out var foundActWork))
                 {
-                    var existingActWork = databaseEntity.Works.First(w => w.WorkId == actWork.WorkId);
-                    existingActWork.Quantity = actWork.Quantity;
-                    existingActWork.ActualPrice = actWork.ActualPrice;
-                    actWorkWriteRepository.Update(existingActWork);
+                    foundActWork.Quantity = actWork.Quantity;
+                    actWorkWriteRepository.Update(foundActWork);
                     continue;
                 }
 
-                actWork.Act = databaseEntity;
-                actWork.Work = targetWorks.First(x => x.Id == actWork.WorkId);
+                actWork.ActId = databaseEntity.Id;
                 actWorkWriteRepository.Add(actWork);
-                databaseEntity.Works.Add(actWork);
             }
 
-            var actWorksToKeep = modelWorks.Select(w => w.WorkId);
-            var actWorksToDelete = databaseEntity.Works.Where(w => !actWorksToKeep.Contains(w.WorkId)).ToList();
+            var actWorksToKeep = modelActWorks.Select(x => x.WorkId);
+            var actWorksToDelete = databaseEntity.ActWorks.Where(x => !actWorksToKeep.Contains(x.WorkId)).ToList();
 
             foreach (var actWork in actWorksToDelete)
             {
-                databaseEntity.Works.Remove(actWork);
                 actWorkWriteRepository.Delete(actWork);
             }
 
             writeRepository.Update(databaseEntity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return mapper.Map<ActModel>(databaseEntity);
+
+            var updatedEntity = await readRepository.GetById(databaseEntity.Id, cancellationToken)
+                ?? throw new InvalidOperationException($"Не удалось найти акт с идентификатором {databaseEntity.Id}");
+
+            return mapper.Map<ActModel>(updatedEntity);
         }
 
         async Task IActServices.Delete(Guid id, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(id, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти акт с иденитификатором {id}");
+               ?? throw new WorksNotFoundException($"Не удалось найти акт с идентификатором {id}");
+
+            var existingActWorks = entity.ActWorks.ToList();
+
+            foreach (var existingActWork in existingActWorks)
+            {
+                actWorkWriteRepository.Delete(existingActWork);
+            }
 
             writeRepository.Delete(entity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task ValidateConnections(ActCreateModel model, CancellationToken cancellationToken)
+        {
+            if (await readRepository.Any(x => x.ActNumber == model.ActNumber, cancellationToken))
+            {
+                throw new WorksDuplicateException($"Акт с номером {model.ActNumber} уже существует");
+            }
+
+            if (await customerReadRepository.GetById(model.CustomerId, cancellationToken) == null)
+            {
+               throw new WorksNotFoundException($"Не удалось найти заказчика с идентификатором {model.CustomerId}");
+            }
+
+            if (await executorReadRepository.GetById(model.ExecutorId, cancellationToken) == null)
+            {
+                throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {model.ExecutorId}");
+            }
+
+            var modelWorkIds = model.ActWorks.Select(x => x.WorkId).ToList();
+
+            var existingWorks = await workReadRepository.GetByIds(modelWorkIds, cancellationToken);
+
+            var workIdsInDatabase = existingWorks.Select(x => x.Id);
+
+            var modelWorkIdsDistinct = modelWorkIds.Distinct().ToList();
+
+            if (modelWorkIds.Count != modelWorkIdsDistinct.Count)
+            {
+                throw new WorksDuplicateException($"Нельзя использовать одну и ту же работу с входящми идентификаторами: ({string.Join(", ", modelWorkIds)}) более 1 раза");
+            }
+
+            var missingIds = modelWorkIds.Except(workIdsInDatabase).ToList();
+
+            if (missingIds.Count > 0)
+            {
+                throw new WorksNotFoundException($"Не удалось найти работы с идентификаторами: {string.Join(", ", missingIds)}");
+            }
         }
     }
 }

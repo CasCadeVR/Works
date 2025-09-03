@@ -1,5 +1,4 @@
 ﻿using CasCadeVR.Works.Services.Contracts.Exceptions;
-
 namespace CasCadeVR.Works.Web.Contracts.Models.Exceptions;
 
 /// <summary>

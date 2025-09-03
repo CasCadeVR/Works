@@ -3,7 +3,7 @@
 /// <summary>
 /// Модель создания работы
 /// </summary>
-public record WorksCreateModel()
+public class WorksCreateModel
 {
     /// <summary>
     /// Наименование
@@ -21,7 +21,7 @@ public record WorksCreateModel()
     public decimal Price { get; set; } = 0;
 
     /// <summary>
-    /// Единица измерения
+    /// Идентификатор единицы измерения
     /// </summary>
-    public string UnitOfMeasure { get; set; } = string.Empty;
+    public Guid UnitOfMeasureId { get; set; }
 }

@@ -14,5 +14,5 @@ public class WorksException : Exception
     /// Инициализирует новый экземпляр <see cref="WorksException"/> c аргументом для поля, в котором возникла ошибка
     /// </summary>
     protected WorksException(string field)
-        => new WorksException(field);
+        : base(field) { }
 }

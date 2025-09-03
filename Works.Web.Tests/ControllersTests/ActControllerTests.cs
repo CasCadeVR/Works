@@ -1,11 +1,12 @@
 ﻿using Ahatornn.TestGenerator;
-using FluentAssertions;
 using CasCadeVR.Works.Context;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Web.Controllers;
 using CasCadeVR.Works.Web.Tests.Client;
 using CasCadeVR.Works.Web.Tests.Infrastructures;
+using FluentAssertions;
 using Xunit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CasCadeVR.Works.Web.Tests.ControllersTests;
 
@@ -17,6 +18,7 @@ public class ActControllerTests
 {
     private readonly IWorksApiClient webClient;
     private readonly WorksContext context;
+    private readonly WorksApiFixture fixture;
 
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="ActControllerTests"/>
@@ -25,229 +27,195 @@ public class ActControllerTests
     {
         webClient = fixture.WebClient;
         context = fixture.Context;
+        this.fixture = fixture;
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.GetById(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ActController.GetById(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "1");
-        var executor = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "2");
-        var work = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
-
-        var act = TestEntityProvider.Shared.Create<Act>(x => 
-        {
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = customer;
-            x.Executor = executor;
-            x.Works = new List<ActWork>()
-            { TestEntityProvider.Shared.Create<ActWork>(x => x.WorkId = work.Id) };
-        });
-        await context.AddRangeAsync(customer, executor, work, act);
-        await context.SaveChangesAsync();
+        var act = await fixture.SeedExampleAct();
 
         // Act
         var result = await webClient.ActGETAsync(act.Id);
 
-        var expectedresult = new ActApiModel
+        var expectedResult = new ActApiModel
         {
             Id = act.Id,
             ActNumber = act.ActNumber,
-            Date = act.Date,
-            CustomerId = act.Customer.Id,
-            CustomerFIO = act.Customer.FIO,
-            CustomerOccupation = act.Customer.Occupation,
-            CustomerFirm = act.Customer.Firm,
-            CustomerINN = act.Customer.INN,
-            ExecutorId = act.Executor.Id,
-            ExecutorFIO = act.Executor.FIO,
-            ExecutorOccupation = act.Executor.Occupation,
-            ExecutorFirm = act.Executor.Firm,
-            ExecutorOGRN = act.Executor.OGRN,
-            Works = act.Works.Select(w => new ActWorksApiModel
+            Date = new DateTimeOffset(act.Date.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(3)),
+            Customer = new CustomerApiModel
             {
-                WorkId = w.WorkId,
-                WorkName = w.Work.Name,
-                WorkDescription = w.Work.Description,
-                WorkPrice = (double)w.Work.Price,
-                WorkUnitOfMeasure = w.Work.UnitOfMeasure,
-                ActualPrice = (double)w.ActualPrice,
-                Quantity = w.Quantity,
-                
+                Id = act.Customer.Id,
+                FullName = act.Customer.FullName,
+                Occupation = act.Customer.Occupation,
+                Firm = act.Customer.Firm,
+                TaxPayerId = act.Customer.TaxPayerId,
+            },
+            Executor = new ExecutorApiModel
+            {
+                Id = act.Executor.Id,
+                FullName = act.Executor.FullName,
+                Occupation = act.Executor.Occupation,
+                Firm = act.Executor.Firm,
+                RegistrationNumber = act.Executor.RegistrationNumber,
+            },
+            ActWorks = act.ActWorks.Select(y => new ActWorksApiModel
+            {
+                Quantity = y.Quantity,
+                Work = new WorkApiModel
+                {
+                    Id = y.Work.Id,
+                    Name = y.Work.Name,
+                    Description = y.Work.Description,
+                    Price = (double)y.Work.Price,
+                    UnitOfMeasure = new UnitOfMeasureApiModel
+                    {
+                        Id = y.Work.UnitOfMeasure.Id,
+                        Name = y.Work.UnitOfMeasure.Name,
+                    },
+                },
             }).ToList(),
-            Nds = (double)act.NDS,
         };
 
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(expectedresult, opt => opt
+            .And.BeEquivalentTo(expectedResult, opt => opt
                 .Excluding(x => x.Date));
 
-        result.Date.Should().Be(expectedresult.Date);
+        result.Date.ToLocalTime().Should().Be(expectedResult.Date.ToLocalTime());
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.GetAll(CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ActController.GetAll(CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "1");
-        var executor = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "2");
-        var work = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
-
-        var act1 = TestEntityProvider.Shared.Create<Act>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.ActNumber = "1";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = customer;
-            x.Executor = executor;
-            x.Works = new List<ActWork>()
-            { TestEntityProvider.Shared.Create<ActWork>(x => x.Work = work) };
-        });
+            await fixture.SeedExampleAct();
+        }
 
-        var act2 = TestEntityProvider.Shared.Create<Act>(x =>
-        {
-            x.ActNumber = "2";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = customer;
-            x.Executor = executor;
-            x.Works = new List<ActWork>()
-           { TestEntityProvider.Shared.Create<ActWork>(x => x.Work = work) };
-        });
-
-        var act3 = TestEntityProvider.Shared.Create<Act>(x =>
-        {
-            x.ActNumber = "3";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = customer;
-            x.Executor = executor;
-            x.Works = new List<ActWork>()
-            { TestEntityProvider.Shared.Create<ActWork>(x => x.Work = work) };
-        });
-
-        var act4 = TestEntityProvider.Shared.Create<Act>(x =>
-        {
-            x.ActNumber = "4";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = customer;
-            x.Executor = executor;
-            x.Works = new List<ActWork>()
-            { TestEntityProvider.Shared.Create<ActWork>(x => x.Work = work) };
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
-
-        await context.AddRangeAsync(customer, executor, work, act1, act2, act3, act4);
-        await context.SaveChangesAsync();
+        await fixture.SeedExampleAct(withSoftDelete: true);
 
         // Act
-        var respone = await webClient.ActAllAsync();
+        var response = await webClient.ActAllAsync();
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeEmpty()
-           .And.ContainSingle(x => x.Id == act1.Id)
            .And.HaveCount(3)
            .And.BeInAscendingOrder(x => x.ActNumber);
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.Create(Contracts.Models.Acts.ActRequestApiModel, CancellationToken)"/>
+    /// Провереят работоспособность <see cref="ActController.Create(Models.Acts.ActCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "1");
-        var executor = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "2");
-        var work = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
+        var customer = await fixture.SeedExampleCustomer();
+        var executor = await fixture.SeedExampleExecutor();
+        var work = await fixture.SeedExampleWork();
 
-        await context.AddRangeAsync(customer, executor, work);
-        await context.SaveChangesAsync();
-
-        var request = TestEntityProvider.Shared.Create<ActRequestApiModel>(x =>
+        var request = TestEntityProvider.Shared.Create<ActCreateRequestApiModel>(x =>
         {
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
+            x.Date = DateTime.UtcNow;
             x.CustomerId = customer.Id;
             x.ExecutorId = executor.Id;
-            x.Works = new List<ActWorksRequestApiModel>()
-            { TestEntityProvider.Shared.Create<ActWorksRequestApiModel>(x => x.WorkId = work.Id) };
-            x.Nds = 14.4;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateRequestApiModel>(y =>
+            {
+                y.Quantity = 5;
+                y.WorkId = work.Id;
+            })];
         });
 
+        var requestActWorks = request.ActWorks!.First();
+
         // Act
-        var respone = await webClient.ActPOSTAsync(request);
+        var response = await webClient.ActPOSTAsync(request);
+        var responseActWorks = response.ActWorks!.First();
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
-           .And.BeEquivalentTo(request);
+           .And.BeEquivalentTo(request, opt => opt
+                .Excluding(x => x.Date)
+                .Excluding(x => x.ExecutorId)
+                .Excluding(x => x.CustomerId)
+                .Excluding(x => x.ActWorks)
+                );
+
+        response.Date.Date.Should().Be(request.Date.Date);
+
+        responseActWorks
+            .Should()
+            .NotBeNull()
+            .And.BeEquivalentTo(requestActWorks, opt => opt.Excluding(x => x.WorkId));
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.Update(Guid, Contracts.Models.Acts.ActRequestApiModel, CancellationToken)"/>
+    /// Провереят работоспособность <see cref="ActController.Update(Guid, Models.Acts.ActCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
     {
-       // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "1");
-        var executor = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "2");
-        var work = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
-        var act = TestEntityProvider.Shared.Create<Act>(x =>
-        {
-            x.ActNumber = "1";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = customer;
-            x.Executor = executor;
-            x.Works = new List<ActWork>()
-            { TestEntityProvider.Shared.Create<ActWork>(x => x.Work = work) };
-        });
+        // Arrange
+        var work = await fixture.SeedExampleWork();
+        var act = await fixture.SeedExampleAct();
 
-        await context.AddRangeAsync(customer, executor, work, act);
-        await context.SaveChangesAsync();
-
-        var request = TestEntityProvider.Shared.Create<ActRequestApiModel>(x =>
+        var request = TestEntityProvider.Shared.Create<ActCreateRequestApiModel>(x =>
         {
             x.ActNumber = "2";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(3));
-            x.CustomerId = customer.Id;
-            x.ExecutorId = executor.Id;
-            x.Works = new List<ActWorksRequestApiModel>()
-            { TestEntityProvider.Shared.Create<ActWorksRequestApiModel>(x =>
+            x.Date = DateTime.UtcNow;
+            x.CustomerId = act.CustomerId;
+            x.ExecutorId = act.ExecutorId;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateRequestApiModel>(y =>
                 {
-                    x.WorkId = work.Id;
-                    x.Quantity = 1;
-                    x.ActualPrice = 10;
-                }) 
-            };
-            x.Nds = 14.4;
+                    y.Quantity = 6;
+                    y.WorkId = work.Id;
+                })];
         });
+        var requestActWorks = request.ActWorks!.First();
+
 
         // Act
-        var respone = await webClient.ActPUTAsync(act.Id, request);
+        var response = await webClient.ActPUTAsync(act.Id, request);
+        var responseActWorks = response.ActWorks!.First();
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
-           .And.BeEquivalentTo(request);
+           .And.BeEquivalentTo(request, opt => opt
+                .Excluding(x => x.Date)
+                .Excluding(x => x.ExecutorId)
+                .Excluding(x => x.CustomerId)
+                .Excluding(x => x.ActWorks)
+                );
+
+        response.Date.Date.Should().Be(request.Date.Date);
+
+        responseActWorks
+            .Should()
+            .NotBeNull()
+            .And.BeEquivalentTo(requestActWorks, opt => opt.Excluding(x => x.WorkId));
     }
 
-    /// <summary>
-    /// Провереят работоспособность <see cref="ActController.Delete(Guid, CancellationToken)"/>
-    /// </summary>
-    [Fact]
+        /// <summary>
+        /// Провереят работоспособность <see cref="ActController.Delete(Guid, CancellationToken)"/>
+        /// </summary>
+        [Fact]
     public async Task DeleteShouldReturnValues()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>();
-        await context.AddAsync(act);
-        await context.SaveChangesAsync();
+        var act = await fixture.SeedExampleAct();
 
         // Act
         await webClient.ActDELETEAsync(act.Id);

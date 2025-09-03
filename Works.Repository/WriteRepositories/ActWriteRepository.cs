@@ -1,4 +1,4 @@
-﻿using CasCadeVR.Works.Common;
+﻿using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Context.Contracts;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;

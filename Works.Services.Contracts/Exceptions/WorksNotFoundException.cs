@@ -9,12 +9,5 @@ public class WorksNotFoundException : WorksException
     /// Инициализирует новый экземпляр <see cref="WorksNotFoundException"/>
     /// </summary>
     public WorksNotFoundException(string message)
-    {
-        Message = message;
-    }
-
-    /// <summary>
-    /// Сообщение об ошибке
-    /// </summary>
-    public override string Message { get; } = string.Empty;
+    : base(message) { }
 }

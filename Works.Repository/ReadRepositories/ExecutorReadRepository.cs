@@ -1,6 +1,8 @@
-﻿using CasCadeVR.Works.Context.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace CasCadeVR.Works.Repository.ReadRepositories;
 
@@ -17,15 +19,20 @@ public class ExecutorReadRepository : IExecutorReadRepository
         this.reader = reader;
     }
 
-    Task<Entities.Executor?> IExecutorReadRepository.GetById(Guid id, CancellationToken cancellationToken)
-         => reader.Read<Entities.Executor>()
+    Task<bool> IExecutorReadRepository.Any(Expression<Func<Executor, bool>> action, CancellationToken cancellationToken)
+         => reader.Read<Executor>()
+        .NotDeletedAt()
+        .AnyAsync(action, cancellationToken);
+
+    Task<Executor?> IExecutorReadRepository.GetById(Guid id, CancellationToken cancellationToken)
+         => reader.Read<Executor>()
         .NotDeletedAt()
         .ById(id)
         .FirstOrDefaultAsync(cancellationToken);
 
-    Task<IReadOnlyCollection<Entities.Executor>> IExecutorReadRepository.GetAll(CancellationToken cancellationToken)
-        => reader.Read<Entities.Executor>()
+    Task<IReadOnlyCollection<Executor>> IExecutorReadRepository.GetAll(CancellationToken cancellationToken)
+        => reader.Read<Executor>()
         .NotDeletedAt()
-        .OrderBy(x => x.FIO)
+        .OrderBy(x => x.FullName)
         .ToReadOnlyCollectionAsync(cancellationToken);
 }

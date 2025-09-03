@@ -14,6 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Works.Entities.ValidationRules\Works.Entities.ValidationRules.csproj" />
+    <ProjectReference Include="..\Works.Export.Contracts\Works.Export.Contracts.csproj" />
     <ProjectReference Include="..\Works.Repository.Contracts\Works.Repository.Contracts.csproj" />
     <ProjectReference Include="..\Works.Services.Contracts\Works.Services.Contracts.csproj" />
   </ItemGroup>

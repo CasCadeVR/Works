@@ -1,4 +1,6 @@
-﻿namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+﻿using System.Linq.Expressions;
+
+namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 
 /// <summary>
 /// Репозиторий чтения сущности <see cref="Entities.Customer"/>
@@ -6,7 +8,12 @@
 public interface ICustomerReadRepository
 {
     /// <summary>
-    /// Получаю <see cref="Entities.Customer"/> по идентификатору
+    /// Возвращает true, если совпадает условие
+    /// </summary>
+    Task<bool> Any(Expression<Func<Entities.Customer, bool>> action, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Получает <see cref="Entities.Customer"/> по идентификатору
     /// </summary>
     Task<Entities.Customer?> GetById(Guid id, CancellationToken cancellationToken);
 

@@ -2,7 +2,6 @@
 using FluentAssertions;
 using CasCadeVR.Works.Context;
 using CasCadeVR.Works.Entities;
-using CasCadeVR.Works.Services.Contracts.Exceptions;
 using CasCadeVR.Works.Web.Controllers;
 using CasCadeVR.Works.Web.Tests.Client;
 using CasCadeVR.Works.Web.Tests.Infrastructures;
@@ -18,6 +17,7 @@ public class WorksControllerTests
 {
     private readonly IWorksApiClient webClient;
     private readonly WorksContext context;
+    private readonly WorksApiFixture fixture;
 
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="WorksControllerTests"/>
@@ -26,6 +26,7 @@ public class WorksControllerTests
     {
         webClient = fixture.WebClient;
         context = fixture.Context;
+        this.fixture = fixture;
     }
 
     /// <summary>
@@ -35,20 +36,22 @@ public class WorksControllerTests
     public async Task GetByIdShouldReturnValues()
     {
         // Arrange
-        var work = TestEntityProvider.Shared.Create<Work>();
-        await context.AddAsync(work);
-        await context.SaveChangesAsync();
+        var work = await fixture.SeedExampleWork();
 
         // Act
-        var respone = await webClient.WorksGETAsync(work.Id);
+        var response = await webClient.WorksGETAsync(work.Id);
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
            .And.BeEquivalentTo(work, options => options
                .Excluding(x => x.CreatedAt)
                .Excluding(x => x.UpdatedAt)
                .Excluding(x => x.DeletedAt)
+               .Excluding(x => x.UnitOfMeasureId)
+               .Excluding(x => x.UnitOfMeasure.CreatedAt)
+               .Excluding(x => x.UnitOfMeasure.UpdatedAt)
+               .Excluding(x => x.UnitOfMeasure.DeletedAt)
                );
     }
 
@@ -59,67 +62,68 @@ public class WorksControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var work1 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "1");
-        var work2 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "2");
-        var work3 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
-        var work4 = TestEntityProvider.Shared.Create<Work>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.Name = "3";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await fixture.SeedExampleWork();
+        }
 
-        await context.AddRangeAsync(work1, work2, work3, work4);
-        await context.SaveChangesAsync();
+        await fixture.SeedExampleWork(withSoftDelete: true);
 
         // Act
-        var respone = await webClient.WorksAllAsync();
+        var response = await webClient.WorksAllAsync();
 
         // Assert
-        respone.Should()
+        response.Should()
             .NotBeEmpty()
-            .And.ContainSingle(x => x.Id == work1.Id)
             .And.HaveCount(3)
             .And.BeInAscendingOrder(x => x.Name);
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.Create(Contracts.Models.Works.WorksRequestApiModel, CancellationToken)"/>
+    /// Провереят работоспособность <see cref="WorksController.Create(Models.Works.WorkCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
     {
         // Arrange
-        var request = TestEntityProvider.Shared.Create<WorksRequestApiModel>();
+        var unitOfMeasure = await fixture.SeedExampleUnitOfMeasure();
+        var request = TestEntityProvider.Shared.Create<WorkCreateRequestApiModel>(x => 
+        {
+            x.Price = 1000;
+            x.UnitOfMeasureId = unitOfMeasure.Id;
+        });
 
         // Act
-        var respone = await webClient.WorksPOSTAsync(request);
+        var response = await webClient.WorksPOSTAsync(request);
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
-           .And.BeEquivalentTo(request);
+           .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.UnitOfMeasureId));
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.Update(Guid, Contracts.Models.Works.WorksRequestApiModel, CancellationToken)"/>
+    /// Провереят работоспособность <see cref="WorksController.Update(Guid, Models.Works.WorkCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
     {
         // Arrange
-        var work = TestEntityProvider.Shared.Create<Work>();
-        await context.AddAsync(work);
-        await context.SaveChangesAsync();
+        var work = await fixture.SeedExampleWork();
 
-        var request = TestEntityProvider.Shared.Create<WorksRequestApiModel>();
+        var request = TestEntityProvider.Shared.Create<WorkCreateRequestApiModel>(x =>
+        {
+            x.Price = 1000;
+            x.UnitOfMeasureId = work.UnitOfMeasureId;
+        });
 
         // Act
-        var respone = await webClient.WorksPUTAsync(work.Id, request);
+        var response = await webClient.WorksPUTAsync(work.Id, request);
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
-           .And.BeEquivalentTo(request);
+           .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.UnitOfMeasureId));
     }
 
     /// <summary>
@@ -129,9 +133,7 @@ public class WorksControllerTests
     public async Task DeleteShouldReturnValues()
     {
         // Arrange
-        var work = TestEntityProvider.Shared.Create<Work>();
-        await context.AddAsync(work);
-        await context.SaveChangesAsync();
+        var work = await fixture.SeedExampleWork();
 
         // Act
         await webClient.WorksDELETEAsync(work.Id);

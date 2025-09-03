@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using CasCadeVR.Works.Context.Tests;
 using Xunit;
-using Ahatornn.TestGenerator;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.ReadRepositories;
@@ -30,6 +29,7 @@ public class ExecutorReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNull()
     {
         // Arrange
+        await SeedExampleExecutor();
         var id = Guid.NewGuid();
 
         // Act
@@ -46,9 +46,7 @@ public class ExecutorReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await Context.AddAsync(executor);
-        await UnitOfWork.SaveChangesAsync();
+        var executor = await SeedExampleExecutor();
 
         // Act
         var result = await executorReadRepository.GetById(executor.Id, CancellationToken.None);
@@ -66,9 +64,7 @@ public class ExecutorReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNullByDelete()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(executor);
-        await UnitOfWork.SaveChangesAsync();
+        var executor = await SeedExampleExecutor(withSoftDelete: true);
 
         // Act
         var result = await executorReadRepository.GetById(executor.Id, CancellationToken.None);
@@ -97,17 +93,12 @@ public class ExecutorReadRepositoryTests : WorksContextInMemory
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var executor1 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Попов Александр Сергеевич");
-        var executor2 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Иванов Иван Иванович");
-        var executor3 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Каневская Мария Андреевна");
-        var executor4 = TestEntityProvider.Shared.Create<Executor>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.FIO = "Мизулин Константин Николаевич";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await SeedExampleExecutor();
+        }
 
-        await Context.AddRangeAsync(executor1, executor2, executor3, executor4);
-        await UnitOfWork.SaveChangesAsync();
+        await SeedExampleExecutor(withSoftDelete: true);
 
         // Act
         var result = await executorReadRepository.GetAll(CancellationToken.None);
@@ -116,6 +107,6 @@ public class ExecutorReadRepositoryTests : WorksContextInMemory
         result.Should()
             .NotBeEmpty()
             .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.FIO);
+            .And.BeInAscendingOrder(x => x.FullName);
     }
 }

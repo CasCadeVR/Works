@@ -4,16 +4,13 @@ using CasCadeVR.Works.Common;
 using CasCadeVR.Works.Context;
 using CasCadeVR.Works.Context.Contracts;
 using CasCadeVR.Works.Export.Contracts;
-using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
-using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
-using CasCadeVR.Works.Repository.ReadRepositories;
-using CasCadeVR.Works.Repository.WriteRepositories;
 using CasCadeVR.Works.Services;
 using CasCadeVR.Works.Services.Contracts;
-using CasCadeVR.Works.Services.Contracts.IServices;
 using CasCadeVR.Works.Services.Infrastructure;
-using CasCadeVR.Works.Services.Services;
-using CasCadeVR.Works.Web.Contracts.Infrastructure;
+using CasCadeVR.Works.Web.Infrastructure;
+using CasCadeVR.Works.Common.Contracts;
+using CasCadeVR.Works.Repository;
+using CasCadeVR.Works.Export.Excel;
 
 namespace CasCadeVR.Works.Web
 {
@@ -25,11 +22,15 @@ namespace CasCadeVR.Works.Web
         /// <summary>
         /// ¬ходной метод программы
         /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
             builder.Services.AddDbContext<WorksContext>(options =>
                options.UseNpgsql(connectionString)
@@ -54,25 +55,11 @@ namespace CasCadeVR.Works.Web
                 return mapper;
             });
 
-            builder.Services.AddScoped<IWorksReadRepository, WorksReadRepository>();
-            builder.Services.AddScoped<IWorksWriteRepository, WorksWriteRepository>();
-            builder.Services.AddScoped<IWorksServices, WorksServices>();
-
-            builder.Services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
-            builder.Services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
-            builder.Services.AddScoped<ICustomerServices, CustomerService>();
-
-            builder.Services.AddScoped<IExecutorReadRepository, ExecutorReadRepository>();
-            builder.Services.AddScoped<IExecutorWriteRepository, ExecutorWriteRepository>();
-            builder.Services.AddScoped<IExecutorServices, ExecutorServices>();
-
-            builder.Services.AddScoped<IActReadRepository, ActReadRepository>();
-            builder.Services.AddScoped<IActWriteRepository, ActWriteRepository>();
-            builder.Services.AddScoped<IActServices, ActServices>();
-
-            builder.Services.AddScoped<IActWorkWriteRepository, ActWorkWriteRepository>();
+            builder.Services.AddRepositories();
+            builder.Services.AddServices();
 
             builder.Services.AddScoped<IExporter, ExcelExporter>();
+            builder.Services.AddScoped<IAddedTaxService, AddedTaxService>();
 
             var addedControllers = builder.Services.AddControllers(opt =>
             {

@@ -47,9 +47,6 @@ namespace CasCadeVR.Works.Context.Migrations
                     b.Property<Guid>("ExecutorId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("NDS")
-                        .HasColumnType("numeric");
-
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -59,7 +56,7 @@ namespace CasCadeVR.Works.Context.Migrations
 
                     b.HasIndex("ExecutorId");
 
-                    b.HasIndex(new[] { "ActNumber" }, "IX_Act_DeletedAt")
+                    b.HasIndex(new[] { "ActNumber" }, "IX_Act_ActNumber")
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
@@ -68,21 +65,33 @@ namespace CasCadeVR.Works.Context.Migrations
 
             modelBuilder.Entity("CasCadeVR.Works.Entities.ActWork", b =>
                 {
-                    b.Property<Guid>("WorkId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ActId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("ActualPrice")
-                        .HasColumnType("numeric");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("WorkId", "ActId");
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("WorkId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ActId");
+
+                    b.HasIndex("WorkId");
 
                     b.ToTable("ActWork", (string)null);
                 });
@@ -99,21 +108,22 @@ namespace CasCadeVR.Works.Context.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FIO")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
                     b.Property<string>("Firm")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("INN")
+                    b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Occupation")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("TaxPayerId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -123,11 +133,7 @@ namespace CasCadeVR.Works.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "FIO" }, "IX_Customer_DeletedAt")
-                        .IsUnique()
-                        .HasFilter("\"DeletedAt\" IS NULL");
-
-                    b.HasIndex(new[] { "INN" }, "IX_INN_DeletedAt")
+                    b.HasIndex(new[] { "TaxPayerId" }, "IX_Customer_TaxPayerId")
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
@@ -146,21 +152,22 @@ namespace CasCadeVR.Works.Context.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FIO")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
                     b.Property<string>("Firm")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("OGRN")
+                    b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Occupation")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("RegistrationNumber")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -170,15 +177,40 @@ namespace CasCadeVR.Works.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "FIO" }, "IX_Executor_DeletedAt")
-                        .IsUnique()
-                        .HasFilter("\"DeletedAt\" IS NULL");
-
-                    b.HasIndex(new[] { "OGRN" }, "IX_OGRN_DeletedAt")
+                    b.HasIndex(new[] { "RegistrationNumber" }, "IX_Executor_RegistrationNumber")
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
                     b.ToTable("Executor", (string)null);
+                });
+
+            modelBuilder.Entity("CasCadeVR.Works.Entities.UnitOfMeasure", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Name" }, "IX_UnitOfMeasure_Name")
+                        .IsUnique()
+                        .HasFilter("\"DeletedAt\" IS NULL");
+
+                    b.ToTable("UnitOfMeasure", (string)null);
                 });
 
             modelBuilder.Entity("CasCadeVR.Works.Entities.Work", b =>
@@ -199,23 +231,23 @@ namespace CasCadeVR.Works.Context.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("UnitOfMeasure")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<Guid>("UnitOfMeasureId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "IX_Work_DeletedAt")
+                    b.HasIndex("UnitOfMeasureId");
+
+                    b.HasIndex(new[] { "Name" }, "IX_Work_Name")
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
@@ -244,7 +276,7 @@ namespace CasCadeVR.Works.Context.Migrations
             modelBuilder.Entity("CasCadeVR.Works.Entities.ActWork", b =>
                 {
                     b.HasOne("CasCadeVR.Works.Entities.Act", "Act")
-                        .WithMany("Works")
+                        .WithMany("ActWorks")
                         .HasForeignKey("ActId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -260,9 +292,20 @@ namespace CasCadeVR.Works.Context.Migrations
                     b.Navigation("Work");
                 });
 
+            modelBuilder.Entity("CasCadeVR.Works.Entities.Work", b =>
+                {
+                    b.HasOne("CasCadeVR.Works.Entities.UnitOfMeasure", "UnitOfMeasure")
+                        .WithMany()
+                        .HasForeignKey("UnitOfMeasureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UnitOfMeasure");
+                });
+
             modelBuilder.Entity("CasCadeVR.Works.Entities.Act", b =>
                 {
-                    b.Navigation("Works");
+                    b.Navigation("ActWorks");
                 });
 #pragma warning restore 612, 618
         }

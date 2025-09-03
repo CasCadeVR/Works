@@ -14,16 +14,14 @@ namespace CasCadeVR.Works.Entities.Configuration
         public void Configure(EntityTypeBuilder<ActWork> builder)
         {
             builder.ToTable("ActWork");
-            builder.HasKey(x => new { x.WorkId, x.ActId });
-
-            builder.Property(x => x.Quantity).IsRequired();
+            builder.HasKey(x => x.Id);
 
             builder.HasOne(x => x.Work)
                 .WithMany()
                 .HasForeignKey(x => x.WorkId);
 
             builder.HasOne(x => x.Act)
-                .WithMany(x => x.Works)
+                .WithMany(x => x.ActWorks)
                 .HasForeignKey(x => x.ActId);
         }
     }

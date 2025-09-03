@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CasCadeVR.Works.Entities.ValidationRules;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CasCadeVR.Works.Entities.Configuration
@@ -16,25 +17,23 @@ namespace CasCadeVR.Works.Entities.Configuration
             builder.ToTable("Executor");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.OGRN).IsRequired();
-
-            builder.Property(x => x.FIO)
+            builder.Property(x => x.RegistrationNumber)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(ExecutorValidationRules.RegistrationMaxLength);
+
+            builder.Property(x => x.FullName)
+                .IsRequired()
+                .HasMaxLength(ExecutorValidationRules.FullNameMaxLength);
 
             builder.Property(x => x.Occupation)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(ExecutorValidationRules.OccupationMaxLength);
 
             builder.Property(x => x.Firm)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(ExecutorValidationRules.FirmMaxLength);
 
-            builder.HasIndex(x => x.FIO, $"IX_{nameof(Executor)}_{nameof(Executor.DeletedAt)}")
-                .IsUnique()
-                .HasFilter($"\"{nameof(Executor.DeletedAt)}\" IS NULL");
-
-            builder.HasIndex(x => x.OGRN, $"IX_{nameof(Executor.OGRN)}_{nameof(Executor.DeletedAt)}")
+            builder.HasIndex(x => x.RegistrationNumber, $"IX_{nameof(Executor)}_{nameof(Executor.RegistrationNumber)}")
                 .IsUnique()
                 .HasFilter($"\"{nameof(Executor.DeletedAt)}\" IS NULL");
         }

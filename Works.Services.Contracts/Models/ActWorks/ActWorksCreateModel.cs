@@ -3,7 +3,7 @@
 /// <summary>
 /// Модель создания работы для акта
 /// </summary>
-public class ActWorksCreateModel()
+public class ActWorksCreateModel
 {
     /// <summary>
     /// Идентификатор работы
@@ -14,9 +14,4 @@ public class ActWorksCreateModel()
     /// Количество
     /// </summary>
     public int Quantity { get; set; }
-
-    /// <summary>
-    /// Актуальная цена
-    /// </summary>
-    public decimal ActualPrice { get; set; }
 }

@@ -10,12 +10,12 @@ namespace CasCadeVR.Works.Web.Contracts.Models.Acts;
 /// <param name="ExecutorId">Идентификатор исполнителя</param>
 /// <param name="CustomerId">Идентификатор заказчика</param>
 /// <param name="Works">Список работ</param>
-/// <param name="NDS">НДС</param>
-public record ActRequestApiModel(
+/// <param name="AddedTax">НДС</param>
+public record ActCreateRequestApiModel(
     string ActNumber,
     DateOnly Date, 
     Guid ExecutorId, 
     Guid CustomerId, 
-    ICollection<ActWorksRequestApiModel> Works, 
-    decimal NDS
+    ICollection<ActWorksCreateRequestApiModel> Works, 
+    decimal AddedTax
 );

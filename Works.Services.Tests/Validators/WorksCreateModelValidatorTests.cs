@@ -24,7 +24,7 @@ public class WorksCreateModelValidatorTests
     /// Тест на пустую ошибку наименования
     /// </summary>
     [Fact]
-    public async Task ShouldEmptyNameHaveErrorMessages()
+    public async Task EmptyShouldHaveErrorMessages()
     {
         // Arrange
         var model = new WorksCreateModel();
@@ -40,7 +40,7 @@ public class WorksCreateModelValidatorTests
     /// Тест на минимальную ошибку наименования
     /// </summary>
     [Fact]
-    public async Task ShouldNameShortHaveErrorMessages()
+    public async Task ShortShouldHaveErrorMessages()
     {
         // Arrange
         var model = new WorksCreateModel
@@ -59,7 +59,7 @@ public class WorksCreateModelValidatorTests
     /// Тест на максимальную ошибку наименования
     /// </summary>
     [Fact]
-    public async Task ShouldNameLongHaveErrorMessages()
+    public async Task LongShouldHaveErrorMessages()
     {
         // Arrange
         var model = new WorksCreateModel()
@@ -75,6 +75,25 @@ public class WorksCreateModelValidatorTests
     }
 
     /// <summary>
+    /// Тест на отрицательную цену
+    /// </summary>
+    [Fact]
+    public async Task NegativePriceShouldHaveErrorMessages()
+    {
+        // Arrange
+        var model = new WorksCreateModel()
+        {
+            Price = -100
+        };
+
+        // Act
+        var result = await validator.TestValidateAsync(model);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Price);
+    }
+
+    /// <summary>
     /// Тест на отсутствие ошибок
     /// </summary>
     [Fact]
@@ -83,7 +102,8 @@ public class WorksCreateModelValidatorTests
         // Arrange
         var model = new WorksCreateModel()
         {
-            Name = "1234"
+            Name = "1234",
+            Price = 1000
         };
 
         // Act
@@ -91,6 +111,7 @@ public class WorksCreateModelValidatorTests
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
+        result.ShouldNotHaveValidationErrorFor(x => x.Price);
         result.ShouldNotHaveValidationErrorFor(x => x.Description);
     }
 }

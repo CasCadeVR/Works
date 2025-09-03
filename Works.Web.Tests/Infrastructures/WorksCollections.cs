@@ -6,7 +6,4 @@ namespace CasCadeVR.Works.Web.Tests.Infrastructures;
 /// Коллекция для интеграционных тестов
 /// </summary>
 [CollectionDefinition(nameof(WorksCollections))]
-public class WorksCollections : ICollectionFixture<WorksApiFixture>
-{
-
-}
+public class WorksCollections : ICollectionFixture<WorksApiFixture> { }

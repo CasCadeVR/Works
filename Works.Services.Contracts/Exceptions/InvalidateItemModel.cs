@@ -1,16 +1,10 @@
 ﻿namespace CasCadeVR.Works.Services.Contracts.Exceptions;
 
 /// <summary>
-/// Модель о возникщей ошибке
+/// Модель о возникшей ошибке
 /// </summary>
 public class InvalidateItemModel
 {
-    /// <summary>
-    /// Статический конструктор
-    /// </summary>
-    public static InvalidateItemModel New(string field, string message)
-        => new InvalidateItemModel(field, message);
-
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="InvalidateItemModel"/>
     /// </summary>
@@ -21,12 +15,12 @@ public class InvalidateItemModel
     }
 
     /// <summary>
-    /// Поле
+    /// Название поля
     /// </summary>
-    public string Field { get; } =string.Empty;
+    public string Field { get; }
 
     /// <summary>
     /// Сообщение об ошибке
     /// </summary>
-    public string Message { get; } = string.Empty;
+    public string Message { get; }
 }

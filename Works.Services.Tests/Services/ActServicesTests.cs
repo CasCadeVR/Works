@@ -1,22 +1,22 @@
 ﻿using Ahatornn.TestGenerator;
 using AutoMapper;
-using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Context.Tests;
+using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Export.Excel;
 using CasCadeVR.Works.Repository.ReadRepositories;
 using CasCadeVR.Works.Repository.WriteRepositories;
-using FluentAssertions;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Contracts.Models.Acts;
+using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
+using CasCadeVR.Works.Services.Contracts.Models.Customers;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
 using CasCadeVR.Works.Services.Infrastructure;
+using CasCadeVR.Works.Services.Services;
+using FluentAssertions;
 using Moq;
 using Xunit;
-using CasCadeVR.Works.Entities;
-using CasCadeVR.Works.Services.Contracts.Exceptions;
-using CasCadeVR.Works.Services.Contracts.Models.Acts;
-using CasCadeVR.Works.Services.Services;
-using CasCadeVR.Works.Services.Contracts.IServices;
-using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
-using CasCadeVR.Works.Services.Contracts.Models.Executors;
-using CasCadeVR.Works.Services.Contracts.Models.Customers;
-using CasCadeVR.Works.Services.Contracts.Models.Works;
 
 namespace CasCadeVR.Works.Services.Tests.Services;
 
@@ -40,12 +40,13 @@ public class ActServicesTests : WorksContextInMemory
         var mapper = config.CreateMapper();
 
         service = new ActServices(mapper,
+            new ExcelExporter(Mock.Of<IAddedTaxService>()),
             UnitOfWork,
             new ActReadRepository(Context),
             new WorksReadRepository(Context),
             new CustomerReadRepository(Context),
             new ExecutorReadRepository(Context),
-            new ActWorkWriteRepository(Context),
+            new ActWorkWriteRepository(Context, Mock.Of<IDateTimeProvider>()),
             new ActWriteRepository(Context, Mock.Of<IDateTimeProvider>()));
     }
 
@@ -56,10 +57,11 @@ public class ActServicesTests : WorksContextInMemory
     public async Task GetByIdShouldThrow()
     {
         // Arrange
+        await SeedExampleAct();
         var id = Guid.NewGuid();
 
         // Act
-        Func<Task> act = () => service.GetById(id, CancellationToken.None);
+        var act = () => service.GetById(id, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
@@ -72,44 +74,69 @@ public class ActServicesTests : WorksContextInMemory
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>();
-        await Context.AddAsync(act);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct();
+        var existingActWork = act.ActWorks.First();
 
         // Act
         var result = await service.GetById(act.Id, CancellationToken.None);
+        var resultActWork = result.ActWorks.First();
 
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(act, options => options
-                .Excluding(x => x.CreatedAt)
-                .Excluding(x => x.UpdatedAt)
-                .Excluding(x => x.DeletedAt)
-                .Excluding(x => x.CustomerId)
-                .Excluding(x => x.Customer.CreatedAt)
-                .Excluding(x => x.Customer.UpdatedAt)
-                .Excluding(x => x.Customer.DeletedAt)
-                .Excluding(x => x.ExecutorId)
-                .Excluding(x => x.Executor.CreatedAt)
-                .Excluding(x => x.Executor.UpdatedAt)
-                .Excluding(x => x.Executor.DeletedAt)
-                );
+            .And.BeEquivalentTo(new 
+            {
+                Id = act.Id,
+                ActNumber = act.ActNumber,
+                Date = act.Date,
+                Customer = new
+                {
+                    FullName = act.Customer.FullName,
+                    Firm = act.Customer.Firm,
+                    Occupation = act.Customer.Occupation,
+                    TaxPayerId = act.Customer.TaxPayerId,
+                },
+                Executor = new
+                {
+                    FullName = act.Executor.FullName,
+                    Firm = act.Executor.Firm,
+                    Occupation = act.Executor.Occupation,
+                    RegistrationNumber = act.Executor.RegistrationNumber,
+                },
+            });
+
+        resultActWork.Should()
+            .NotBeNull()
+            .And.BeEquivalentTo(new
+            {
+                Quantity = resultActWork.Quantity,
+                Work = new
+                {
+                    Id = resultActWork.Work.Id,
+                    Name = resultActWork.Work.Name,
+                    Description = resultActWork.Work.Description,
+                    Price = resultActWork.Work.Price,
+                    UnitOfMeasureId = resultActWork.Work.UnitOfMeasureId,
+                    UnitOfMeasure = new
+                    {
+                        Id = resultActWork.Work.UnitOfMeasure.Id,
+                        Name = resultActWork.Work.UnitOfMeasure.Name,
+                    },
+                },
+            });
     }
 
     /// <summary>
-    /// Проверяет, что GetById падёт с ошибкой WorksNotFoundExceptions при мягком удалении
+    /// Проверяет, что GetById падёт с ошибкой WorksNotFoundExceptions при "мягком" удалении
     /// </summary>
     [Fact]
-    public async Task GetByIdShouldReturnNullByDelete()
+    public async Task GetByIdShouldThrowNotFound()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(act);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct(withSoftDelete: true);
 
         // Act
-        Func<Task> action = () => service.GetById(act.Id, CancellationToken.None);
+        var action = () => service.GetById(act.Id, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{act.Id}*");
@@ -135,17 +162,12 @@ public class ActServicesTests : WorksContextInMemory
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var act1 = TestEntityProvider.Shared.Create<Act>(x => x.ActNumber = "1");
-        var act2 = TestEntityProvider.Shared.Create<Act>(x => x.ActNumber = "2");
-        var act3 = TestEntityProvider.Shared.Create<Act>(x => x.ActNumber = "3");
-        var act4 = TestEntityProvider.Shared.Create<Act>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.ActNumber = "4";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await SeedExampleAct();
+        }
 
-        await Context.AddRangeAsync(act1, act2, act3, act4);
-        await UnitOfWork.SaveChangesAsync();
+        await SeedExampleAct(withSoftDelete: true);
 
         // Act
         var result = await service.GetAll(CancellationToken.None);
@@ -158,42 +180,177 @@ public class ActServicesTests : WorksContextInMemory
     }
 
     /// <summary>
-    /// Создание экземпляра работает
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о дупликате номеров акта
     /// </summary>
     [Fact]
-    public async Task CreateShouldWork()
+    public async Task CreateShouldThrowByActNumber()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>();
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        var work = TestEntityProvider.Shared.Create<Work>();
+        var act = await SeedExampleAct();
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x => x.ActNumber = act.ActNumber);
 
-        await Context.AddRangeAsync(customer, executor, work);
-        await UnitOfWork.SaveChangesAsync();
+        // Act
+        var acttion = () => service.Create(request, CancellationToken.None);
+
+        // Assert
+        await acttion.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{request.ActNumber}*");
+    }
+
+    /// <summary>
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о дупликате работ
+    /// </summary>
+    [Fact]
+    public async Task CreateShouldThrowByWorksDuplicate()
+    {
+        // Arrange
+        var customer = await SeedExampleCustomer();
+        var executor = await SeedExampleExecutor();
+        var work = await SeedExampleWork();
 
         var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
         {
             x.CustomerId = customer.Id;
             x.ExecutorId = executor.Id;
-            x.Works = new List<ActWorksCreateModel>()
-            { TestEntityProvider.Shared.Create<ActWorksCreateModel>(x => x.WorkId = work.Id) };
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id),
+                TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id)];
         });
 
         // Act
-        var result = await service.Create(request, CancellationToken.None);
+        var acttion = () => service.Create(request, CancellationToken.None);
 
+        // Assert
+        await acttion.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{work.Id}*");
+    }
+
+    /// <summary>
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о ненахождении работ
+    /// </summary>
+    [Fact]
+    public async Task CreateShouldThrowByWorksIds()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var customer = await SeedExampleCustomer();
+        var executor = await SeedExampleExecutor();
+
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
+        {
+            x.CustomerId = customer.Id;
+            x.ExecutorId = executor.Id;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = id)];
+        });
+
+        // Act
+        var acttion = () => service.Create(request, CancellationToken.None);
+
+        // Assert
+        await acttion.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
+    }
+
+    /// <summary>
+    /// Создание экземпляра работает
+    /// </summary>
+    [Fact]
+
+    public async Task CreateShouldWork()
+    {
+        // Arrange
+        var customer = await SeedExampleCustomer();
+        var executor = await SeedExampleExecutor();
+        var work = await SeedExampleWork();
+
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
+        {
+            x.CustomerId = customer.Id;
+            x.ExecutorId = executor.Id;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id)];
+        });
+
+        var requestActWork = request.ActWorks.First();
+
+        // Act
+        var result = await service.Create(request, CancellationToken.None);
+        var resultActWork = result.ActWorks.First();
+        
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(request, opt => opt
-                .Excluding(x => x.CustomerId)
-                .Excluding(x => x.ExecutorId)
-                .Excluding(x => x.Works)
-                .Excluding(x => x.Works)
-                .Using<ActWork>(ctx => ctx.Subject.Should().BeEquivalentTo(ctx.Expectation, opt =>
-                    opt.Excluding(w => w.WorkId)))
-                .WhenTypeIs<ActWork>()
-            );
+            .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.ActWorks));
+
+        resultActWork
+            .Should()
+            .NotBeNull()
+            .And.BeEquivalentTo(requestActWork, opt => opt.Excluding(x => x.WorkId));
+    }
+
+    /// <summary>
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о дупликате
+    /// </summary>
+    [Fact]
+    public async Task UpdateShouldThrowByActNumber()
+    {
+        // Arrange
+        var act = await SeedExampleAct();
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x => x.ActNumber = act.ActNumber);
+
+        // Act
+        var action = () => service.Update(act.Id, request, CancellationToken.None);
+
+        // Assert
+        await action.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{request.ActNumber}*");
+    }
+
+    /// <summary>
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о ненахождении работ
+    /// </summary>
+    [Fact]
+    public async Task UpdateShouldThrowByWorksIds()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var act = await SeedExampleAct();
+        var customer = await SeedExampleCustomer();
+        var executor = await SeedExampleExecutor();
+
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
+        {
+            x.CustomerId = customer.Id;
+            x.ExecutorId = executor.Id;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = id)];
+        });
+
+        // Act
+        var acttion = () => service.Update(act.Id, request, CancellationToken.None);
+
+        // Assert
+        await acttion.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
+    }
+
+    /// <summary>
+    /// Проверяет, что редактирование экземпляра падает с ошибкой о дупликате работ
+    /// </summary>
+    [Fact]
+    public async Task UpdateShouldThrowByWorksDuplicate()
+    {
+        // Arrange
+        var act = await SeedExampleAct();
+        var customer = await SeedExampleCustomer();
+        var executor = await SeedExampleExecutor();
+        var work = await SeedExampleWork();
+
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
+        {
+            x.CustomerId = customer.Id;
+            x.ExecutorId = executor.Id;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id),
+                TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id)];
+        });
+
+        // Act
+        var acttion = () => service.Update(act.Id, request, CancellationToken.None);
+
+        // Assert
+        await acttion.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{work.Id}*");
     }
 
     /// <summary>
@@ -203,13 +360,14 @@ public class ActServicesTests : WorksContextInMemory
     public async Task UpdateShouldThrowByActId()
     {
         // Arrange
-        var request = TestEntityProvider.Shared.Create<ActModel>(x => x.Id = Guid.NewGuid());
+        var id = Guid.NewGuid();
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>();
 
         // Act
-        Func<Task<ActModel>> action = () => service.Update(request, CancellationToken.None);
+        var action = () => service.Update(id, request, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{request.Id}*");
+        await action.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
     }
 
     /// <summary>
@@ -219,19 +377,13 @@ public class ActServicesTests : WorksContextInMemory
     public async Task UpdateShouldThrowByCustomerId()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>();
-        await Context.AddAsync(act);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct();
        
         var customer = TestEntityProvider.Shared.Create<CustomerModel>(x => x.Id = Guid.NewGuid());
-        var request = TestEntityProvider.Shared.Create<ActModel>(x =>
-        {
-            x.Id = act.Id;
-            x.Customer = customer;
-        });
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x => x.CustomerId = customer.Id);
 
         // Act
-        Func<Task<ActModel>> action = () => service.Update(request, CancellationToken.None);
+        var action = () => service.Update(act.Id, request, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{customer.Id}*");
@@ -244,21 +396,17 @@ public class ActServicesTests : WorksContextInMemory
     public async Task UpdateShouldThrowByExecutorId()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>();
-        var customer = TestEntityProvider.Shared.Create<Customer>(x => x.Id = Guid.NewGuid());
-        await Context.AddRangeAsync(act, customer);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct();
 
         var executor = TestEntityProvider.Shared.Create<ExecutorModel>(x => x.Id = Guid.NewGuid());
-        var request = TestEntityProvider.Shared.Create<ActModel>(x =>
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
         {
-            x.Id = act.Id;
-            x.Executor = executor;
-            x.Customer = TestEntityProvider.Shared.Create<CustomerModel>(x => x.Id = customer.Id);
+            x.ExecutorId = executor.Id;
+            x.CustomerId = act.CustomerId;
         });
 
         // Act
-        Func<Task<ActModel>> action = () => service.Update(request, CancellationToken.None);
+        var action = () => service.Update(act.Id, request, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{executor.Id}*");
@@ -271,58 +419,28 @@ public class ActServicesTests : WorksContextInMemory
     public async Task UpdateShouldWork()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>();
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        var act = TestEntityProvider.Shared.Create<Act>();
-        var work = TestEntityProvider.Shared.Create<Work>();
-
-        await Context.AddRangeAsync(customer, executor, act, work);
-        await UnitOfWork.SaveChangesAsync();
-
-        // Act
-        var model = TestEntityProvider.Shared.Create<ActModel>(x =>
+        var act = await SeedExampleAct();
+        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
         {
-            x.Id = act.Id;
-            x.ActNumber = "1";
-            x.Date = DateOnly.FromDateTime(DateTime.UtcNow);
-            x.Customer = TestEntityProvider.Shared.Create<CustomerModel>(x => {
-                x.Id = customer.Id;
-                x.FIO = customer.FIO;
-                x.Firm = customer.Firm;
-                x.Occupation = customer.Occupation;
-                x.INN = customer.INN;
-            });
-            x.Executor = TestEntityProvider.Shared.Create<ExecutorModel>(x => {
-                x.Id = executor.Id;
-                x.FIO = executor.FIO;
-                x.Firm = executor.Firm;
-                x.Occupation = executor.Occupation;
-                x.OGRN = executor.OGRN;
-            });
-            x.Works = new List<ActWorksModel>()
-            {TestEntityProvider.Shared.Create<ActWorksModel>(x =>
-                {
-                    x.Work = TestEntityProvider.Shared.Create<WorksModel>(x =>
-                    {
-                        x.Id = work.Id;
-                        x.Name = work.Name;
-                        x.Description = work.Description;
-                        x.Price = work.Price;
-                        x.UnitOfMeasure = work.UnitOfMeasure;
-                    });
-                    x.Quantity = 50;
-                    x.ActualPrice = 50000;
-                }
-            )};
-            x.NDS = 14.4m;
+            x.CustomerId = act.CustomerId;
+            x.ExecutorId = act.ExecutorId;
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = act.ActWorks.First().Work.Id)];
         });
 
-        var result = await service.Update(model, CancellationToken.None);
+        var requestActWork = request.ActWorks.First();
+
+        // Act
+        var result = await service.Update(act.Id, request, CancellationToken.None);
+        var resultActWork = result.ActWorks.First();
 
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(model);
+            .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.ActWorks));
+
+        requestActWork.Should()
+            .NotBeNull()
+            .And.BeEquivalentTo(requestActWork, opt => opt.Excluding(x => x.WorkId));
     }
 
     /// <summary>
@@ -332,10 +450,11 @@ public class ActServicesTests : WorksContextInMemory
     public async Task DeleteShouldThrow()
     {
         // Arrange
+        await SeedExampleAct();
         var id = Guid.NewGuid();
 
         // Act
-        Func<Task> action = () => service.Delete(id, CancellationToken.None);
+        var action = () => service.Delete(id, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
@@ -348,9 +467,7 @@ public class ActServicesTests : WorksContextInMemory
     public async Task DeleteShouldWork()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>();
-        await Context.AddAsync(act);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct();
 
         // Act
         await service.Delete(act.Id, CancellationToken.None);

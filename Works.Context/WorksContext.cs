@@ -13,11 +13,8 @@ namespace CasCadeVR.Works.Context
         /// <summary>
         /// Инициализирует новый экземпляр <see cref="WorksContext"/>
         /// </summary>
-        public WorksContext(DbContextOptions<WorksContext> options) : base(options)
-        {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
-        }
+        public WorksContext(DbContextOptions<WorksContext> options)
+            : base(options) { }
 
         /// <inheritdoc cref="DbContext.OnModelCreating"/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)

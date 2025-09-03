@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using CasCadeVR.Works.Context.Tests;
 using Xunit;
-using Ahatornn.TestGenerator;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.ReadRepositories;
@@ -30,6 +29,7 @@ public class WorkReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNull()
     {
         // Arrange
+        await SeedExampleWork();
         var id = Guid.NewGuid();
 
         // Act
@@ -46,9 +46,7 @@ public class WorkReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var work = TestEntityProvider.Shared.Create<Work>();
-        await Context.AddAsync(work);
-        await UnitOfWork.SaveChangesAsync();
+        var work = await SeedExampleWork();
 
         // Act
         var result = await worksReadRepository.GetById(work.Id, CancellationToken.None);
@@ -66,9 +64,7 @@ public class WorkReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNullByDelete()
     {
         // Arrange
-        var work = TestEntityProvider.Shared.Create<Work>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(work);
-        await UnitOfWork.SaveChangesAsync();
+        var work = await SeedExampleWork(withSoftDelete: true);
 
         // Act
         var result = await worksReadRepository.GetById(work.Id, CancellationToken.None);
@@ -97,17 +93,12 @@ public class WorkReadRepositoryTests : WorksContextInMemory
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var work1 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "1");
-        var work2 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "2");
-        var work3 = TestEntityProvider.Shared.Create<Work>(x => x.Name = "3");
-        var work4 = TestEntityProvider.Shared.Create<Work>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.Name = "3";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await SeedExampleWork();
+        }
 
-        await Context.AddRangeAsync(work1, work2, work3, work4);
-        await UnitOfWork.SaveChangesAsync();
+        await SeedExampleWork(withSoftDelete: true);
 
         // Act
         var result = await worksReadRepository.GetAll(CancellationToken.None);

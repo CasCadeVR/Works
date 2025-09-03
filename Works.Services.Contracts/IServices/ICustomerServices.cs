@@ -25,7 +25,7 @@ public interface ICustomerServices
     /// <summary>
     /// Редактирует существующий <see cref="CustomerModel"/>
     /// </summary>
-    Task<CustomerModel> Update(CustomerModel model, CancellationToken cancellationToken);
+    Task<CustomerModel> Update(Guid id, CustomerCreateModel model, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет существующий <see cref="CustomerModel"/>

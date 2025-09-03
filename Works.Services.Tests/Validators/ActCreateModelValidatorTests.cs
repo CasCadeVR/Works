@@ -2,6 +2,7 @@
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
 using CasCadeVR.Works.Services.Validators;
 using Xunit;
+using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 
 namespace CasCadeVR.Works.Services.Tests.Validators;
 
@@ -24,7 +25,7 @@ public class ActCreateModelValidatorTests
     /// Тест на пустые поля
     /// </summary>
     [Fact]
-    public async Task EmptyFieldsShouldHaveErrorMessages()
+    public async Task EmptyShouldHaveErrorMessages()
     {
         // Arrange
         var model = new ActCreateModel();
@@ -35,19 +36,18 @@ public class ActCreateModelValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.ActNumber);
         result.ShouldHaveValidationErrorFor(x => x.Date);
-        result.ShouldHaveValidationErrorFor(x => x.NDS);
     }
 
     /// <summary>
     /// Тест на прошлую дату
     /// </summary>
     [Fact]
-    public async Task PastDateShouldHaveErrorMessages()
+    public async Task FutureDateShouldHaveErrorMessages()
     {
         // Arrange
         var model = new ActCreateModel
         {
-            Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-3)),
+            Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(3)),
         };
 
         // Act
@@ -58,22 +58,24 @@ public class ActCreateModelValidatorTests
     }
 
     /// <summary>
-    /// Тест на НДС
+    /// Тест на количество работ меньше единицы
     /// </summary>
     [Fact]
-    public async Task NdsLessThanZeroShouldHaveErrorMessages()
+    public async Task PastDateShouldHaveErrorMessages()
     {
         // Arrange
-        var model = new ActCreateModel()
+        var model = new ActCreateModel
         {
-            NDS = 0,
+            ActWorks = [new ActWorksCreateModel() {
+                Quantity = 0,
+            }],
         };
 
         // Act
         var result = await validator.TestValidateAsync(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NDS);
+        result.ShouldHaveValidationErrorFor(x => x.ActWorks);
     }
 
     /// <summary>
@@ -86,8 +88,10 @@ public class ActCreateModelValidatorTests
         var model = new ActCreateModel()
         {
             ActNumber = "1",
-            Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)),
-            NDS = 14.4M,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)),
+            ActWorks = [new ActWorksCreateModel() {
+                Quantity = 1,
+            }],
         };
 
         // Act
@@ -96,6 +100,6 @@ public class ActCreateModelValidatorTests
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.ActNumber);
         result.ShouldNotHaveValidationErrorFor(x => x.Date);
-        result.ShouldNotHaveValidationErrorFor(x => x.NDS);
+        result.ShouldNotHaveValidationErrorFor(x => x.ActWorks);
     }
 }

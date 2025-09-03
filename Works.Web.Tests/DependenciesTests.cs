@@ -10,7 +10,7 @@ using Xunit;
 namespace CasCadeVR.Works.Web.Tests;
 
 /// <summary>
-/// 
+/// Тесты на правильную связанность всех объектов
 /// </summary>
 public class DependenciesTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -46,7 +46,7 @@ public class DependenciesTests : IClassFixture<WebApplicationFactory<Program>>
     }
     
     /// <summary>
-    /// 
+    /// Отправная точка для начала тестирования (в данном случае контроллеры)
     /// </summary>
     public static TheoryData<Type> WebControllerCore => GetControllers<WorksController>();
 

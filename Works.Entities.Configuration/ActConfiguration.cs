@@ -17,12 +17,7 @@ namespace CasCadeVR.Works.Entities.Configuration
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.ActNumber).IsRequired();
-            builder.Property(x => x.NDS).IsRequired();
             builder.Property(x => x.Date).IsRequired();
-
-            builder.HasIndex(x => x.ActNumber, $"IX_{nameof(Act)}_{nameof(Act.DeletedAt)}")
-                .IsUnique()
-                .HasFilter($"\"{nameof(Act.DeletedAt)}\" IS NULL");
 
             builder.HasOne(x => x.Executor)
                    .WithMany()
@@ -32,9 +27,13 @@ namespace CasCadeVR.Works.Entities.Configuration
                    .WithMany()
                    .HasForeignKey(x => x.CustomerId);
 
-            builder.HasMany(x => x.Works)
+            builder.HasMany(x => x.ActWorks)
                    .WithOne(x => x.Act)
                    .HasForeignKey(x => x.ActId);
+
+            builder.HasIndex(x => x.ActNumber, $"IX_{nameof(Act)}_{nameof(Act.ActNumber)}")
+                .IsUnique()
+                .HasFilter($"\"{nameof(Act.DeletedAt)}\" IS NULL");
         }
     }
 }

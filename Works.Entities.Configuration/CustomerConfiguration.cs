@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CasCadeVR.Works.Entities.ValidationRules;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CasCadeVR.Works.Entities.Configuration
@@ -16,25 +17,23 @@ namespace CasCadeVR.Works.Entities.Configuration
             builder.ToTable("Customer");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.INN).IsRequired();
-
-            builder.Property(x => x.FIO)
+            builder.Property(x => x.TaxPayerId)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(CustomerValidationRules.TaxPayerIdMaxLength);
+
+            builder.Property(x => x.FullName)
+                .IsRequired()
+                .HasMaxLength(CustomerValidationRules.FullNameMaxLength);
 
             builder.Property(x => x.Occupation)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(CustomerValidationRules.OccupationMaxLength);
 
             builder.Property(x => x.Firm)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(CustomerValidationRules.FirmMaxLength);
 
-            builder.HasIndex(x => x.FIO, $"IX_{nameof(Customer)}_{nameof(Customer.DeletedAt)}")
-                .IsUnique()
-                .HasFilter($"\"{nameof(Customer.DeletedAt)}\" IS NULL");
-
-            builder.HasIndex(x => x.INN, $"IX_{nameof(Customer.INN)}_{nameof(Customer.DeletedAt)}")
+            builder.HasIndex(x => x.TaxPayerId, $"IX_{nameof(Customer)}_{nameof(Customer.TaxPayerId)}")
                 .IsUnique()
                 .HasFilter($"\"{nameof(Customer.DeletedAt)}\" IS NULL");
         }

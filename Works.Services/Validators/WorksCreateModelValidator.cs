@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using CasCadeVR.Works.Services.Contracts.Models.Works;
+using CasCadeVR.Works.Entities.ValidationRules;
 
 namespace CasCadeVR.Works.Services.Validators;
 
@@ -8,9 +9,6 @@ namespace CasCadeVR.Works.Services.Validators;
 /// </summary>
 public class WorksCreateModelValidator : AbstractValidator<WorksCreateModel>
 {
-    private const int MinLength = 3;
-    private const int MaxLength = 255;
-
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="WorksCreateModelValidator"/>
     /// </summary>
@@ -18,9 +16,14 @@ public class WorksCreateModelValidator : AbstractValidator<WorksCreateModel>
     {
         RuleFor(customer => customer.Name)
             .NotEmpty().WithMessage("Наименование работы не может быть пустым")
-            .Length(MinLength, MaxLength).WithMessage($"Длина наименования товара должно быть от {MinLength} до {MaxLength}");
+            .Length(WorkValidationRules.NameMinLength, WorkValidationRules.NameMaxLength)
+            .WithMessage($"Длина наименования должно быть от {WorkValidationRules.NameMinLength} до {WorkValidationRules.NameMaxLength}");
 
         RuleFor(customer => customer.Description)
             .NotNull().WithMessage("Описание работы не может быть пустым");
+
+        RuleFor(act => act.Price)
+            .GreaterThan(0)
+            .WithMessage("Нельзя добавить работу с ценой, меньше нуля");
     }
 }

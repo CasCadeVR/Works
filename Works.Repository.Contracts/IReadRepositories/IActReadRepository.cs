@@ -1,18 +1,26 @@
-﻿namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+﻿using System.Linq.Expressions;
+using CasCadeVR.Works.Entities;
+
+namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 
 /// <summary>
-/// Репозиторий чтения сущности <see cref="Entities.Act"/>
+/// Репозиторий чтения сущности <see cref="Act"/>
 /// </summary>
 public interface IActReadRepository
 {
     /// <summary>
-    /// Получаю <see cref="Entities.Act"/> по идентификатору
+    /// Возвращает true, если совпадает условие
     /// </summary>
-    Task<Entities.Act?> GetById(Guid id, CancellationToken cancellationToken);
+    Task<bool> Any(Expression<Func<Act, bool>> action, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Получает коллекцию <see cref="Entities.Act"/>
+    /// Получает <see cref="Act"/> по идентификатору
     /// </summary>
-    Task<IReadOnlyCollection<Entities.Act>> GetAll(CancellationToken cancellationToken);
+    Task<Act?> GetById(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Получает коллекцию <see cref="Act"/>
+    /// </summary>
+    Task<IReadOnlyCollection<Act>> GetAll(CancellationToken cancellationToken);
 }
 

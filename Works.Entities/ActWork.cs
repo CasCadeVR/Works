@@ -1,9 +1,11 @@
-﻿namespace CasCadeVR.Works.Entities;
+﻿using CasCadeVR.Works.Entities.Contracts;
+
+namespace CasCadeVR.Works.Entities;
 
 /// <summary>
 /// Сущность работы для акта
 /// </summary>
-public class ActWork
+public class ActWork : DataBaseEntity
 {
     /// <summary>
     /// Идентификатор работы
@@ -21,17 +23,12 @@ public class ActWork
     public int Quantity { get; set; }
 
     /// <summary>
-    /// Актуальная цена
-    /// </summary>
-    public decimal ActualPrice { get; set; }
-
-    /// <summary>
     /// Навигационное свойство <see cref="Work"/>
     /// </summary>
-    public Work Work { get; set; } = new Work();
+    public Work Work { get; set; } = null!;
 
     /// <summary>
     /// Навигационное свойство <see cref="Act"/>
     /// </summary>
-    public Act Act { get; set; } = new Act();
+    public Act Act { get; set; } = null!;
 }

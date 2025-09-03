@@ -3,13 +3,13 @@
 /// <summary>
 /// Модель создания исполнителя
 /// </summary>
-/// <param name="FIO">ФИО</param>
+/// <param name="FullName">Фамилия, имя, отчество</param>
 /// <param name="Occupation">Должность</param>
 /// <param name="Firm">Фирма</param>
-/// <param name="OGRN">ОГРН</param>
-public record ExecutorRequestApiModel(
-    string FIO, 
+/// <param name="RegistrationNumber">ОГРН</param>
+public record ExecutorCreateRequestApiModel(
+    string FullName, 
     string Occupation, 
     string Firm, 
-    string OGRN
+    string RegistrationNumber
 );

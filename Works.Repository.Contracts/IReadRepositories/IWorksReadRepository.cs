@@ -1,10 +1,17 @@
-﻿namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+﻿using System.Linq.Expressions;
+
+namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 
 /// <summary>
 /// Репозиторий чтения сущности <see cref="Entities.Work"/>
 /// </summary>
 public interface IWorksReadRepository
 {
+    /// <summary>
+    /// Возвращает true, если совпадает условие
+    /// </summary>
+    Task<bool> Any(Expression<Func<Entities.Work, bool>> action, CancellationToken cancellationToken);
+
     /// <summary>
     /// Получает <see cref="Entities.Work"/> по идентификатору
     /// </summary>

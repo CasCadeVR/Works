@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
-using CasCadeVR.Works.Context.Tests;
-using Xunit;
-using Ahatornn.TestGenerator;
+﻿using CasCadeVR.Works.Context.Tests;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.ReadRepositories;
+using FluentAssertions;
+using Xunit;
 
 namespace CasCadeVR.Works.Repository.Tests;
 
@@ -30,6 +29,7 @@ public class CustomerReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNull()
     {
         // Arrange
+        await SeedExampleCustomer();
         var id = Guid.NewGuid();
 
         // Act
@@ -46,9 +46,7 @@ public class CustomerReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>();
-        await Context.AddAsync(customer);
-        await UnitOfWork.SaveChangesAsync();
+        var customer = await SeedExampleCustomer();
 
         // Act
         var result = await customerReadRepository.GetById(customer.Id, CancellationToken.None);
@@ -66,9 +64,7 @@ public class CustomerReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNullByDelete()
     {
         // Arrange
-        var customer = TestEntityProvider.Shared.Create<Customer>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(customer);
-        await UnitOfWork.SaveChangesAsync();
+        var customer = await SeedExampleCustomer(withSoftDelete: true);
 
         // Act
         var result = await customerReadRepository.GetById(customer.Id, CancellationToken.None);
@@ -97,17 +93,12 @@ public class CustomerReadRepositoryTests : WorksContextInMemory
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var customer1 = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "Попов Александр Сергеевич");
-        var customer2 = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "Иванов Иван Иванович");
-        var customer3 = TestEntityProvider.Shared.Create<Customer>(x => x.FIO = "Каневская Мария Андреевна");
-        var customer4 = TestEntityProvider.Shared.Create<Customer>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.FIO = "Мизулин Константин Николаевич";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await SeedExampleCustomer();
+        }
 
-        await Context.AddRangeAsync(customer1, customer2, customer3, customer4);
-        await UnitOfWork.SaveChangesAsync();
+        await SeedExampleCustomer(withSoftDelete: true);
 
         // Act
         var result = await customerReadRepository.GetAll(CancellationToken.None);
@@ -116,6 +107,6 @@ public class CustomerReadRepositoryTests : WorksContextInMemory
         result.Should()
             .NotBeEmpty()
             .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.FIO);
+            .And.BeInAscendingOrder(x => x.FullName);
     }
 }

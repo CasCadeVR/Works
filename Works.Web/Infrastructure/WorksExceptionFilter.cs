@@ -1,10 +1,9 @@
 ﻿using CasCadeVR.Works.Services.Contracts.Exceptions;
-using CasCadeVR.Works.Web.Contracts.Models.Exceptions;
+using CasCadeVR.Works.Web.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Http;
 
-namespace CasCadeVR.Works.Web.Contracts.Infrastructure;
+namespace CasCadeVR.Works.Web.Infrastructure;
 
 /// <summary>
 /// Фильтр обработки ошибок
@@ -24,13 +23,6 @@ public class WorksExceptionFilter : IExceptionFilter
                 SetDataToContext(new NotFoundObjectResult(new ApiExceptionDetail(ex.Message))
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                }, context);
-                break;
-
-            case WorksInvalidOperationException ex:
-                SetDataToContext(new BadRequestObjectResult(new ApiExceptionDetail(ex.Message))
-                {
-                    StatusCode = StatusCodes.Status406NotAcceptable,
                 }, context);
                 break;
 

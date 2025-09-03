@@ -3,12 +3,12 @@
 /// <summary>
 /// Модель создания исполнителя
 /// </summary>
-public record ExecutorCreateModel()
+public class ExecutorCreateModel
 {
     /// <summary>
     /// ФИО
     /// </summary>
-    public string FIO { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
 
     /// <summary>
     /// Должность
@@ -23,5 +23,5 @@ public record ExecutorCreateModel()
     /// <summary>
     /// ОГРН
     /// </summary>
-    public string OGRN { get; set; } = string.Empty;
+    public string RegistrationNumber { get; set; } = string.Empty;
 }

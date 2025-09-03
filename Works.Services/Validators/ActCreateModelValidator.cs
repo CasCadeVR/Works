@@ -18,12 +18,12 @@ public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
             .WithMessage("Номер акта не должен быть пустым");
 
         RuleFor(act => act.Date)
-            .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow))
             .NotEmpty()
+            .Must(x => x <= DateOnly.FromDateTime(DateTime.UtcNow))
             .WithMessage("Дата заполнения не может быть в будущем");
 
-        RuleFor(act => act.NDS)
-            .GreaterThan(0)
-            .WithMessage("НДС не может быть меньше нуля");
+        RuleFor(act => act.ActWorks)
+            .Must(x => x.Any(y => y.Quantity >= 1))
+            .WithMessage("Нельзя добавить работу с количеством, меньше единицы");
     }
 }

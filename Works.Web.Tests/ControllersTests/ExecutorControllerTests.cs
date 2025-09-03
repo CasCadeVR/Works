@@ -17,6 +17,7 @@ public class ExecutorControllerTests
 {
     private readonly IWorksApiClient webClient;
     private readonly WorksContext context;
+    private readonly WorksApiFixture fixture;
 
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="ExecutorControllerTests"/>
@@ -25,6 +26,7 @@ public class ExecutorControllerTests
     {
         webClient = fixture.WebClient;
         context = fixture.Context;
+        this.fixture = fixture;
     }
 
     /// <summary>
@@ -34,27 +36,25 @@ public class ExecutorControllerTests
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await context.AddAsync(executor);
-        await context.SaveChangesAsync();
+        var executor = await fixture.SeedExampleExecutor();
 
         // Act
-        var respone = await webClient.ExecutorGETAsync(executor.Id);
+        var response = await webClient.ExecutorGETAsync(executor.Id);
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
            .And.BeEquivalentTo(executor, options => options
                .Excluding(x => x.CreatedAt)
                .Excluding(x => x.UpdatedAt)
                .Excluding(x => x.DeletedAt)
                .WithMapping<Executor, ExecutorApiModel>(
-            dest => dest.FIO,
-            src => src.Fio
+            dest => dest.FullName,
+            src => src.FullName
             )
                .WithMapping<Executor, ExecutorApiModel>(
-            dest => dest.OGRN,
-            src => src.Ogrn
+            dest => dest.RegistrationNumber,
+            src => src.RegistrationNumber
             )
            );
     }
@@ -66,73 +66,57 @@ public class ExecutorControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var executor1 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Попов Александр Сергеевич");
-        var executor2 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Иванов Иван Иванович");
-        var executor3 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Каневская Мария Андреевна");
-        var executor4 = TestEntityProvider.Shared.Create<Executor>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.FIO = "Мизулин Константин Николаевич";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await fixture.SeedExampleExecutor();
+        }
 
-        await context.AddRangeAsync(executor1, executor2, executor3, executor4);
-        await context.SaveChangesAsync();
+        await fixture.SeedExampleExecutor(withSoftDelete: true);
 
         // Act
-        var respone = await webClient.ExecutorAllAsync();
+        var response = await webClient.ExecutorAllAsync();
 
         // Assert
-        respone.Should()
+        response.Should()
             .NotBeEmpty()
-            .And.ContainSingle(x => x.Id == executor1.Id)
             .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.Fio);
+            .And.BeInAscendingOrder(x => x.FullName);
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.Create(Contracts.Models.Executors.ExecutorRequestApiModel, CancellationToken)"/>
+    /// Провереят работоспособность <see cref="ExecutorController.Create(Models.Executors.ExecutorCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
     {
         // Arrange
-        var request = TestEntityProvider.Shared.Create<ExecutorRequestApiModel>(x =>
-        {
-            x.Fio = "Иван Иванов";
-            x.Ogrn = "1234567890123";
-        });
+        var request = TestEntityProvider.Shared.Create<ExecutorCreateRequestApiModel>(x => x.RegistrationNumber = "1234567890124");
 
         // Act
-        var respone = await webClient.ExecutorPOSTAsync(request);
+        var response = await webClient.ExecutorPOSTAsync(request);
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
            .And.BeEquivalentTo(request);
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.Update(Guid, Contracts.Models.Executors.ExecutorRequestApiModel, CancellationToken)"/>
+    /// Провереят работоспособность <see cref="ExecutorController.Update(Guid, Models.Executors.ExecutorCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await context.AddAsync(executor);
-        await context.SaveChangesAsync();
+        var executor = await fixture.SeedExampleExecutor();
 
-        var request = TestEntityProvider.Shared.Create<ExecutorRequestApiModel>(x =>
-        {
-            x.Fio = "Сергей Иванов";
-            x.Ogrn = "1234567890123";
-        });
+        var request = TestEntityProvider.Shared.Create<ExecutorCreateRequestApiModel>(x => x.RegistrationNumber = "1234567890123");
 
         // Act
-        var respone = await webClient.ExecutorPUTAsync(executor.Id, request);
+        var response = await webClient.ExecutorPUTAsync(executor.Id, request);
 
         // Assert
-        respone.Should()
+        response.Should()
            .NotBeNull()
            .And.BeEquivalentTo(request);
     }
@@ -144,9 +128,7 @@ public class ExecutorControllerTests
     public async Task DeleteShouldReturnValues()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await context.AddAsync(executor);
-        await context.SaveChangesAsync();
+        var executor = await fixture.SeedExampleExecutor();
 
         // Act
         await webClient.ExecutorDELETEAsync(executor.Id);

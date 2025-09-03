@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Entities.Contracts;
 
 namespace CasCadeVR.Works.Context.Contracts;

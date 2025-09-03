@@ -4,8 +4,8 @@ using CasCadeVR.Works.Export.Contracts;
 using CasCadeVR.Works.Services.Contracts;
 using CasCadeVR.Works.Services.Contracts.IServices;
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
-using CasCadeVR.Works.Web.Contracts.Models.Acts;
-using CasCadeVR.Works.Web.Contracts.Models.Exceptions;
+using CasCadeVR.Works.Web.Models.Acts;
+using CasCadeVR.Works.Web.Models.Exceptions;
 
 namespace CasCadeVR.Works.Web.Controllers
 {
@@ -35,23 +35,20 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Экспортирует акт по идентификатору
         /// </summary>
-        /// GET: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpGet("{id:guid}/export")]
         [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> ExportById([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> ExportById([FromRoute]Guid id, CancellationToken cancellationToken)
         {
             var result = await service.GetById(id, cancellationToken);
-            var excelBytes = exporter.Export(mapper.Map<ActApiModel>(result));
-            var fileName = $"Act_{result.ActNumber}_{result.Date:yyyy-MM-dd}.xlsx";
+            var exportedData = exporter.Export(result);
 
-            return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            return File(exportedData.ExportedMemoryStream.ToArray(), exportedData.FileType, exportedData.FileName);
         }
 
         /// <summary>
         /// Получает акт по идентификатору
         /// </summary>
-        /// GET: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ActApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
@@ -65,7 +62,6 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Получает список всех актов
         /// </summary>
-        /// GET: /api/Act/
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ActApiModel>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll(CancellationToken cancellationToken)
@@ -79,16 +75,15 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Добавляет новый акт
         /// </summary>
-        /// POST: /api/Act/
         [HttpPost]
         [ProducesResponseType(typeof(ActApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status409Conflict)]
 
-        public async Task<ActionResult> Create(ActRequestApiModel request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(ActCreateRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestModel = mapper.Map<ActCreateModel>(request);
-            await validateService.Validate(requestModel, CancellationToken.None);
+            await validateService.Validate(requestModel, cancellationToken);
             var result = await service.Create(requestModel, cancellationToken);
 
             return Ok(mapper.Map<ActApiModel>(result));
@@ -97,21 +92,17 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Редактирует акт по идентификатору
         /// </summary>
-        /// PUT: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(ActApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]ActRequestApiModel request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]ActCreateRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestCreateModel = mapper.Map<ActCreateModel>(request);
-            await validateService.Validate(requestCreateModel, CancellationToken.None);
+            await validateService.Validate(requestCreateModel, cancellationToken);
 
-            var requestModel = mapper.Map<ActModel>(request);
-            requestModel.Id = id;
-
-            var result = await service.Update(requestModel, cancellationToken);
+            var result = await service.Update(id, requestCreateModel, cancellationToken);
 
             return Ok(mapper.Map<ActApiModel>(result));
         }
@@ -119,7 +110,6 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Удаляет акт по идентификатору
         /// </summary>
-        /// DELETE: /api/Act/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]

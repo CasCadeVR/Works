@@ -3,12 +3,12 @@
 /// <summary>
 /// Модель создания заказчика
 /// </summary>
-public record CustomerCreateModel()
+public class CustomerCreateModel
 {
     /// <summary>
     /// ФИО
     /// </summary>
-    public string FIO { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
 
     /// <summary>
     /// Должность
@@ -23,5 +23,5 @@ public record CustomerCreateModel()
     /// <summary>
     /// ИНН
     /// </summary>
-    public string INN { get; set; } = string.Empty;
+    public string TaxPayerId { get; set; } = string.Empty;
 }

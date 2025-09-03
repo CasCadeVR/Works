@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CasCadeVR.Works.Context.Contracts;
+using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 using CasCadeVR.Works.Services.Contracts.Exceptions;
@@ -13,6 +14,7 @@ namespace CasCadeVR.Works.Services.Services
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOfMeasureReadRepository unitOfMeasureReadRepository;
         private readonly IWorksReadRepository readRepository;
         private readonly IWorksWriteRepository writeRepository;
 
@@ -22,11 +24,13 @@ namespace CasCadeVR.Works.Services.Services
         public WorksServices(
             IMapper mapper,
             IUnitOfWork unitOfWork,
+            IUnitOfMeasureReadRepository unitOfMeasureReadRepository,
             IWorksReadRepository readRepository,
             IWorksWriteRepository writeRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.unitOfMeasureReadRepository = unitOfMeasureReadRepository;
             this.readRepository = readRepository;
             this.writeRepository = writeRepository;
         }
@@ -34,7 +38,7 @@ namespace CasCadeVR.Works.Services.Services
         async Task<WorksModel> IWorksServices.GetById(Guid id, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(id, cancellationToken)
-                 ?? throw new WorksNotFoundException($"Не удалось найти работу с иденитификатором {id}");
+                 ?? throw new WorksNotFoundException($"Не удалось найти работу с идентификатором {id}");
 
             return mapper.Map<WorksModel>(entity);
         }
@@ -47,44 +51,51 @@ namespace CasCadeVR.Works.Services.Services
 
         async Task<WorksModel> IWorksServices.Create(WorksCreateModel model, CancellationToken cancellationToken)
         {
-            var result = new Entities.Work
+            if (await readRepository.Any(x => x.Name == model.Name, cancellationToken))
             {
-                Id = Guid.NewGuid(),
-                Name = model.Name,
-                Description = model.Description,
-                Price = model.Price,
-                UnitOfMeasure = model.UnitOfMeasure,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                DeletedAt = null,
-            };
+                throw new WorksDuplicateException($"Работа с наименованием {model.Name} уже существует");
+            }
+
+            var exisitngUnitOfMeasure = await unitOfMeasureReadRepository.GetById(model.UnitOfMeasureId, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти единицу измерения с идентификатором {model.UnitOfMeasureId}");
+
+            var result = mapper.Map<Work>(model);
+            result.UnitOfMeasureId = model.UnitOfMeasureId;
+            result.UnitOfMeasure = exisitngUnitOfMeasure;
 
             writeRepository.Add(result);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return mapper.Map<WorksModel>(result);
         }
 
-        async Task<WorksModel> IWorksServices.Update(WorksModel model, CancellationToken cancellationToken)
+        async Task<WorksModel> IWorksServices.Update(Guid id, WorksCreateModel model, CancellationToken cancellationToken)
         {
-            var entity = await readRepository.GetById(model.Id, cancellationToken)
-                ?? throw new WorksNotFoundException($"Не удалось найти работу с иденитификатором {model.Id}");
+            if (await readRepository.Any(x => x.Name == model.Name, cancellationToken))
+            {
+                throw new WorksDuplicateException($"Работа с наименованием {model.Name} уже существует");
+            }
+
+            var exisitngUnitOfMeasure = await unitOfMeasureReadRepository.GetById(model.UnitOfMeasureId, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти единицу измерения с идентификатором {model.UnitOfMeasureId}");
+
+            var entity = await readRepository.GetById(id, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти работу с идентификатором {id}");
 
             entity.Name = model.Name;
             entity.Description = model.Description;
             entity.Price = model.Price;
-            entity.UnitOfMeasure = model.UnitOfMeasure;
-            entity.UpdatedAt = DateTime.Now;
+            entity.UnitOfMeasureId = model.UnitOfMeasureId;
+            entity.UnitOfMeasure = exisitngUnitOfMeasure;
 
             writeRepository.Update(entity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-
             return mapper.Map<WorksModel>(entity);
         }
 
         async Task IWorksServices.Delete(Guid id, CancellationToken cancellationToken)
         {
             var entity = await readRepository.GetById(id, cancellationToken)
-               ?? throw new WorksNotFoundException($"Не удалось найти работу с иденитификатором {id}");
+               ?? throw new WorksNotFoundException($"Не удалось найти работу с идентификатором {id}");
 
             writeRepository.Delete(entity);
             await unitOfWork.SaveChangesAsync(cancellationToken);

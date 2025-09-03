@@ -8,4 +8,8 @@
 	<AssemblyName>Works.Common</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Works.Common.Contracts\Works.Common.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

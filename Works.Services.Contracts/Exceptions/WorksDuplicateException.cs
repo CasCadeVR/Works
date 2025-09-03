@@ -9,12 +9,5 @@ public class WorksDuplicateException : WorksException
     /// Инициализирует новый экземпляр <see cref="WorksDuplicateException"/>
     /// </summary>
     public WorksDuplicateException(string message)
-    {
-        Message = message;
-    }
-
-    /// <summary>
-    /// Сообщение об ошибке
-    /// </summary>
-    public override string Message { get; } = string.Empty;
+        : base(message) { }
 }

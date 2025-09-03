@@ -7,7 +7,7 @@
 /// <param name="Description">Описание</param>
 /// <param name="Price">Цена</param>
 /// <param name="UnitOfMeasure">Единица измерения</param>
-public record WorksRequestApiModel(
+public record WorkCreateRequestApiModel(
     string Name, 
     string Description, 
     decimal Price, 

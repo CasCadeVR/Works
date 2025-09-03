@@ -1,18 +1,18 @@
 ﻿using Ahatornn.TestGenerator;
 using AutoMapper;
-using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Context.Tests;
+using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.ReadRepositories;
 using CasCadeVR.Works.Repository.WriteRepositories;
-using FluentAssertions;
+using CasCadeVR.Works.Services.Contracts.Exceptions;
+using CasCadeVR.Works.Services.Contracts.IServices;
+using CasCadeVR.Works.Services.Contracts.Models.Executors;
 using CasCadeVR.Works.Services.Infrastructure;
+using CasCadeVR.Works.Services.Services;
+using FluentAssertions;
 using Moq;
 using Xunit;
-using CasCadeVR.Works.Entities;
-using CasCadeVR.Works.Services.Contracts.Exceptions;
-using CasCadeVR.Works.Services.Contracts.Models.Executors;
-using CasCadeVR.Works.Services.Services;
-using CasCadeVR.Works.Services.Contracts.IServices;
 
 namespace CasCadeVR.Works.Services.Tests.Services;
 
@@ -48,10 +48,11 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task GetByIdShouldThrow()
     {
         // Arrange
+        await SeedExampleExecutor();
         var id = Guid.NewGuid();
 
         // Act
-        Func<Task> act = () => service.GetById(id, CancellationToken.None);
+        var act = () => service.GetById(id, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
@@ -64,9 +65,7 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await Context.AddAsync(executor);
-        await UnitOfWork.SaveChangesAsync();
+        var executor = await SeedExampleExecutor();
 
         // Act
         var result = await service.GetById(executor.Id, CancellationToken.None);
@@ -82,18 +81,16 @@ public class ExecutorServicesTests : WorksContextInMemory
     }
 
     /// <summary>
-    /// Проверяет, что GetById падёт с ошибкой WorksNotFoundExceptions при мягком удалении
+    /// Проверяет, что GetById падёт с ошибкой WorksNotFoundExceptions при "мягком" удалении
     /// </summary>
     [Fact]
-    public async Task GetByIdShouldReturnNullByDelete()
+    public async Task GetByIdShouldThrowNotFound()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(executor);
-        await UnitOfWork.SaveChangesAsync();
+        var executor = await SeedExampleExecutor(withSoftDelete: true);
 
         // Act
-        Func<Task> act = () => service.GetById(executor.Id, CancellationToken.None);
+        var act = () => service.GetById(executor.Id, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{executor.Id}*");
@@ -119,17 +116,12 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var executor1 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Попов Александр Сергеевич");
-        var executor2 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Иванов Иван Иванович");
-        var executor3 = TestEntityProvider.Shared.Create<Executor>(x => x.FIO = "Каневская Мария Андреевна");
-        var executor4 = TestEntityProvider.Shared.Create<Executor>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.FIO = "Мизулин Константин Николаевич";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await SeedExampleExecutor();
+        }
 
-        await Context.AddRangeAsync(executor1, executor2, executor3, executor4);
-        await UnitOfWork.SaveChangesAsync();
+        await SeedExampleExecutor(withSoftDelete: true);
 
         // Act
         var result = await service.GetAll(CancellationToken.None);
@@ -138,7 +130,24 @@ public class ExecutorServicesTests : WorksContextInMemory
         result.Should()
             .NotBeEmpty()
             .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.FIO);
+            .And.BeInAscendingOrder(x => x.FullName);
+    }
+
+    /// <summary>
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о дупликате
+    /// </summary>
+    [Fact]
+    public async Task CreateShouldThrowByRegistrationNumber()
+    {
+        // Arrange
+        var executor = await SeedExampleExecutor();
+        var request = TestEntityProvider.Shared.Create<ExecutorCreateModel>(x => x.RegistrationNumber = executor.RegistrationNumber);
+
+        // Act
+        var act = () => service.Create(request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{request.RegistrationNumber}*");
     }
 
     /// <summary>
@@ -166,13 +175,32 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task UpdateShouldThrow()
     {
         // Arrange
-        var request = TestEntityProvider.Shared.Create<ExecutorModel>(x => x.Id = Guid.NewGuid());
+        await SeedExampleExecutor();
+        var id = Guid.NewGuid();
+        var request = TestEntityProvider.Shared.Create<ExecutorCreateModel>();
 
         // Act
-        Func<Task<ExecutorModel>> act = () => service.Update(request, CancellationToken.None);
+        var act = () => service.Update(id, request, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{request.Id}*");
+        await act.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
+    }
+
+    /// <summary>
+    /// Проверяет, что cоздание экземпляра падает с ошибкой о дупликате
+    /// </summary>
+    [Fact]
+    public async Task UpdateShouldThrowByRegistrationNumber()
+    {
+        // Arrange
+        var executor = await SeedExampleExecutor();
+        var request = TestEntityProvider.Shared.Create<ExecutorCreateModel>(x => x.RegistrationNumber = executor.RegistrationNumber);
+
+        // Act
+        var act = () => service.Update(executor.Id, request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{request.RegistrationNumber}*");
     }
 
     /// <summary>
@@ -182,14 +210,11 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task UpdateShouldWork()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await Context.AddAsync(executor);
-        await UnitOfWork.SaveChangesAsync();
+        var executor = await SeedExampleExecutor();
+        var model = TestEntityProvider.Shared.Create<ExecutorCreateModel>();
 
         // Act
-        var model = TestEntityProvider.Shared.Create<ExecutorModel>(x => x.Id = executor.Id);
-
-        var result = await service.Update(model, CancellationToken.None);
+        var result = await service.Update(executor.Id, model, CancellationToken.None);
 
         // Assert
         result.Should()
@@ -204,10 +229,11 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task DeleteShouldThrow()
     {
         // Arrange
+        await SeedExampleExecutor();
         var id = Guid.NewGuid();
 
         // Act
-        Func<Task> act = () => service.Delete(id, CancellationToken.None);
+        var act = () => service.Delete(id, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
@@ -220,9 +246,7 @@ public class ExecutorServicesTests : WorksContextInMemory
     public async Task DeleteShouldWork()
     {
         // Arrange
-        var executor = TestEntityProvider.Shared.Create<Executor>();
-        await Context.AddAsync(executor);
-        await UnitOfWork.SaveChangesAsync();
+        var executor = await SeedExampleExecutor();
 
         // Act
         await service.Delete(executor.Id, CancellationToken.None);

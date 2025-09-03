@@ -1,9 +1,11 @@
-﻿namespace CasCadeVR.Works.Services.Contracts.Models.Works;
+﻿using CasCadeVR.Works.Services.Contracts.Models.UnitOfMeasure;
+
+namespace CasCadeVR.Works.Services.Contracts.Models.Works;
 
 /// <summary>
 /// Модель работы
 /// </summary>
-public class WorksModel()
+public class WorksModel : WorksCreateModel
 {
     /// <summary>
     /// Идентификатор
@@ -11,22 +13,7 @@ public class WorksModel()
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Именования
+    /// Объект передачи данных <see cref="UnitOfMeasure"/>
     /// </summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Описание
-    /// </summary>
-    public string Description { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Цена
-    /// </summary>
-    public decimal Price { get; set; }
-
-    /// <summary>
-    /// Единица измерения
-    /// </summary>
-    public string UnitOfMeasure { get; set; } = string.Empty;
+    public UnitOfMeasureModel UnitOfMeasure { get; set; } = null!;
 }

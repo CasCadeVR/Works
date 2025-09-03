@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using CasCadeVR.Works.Context.Tests;
 using Xunit;
-using Ahatornn.TestGenerator;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.ReadRepositories;
@@ -30,6 +29,7 @@ public class ActReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNull()
     {
         // Arrange
+        await SeedExampleAct();
         var id = Guid.NewGuid();
 
         // Act
@@ -46,17 +46,13 @@ public class ActReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnValue()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>();
-        await Context.AddAsync(act);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct();
 
         // Act
         var result = await actReadRepository.GetById(act.Id, CancellationToken.None);
 
         // Assert
-        result.Should()
-            .NotBeNull()
-            .And.BeEquivalentTo(act);
+        result.Should().BeEquivalentTo(act);
     }
 
     /// <summary>
@@ -66,9 +62,7 @@ public class ActReadRepositoryTests : WorksContextInMemory
     public async Task GetByIdShouldReturnNullByDelete()
     {
         // Arrange
-        var act = TestEntityProvider.Shared.Create<Act>(x => x.DeletedAt = DateTimeOffset.UtcNow);
-        await Context.AddAsync(act);
-        await UnitOfWork.SaveChangesAsync();
+        var act = await SeedExampleAct(withSoftDelete: true);
 
         // Act
         var result = await actReadRepository.GetById(act.Id, CancellationToken.None);
@@ -97,25 +91,19 @@ public class ActReadRepositoryTests : WorksContextInMemory
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
-        var work1 = TestEntityProvider.Shared.Create<Act>(x => x.ActNumber = "1");
-        var work2 = TestEntityProvider.Shared.Create<Act>(x => x.ActNumber = "2");
-        var work3 = TestEntityProvider.Shared.Create<Act>(x => x.ActNumber = "3");
-        var work4 = TestEntityProvider.Shared.Create<Act>(x =>
+        for (int i = 0; i < 3; i++)
         {
-            x.ActNumber = "3";
-            x.DeletedAt = DateTimeOffset.UtcNow;
-        });
+            await SeedExampleAct();
+        }
 
-        await Context.AddRangeAsync(work1, work2, work3, work4);
-        await UnitOfWork.SaveChangesAsync();
+        await SeedExampleAct(withSoftDelete: true);
 
         // Act
         var result = await actReadRepository.GetAll(CancellationToken.None);
 
         // Assert
         result.Should()
-            .NotBeEmpty()
-            .And.HaveCount(3)
+            .HaveCount(3)
             .And.BeInAscendingOrder(x => x.ActNumber);
     }
 }

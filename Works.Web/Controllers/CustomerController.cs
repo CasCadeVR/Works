@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using CasCadeVR.Works.Services.Contracts;
-using CasCadeVR.Works.Web.Contracts.Models.Exceptions;
+using CasCadeVR.Works.Web.Models.Exceptions;
 using CasCadeVR.Works.Services.Contracts.Models.Customers;
 using CasCadeVR.Works.Services.Contracts.IServices;
-using CasCadeVR.Works.Web.Contracts.Models.Customers;
+using CasCadeVR.Works.Web.Models.Customers;
 
 namespace CasCadeVR.Works.Web.Controllers
 {
@@ -32,7 +32,6 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Получает заказчика по идентификатору
         /// </summary>
-        /// GET: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(CustomerApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
@@ -46,7 +45,6 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Получает список всех заказчиков
         /// </summary>
-        /// GET: /api/Customer/
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<CustomerApiModel>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll(CancellationToken cancellationToken)
@@ -59,14 +57,13 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Добавляет нового заказчика
         /// </summary>
-        /// POST: /api/Customer/
         [HttpPost]
         [ProducesResponseType(typeof(CustomerApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<ActionResult> Create(CustomerRequestApiModel request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(CustomerCreateRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestModel = mapper.Map<CustomerCreateModel>(request);
-            await validateService.Validate(requestModel, CancellationToken.None);
+            await validateService.Validate(requestModel, cancellationToken);
             var result = await service.Create(requestModel, cancellationToken);
 
             return Ok(mapper.Map<CustomerApiModel>(result));
@@ -75,20 +72,16 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Редактирует заказчика по идентификатору
         /// </summary>
-        /// PUT: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(CustomerApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] CustomerRequestApiModel request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] CustomerCreateRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestCreateModel = mapper.Map<CustomerCreateModel>(request);
-            await validateService.Validate(requestCreateModel, CancellationToken.None);
+            await validateService.Validate(requestCreateModel, cancellationToken);
 
-            var requestModel = mapper.Map<CustomerModel>(request);
-            requestModel.Id = id;
-
-            var result = await service.Update(requestModel, cancellationToken);
+            var result = await service.Update(id, requestCreateModel, cancellationToken);
 
             return Ok(mapper.Map<CustomerApiModel>(result));
         }
@@ -96,7 +89,6 @@ namespace CasCadeVR.Works.Web.Controllers
         /// <summary>
         /// Удаляет заказчика по идентификатору
         /// </summary>
-        /// DELETE: /api/Customer/c2331ea8-a98d-4c3e-baea-d88f5665947
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]

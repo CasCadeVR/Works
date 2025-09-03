@@ -1,4 +1,4 @@
-﻿namespace CasCadeVR.Works.Common;
+﻿namespace CasCadeVR.Works.Common.Contracts;
 
 /// <summary>
 /// Поставщик времени 

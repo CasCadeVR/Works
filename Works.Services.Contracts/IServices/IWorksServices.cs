@@ -25,7 +25,7 @@ public interface IWorksServices
     /// <summary>
     /// Редактирует существующий <see cref="WorksModel"/>
     /// </summary>
-    Task<WorksModel> Update(WorksModel model, CancellationToken cancellationToken);
+    Task<WorksModel> Update(Guid id, WorksCreateModel model, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет существующий <see cref="WorksModel"/>

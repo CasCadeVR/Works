@@ -37,7 +37,7 @@ namespace CasCadeVR.Works.Context.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FIO")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -47,7 +47,7 @@ namespace CasCadeVR.Works.Context.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("INN")
+                    b.Property<string>("TaxPayerId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -61,11 +61,11 @@ namespace CasCadeVR.Works.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "FIO" }, "IX_Customer_DeletedAt")
+                    b.HasIndex(new[] { "FullName" }, "IX_Customer_DeletedAt")
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 
-                    b.HasIndex(new[] { "INN" }, "IX_INN_DeletedAt")
+                    b.HasIndex(new[] { "TaxPayerId" }, "IX_INN_DeletedAt")
                         .IsUnique()
                         .HasFilter("\"DeletedAt\" IS NULL");
 

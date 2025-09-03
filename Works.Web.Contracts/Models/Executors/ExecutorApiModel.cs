@@ -4,14 +4,14 @@
 /// Модель исполнителя
 /// </summary>
 /// <param name="Id">Идентификатор</param>
-/// <param name="FIO">ФИО</param>
+/// <param name="FullName">Фамилия, имя, отчество</param>
 /// <param name="Occupation">Должность</param>
 /// <param name="Firm">Фирма</param>
-/// <param name="OGRN">ОГРН</param>
+/// <param name="RegistrationNumber">ОГРН</param>
 public record ExecutorApiModel(
     Guid Id, 
-    string FIO, 
+    string FullName, 
     string Occupation, 
     string Firm, 
-    string OGRN
+    string RegistrationNumber
 );

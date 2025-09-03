@@ -7,7 +7,7 @@ namespace CasCadeVR.Works.Services.Contracts.Models.Acts;
 /// <summary>
 /// Модель акта
 /// </summary>
-public class ActModel()
+public class ActModel
 {
     /// <summary>
     /// Идентификатор
@@ -25,37 +25,27 @@ public class ActModel()
     public DateOnly Date { get; set; }
 
     /// <summary>
-    /// Навигационное свойство <see cref="ExecutorModel"/>
+    /// Идентификатор исполнителя
     /// </summary>
-    public ExecutorModel Executor { get; set; } = new ExecutorModel();
+    public Guid ExecutorId { get; set; }
 
     /// <summary>
-    /// Навигационное свойство <see cref="CustomerModel"/>
+    /// Идентификатор заказчика
     /// </summary>
-    public CustomerModel Customer { get; set; } = new CustomerModel();
+    public Guid CustomerId { get; set; }
 
     /// <summary>
-    /// Навигационное свойство списка <see cref="ActWorksModel"/>
+    /// Объект передачи данных <see cref="ExecutorModel"/>
     /// </summary>
-    public ICollection<ActWorksModel> Works { get; set; } = new List<ActWorksModel>();
+    public ExecutorModel Executor { get; set; } = null!;
 
     /// <summary>
-    /// Полная сумма (без ндс)
+    /// Объект передачи данных <see cref="CustomerModel"/>
     /// </summary>
-    public decimal TotalPrice => Works?.Sum(x => x.TotalPrice) ?? 0;
+    public CustomerModel Customer { get; set; } = null!;
 
     /// <summary>
-    /// НДС (в процентах)
+    /// Объект передачи данных списка <see cref="ActWorksModel"/>
     /// </summary>
-    public decimal NDS { get; set; }
-    
-    /// <summary>
-    /// Полная сумма c ндс
-    /// </summary>
-    public decimal PriceNDS => TotalPrice * NDS / 100;
-
-    /// <summary>
-    /// Полная сумма c ндс
-    /// </summary>
-    public decimal TotalPriceNDS => TotalPrice + PriceNDS;
+    public ICollection<ActWorksModel> ActWorks { get; set; } = null!;
 }

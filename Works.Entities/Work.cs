@@ -5,11 +5,8 @@ namespace CasCadeVR.Works.Entities
     /// <summary>
     /// Сущность работы
     /// </summary>
-    public class Work : IEntityWithId, IEntityWithAudit, IEntitySoftDeleted
+    public class Work : DataBaseEntity
     {
-        /// <inheritdoc cref="IEntityWithId.Id"/>
-        public Guid Id { get; set; }
-
         /// <summary>
         /// Наименование работы
         /// </summary>
@@ -26,17 +23,13 @@ namespace CasCadeVR.Works.Entities
         public decimal Price { get; set; } = 0;
 
         /// <summary>
-        /// Единица измерения
+        /// Идентификатор <see cref="UnitOfMeasure"/>
         /// </summary>
-        public string UnitOfMeasure { get; set; } = string.Empty;
+        public Guid UnitOfMeasureId { get; set; }
 
-        /// <inheritdoc cref="IEntityWithAudit.CreatedAt"/>
-        public DateTimeOffset CreatedAt { get; set; }
-
-        /// <inheritdoc cref="IEntityWithAudit.UpdatedAt"/>
-        public DateTimeOffset UpdatedAt { get; set; }
-
-        /// <inheritdoc cref="IEntitySoftDeleted.DeletedAt"/>
-        public DateTimeOffset? DeletedAt { get; set; }
+        /// <summary>
+        /// Навигационное свойство <see cref="UnitOfMeasure"/>
+        /// </summary>
+        public UnitOfMeasure UnitOfMeasure { get; set; } = null!;
     }
 }
