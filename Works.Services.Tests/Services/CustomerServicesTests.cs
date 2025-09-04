@@ -38,7 +38,9 @@ public class CustomerServicesTests : WorksContextInMemory
         service = new CustomerService(mapper,
             UnitOfWork,
             new CustomerReadRepository(Context),
-            new CustomerWriteRepository(Context, Mock.Of<IDateTimeProvider>()));
+            new CustomerWriteRepository(Context, Mock.Of<IDateTimeProvider>()),
+            new ActReadRepository(Context),
+            new ActWriteRepository(Context, Mock.Of<IDateTimeProvider>()));
     }
 
     /// <summary>

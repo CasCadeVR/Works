@@ -17,6 +17,9 @@ public class WorksApiFixture: IAsyncLifetime
     private readonly TestWebApplicationFactory factory;
     private WorksContext? context;
 
+    /// <inheritdoc cref="IUnitOfWork"/>
+    protected IUnitOfWork UnitOfWork => Context;
+
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="WorksApiFixture"/>
     /// </summary>
@@ -62,7 +65,7 @@ public class WorksApiFixture: IAsyncLifetime
         }
 
         await Context.AddAsync(unitOfMeasure);
-        await Context.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync();
 
         return unitOfMeasure;
     }
@@ -81,7 +84,7 @@ public class WorksApiFixture: IAsyncLifetime
         }
 
         await Context.AddAsync(customer);
-        await Context.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync();
 
         return customer;
     }
@@ -100,7 +103,7 @@ public class WorksApiFixture: IAsyncLifetime
         }
 
         await Context.AddAsync(executor);
-        await Context.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync();
 
         return executor;
     }
@@ -124,7 +127,7 @@ public class WorksApiFixture: IAsyncLifetime
         }
 
         await Context.AddRangeAsync(unitOfMeasure, work);
-        await Context.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync();
 
         return work;
     }
@@ -171,7 +174,7 @@ public class WorksApiFixture: IAsyncLifetime
         }
 
         await Context.AddRangeAsync(customer, executor, unitOfMeasure, work, actWork, act);
-        await Context.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync();
 
         act.ActWorks.First().Act = null!;
 

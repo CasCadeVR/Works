@@ -27,6 +27,8 @@ namespace CasCadeVR.Works.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -66,7 +68,9 @@ namespace CasCadeVR.Works.Web
                 opt.Filters.Add<WorksExceptionFilter>();
             });
 
-            if (builder.Environment.EnvironmentName == "integration")
+            var itegrationEnviroment = builder.Configuration.GetValue<string>("Enviroments:IntegrationEnviroment");
+
+            if (builder.Environment.EnvironmentName == itegrationEnviroment)
             {
                 addedControllers.AddControllersAsServices();
             }

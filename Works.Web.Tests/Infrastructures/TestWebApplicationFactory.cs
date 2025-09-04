@@ -17,7 +17,6 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     /// <inheritdoc cref="WebApplicationFactory{TEntryPoint}.CreateHost"/>
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        builder.UseEnvironment("integration");
         return base.CreateHost(builder);
     }
 
@@ -39,7 +38,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             services.AddSingleton(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString("IntergrationConnection");
+                var connectionString = configuration.GetValue<string>("ConnectionStrings:IntergrationConnection");
                 var dbContextOptions = new DbContextOptions<WorksContext>(new Dictionary<Type, IDbContextOptionsExtension>());
                 var optionsBuilder = new DbContextOptionsBuilder<WorksContext>(dbContextOptions)
                 .UseApplicationServiceProvider(provider)

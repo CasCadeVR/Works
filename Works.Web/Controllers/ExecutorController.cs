@@ -58,11 +58,12 @@ namespace CasCadeVR.Works.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ExecutorApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status409Conflict)]
         public async Task<ActionResult> Create(ExecutorCreateRequestApiModel request, CancellationToken cancellationToken)
         {
-            var requestModel = mapper.Map<ExecutorCreateModel>(request);
-            await validateService.Validate(requestModel, cancellationToken);
-            var result = await service.Create(requestModel, cancellationToken);
+            var requestCreateModel = mapper.Map<ExecutorCreateModel>(request);
+            await validateService.Validate(requestCreateModel, cancellationToken);
+            var result = await service.Create(requestCreateModel, cancellationToken);
 
             return Ok(mapper.Map<ExecutorApiModel>(result));
         }
@@ -74,11 +75,11 @@ namespace CasCadeVR.Works.Web.Controllers
         [ProducesResponseType(typeof(ExecutorApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationExceptionDetail), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] ExecutorCreateRequestApiModel request, CancellationToken cancellationToken)
         {
             var requestCreateModel = mapper.Map<ExecutorCreateModel>(request);
             await validateService.Validate(requestCreateModel, cancellationToken);
-
             var result = await service.Update(id, requestCreateModel, cancellationToken);
 
             return Ok(mapper.Map<ExecutorApiModel>(result));

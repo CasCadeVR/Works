@@ -135,12 +135,11 @@ namespace CasCadeVR.Works.Services.Services
                 actWorkWriteRepository.Add(actWork);
             }
 
-            var actWorksToKeep = modelActWorks.Select(x => x.WorkId);
-            var actWorksToDelete = databaseEntity.ActWorks.Where(x => !actWorksToKeep.Contains(x.WorkId)).ToList();
+            var actWorksIdsToDelete = existingActWorks.Select(x => x.WorkId).Except(modelActWorks.Select(x => x.WorkId));
 
-            foreach (var actWork in actWorksToDelete)
+            foreach (var actWorkId in actWorksIdsToDelete)
             {
-                actWorkWriteRepository.Delete(actWork);
+                actWorkWriteRepository.Delete(existingActWorksDictionary[actWorkId]);
             }
 
             writeRepository.Update(databaseEntity);

@@ -21,6 +21,10 @@ namespace CasCadeVR.Works.Entities.Configuration
                 .IsRequired()
                 .HasMaxLength(WorkValidationRules.NameMaxLength);
 
+            builder.Property(x => x.Description).IsRequired();
+
+            builder.Property(x => x.Price).IsRequired();
+
             builder.HasOne(x => x.UnitOfMeasure)
                 .WithMany()
                 .HasForeignKey(x => x.UnitOfMeasureId);

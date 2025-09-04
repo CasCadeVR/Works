@@ -24,7 +24,6 @@ public class DependenciesTests : IClassFixture<WebApplicationFactory<Program>>
         this.factory = factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestAppConfiguration();
-            builder.UseEnvironment("integration");
         });
     }
 

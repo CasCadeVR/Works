@@ -3,6 +3,7 @@ using AutoMapper;
 using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Context.Tests;
 using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Entities.Configuration;
 using CasCadeVR.Works.Repository.ReadRepositories;
 using CasCadeVR.Works.Repository.WriteRepositories;
 using CasCadeVR.Works.Services.Contracts.Exceptions;
@@ -38,7 +39,10 @@ public class ExecutorServicesTests : WorksContextInMemory
         service = new ExecutorServices(mapper,
             UnitOfWork,
             new ExecutorReadRepository(Context),
-            new ExecutorWriteRepository(Context, Mock.Of<IDateTimeProvider>()));
+            new ExecutorWriteRepository(Context, Mock.Of<IDateTimeProvider>()),
+            new ActReadRepository(Context),
+            new ActWriteRepository(Context, Mock.Of<IDateTimeProvider>())
+            );
     }
 
     /// <summary>

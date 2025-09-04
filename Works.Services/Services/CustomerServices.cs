@@ -16,6 +16,8 @@ namespace CasCadeVR.Works.Services.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly ICustomerReadRepository readRepository;
         private readonly ICustomerWriteRepository writeRepository;
+        private readonly IActReadRepository actReadRepository;
+        private readonly IActWriteRepository actWriteRepository;
 
         /// <summary>
         /// Инициализирует новый экземпляр <see cref="CustomerService"/>
@@ -24,12 +26,16 @@ namespace CasCadeVR.Works.Services.Services
             IMapper mapper,
             IUnitOfWork unitOfWork,
             ICustomerReadRepository readRepository,
-            ICustomerWriteRepository writeRepository)
+            ICustomerWriteRepository writeRepository,
+            IActReadRepository actReadRepository,
+            IActWriteRepository actWriteRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.readRepository = readRepository;
             this.writeRepository = writeRepository;
+            this.actReadRepository = actReadRepository;
+            this.actWriteRepository = actWriteRepository;
         }
 
         async Task<CustomerModel> ICustomerServices.GetById(Guid id, CancellationToken cancellationToken)
@@ -87,6 +93,17 @@ namespace CasCadeVR.Works.Services.Services
                ?? throw new WorksNotFoundException($"Не удалось найти заказчика с идентификатором {id}");
 
             writeRepository.Delete(entity);
+
+            var existingActs = await actReadRepository.GetAll(cancellationToken);
+
+            foreach (var act in existingActs)
+            {
+                if (act.CustomerId == id)
+                {
+                    actWriteRepository.Delete(act);
+                }
+            }
+
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

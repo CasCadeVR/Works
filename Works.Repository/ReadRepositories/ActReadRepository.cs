@@ -115,6 +115,6 @@ public class ActReadRepository : IActReadRepository
             UpdatedAt = x.UpdatedAt,
             DeletedAt = x.DeletedAt,
         })
-        .OrderBy(x => x.ActNumber)
+        .OrderBy(x => x.Date)
         .ToReadOnlyCollectionAsync(cancellationToken);
 }

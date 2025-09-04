@@ -104,6 +104,6 @@ public class ActReadRepositoryTests : WorksContextInMemory
         // Assert
         result.Should()
             .HaveCount(3)
-            .And.BeInAscendingOrder(x => x.ActNumber);
+            .And.BeInAscendingOrder(x => x.Date);
     }
 }

@@ -111,7 +111,7 @@ public class ActControllerTests
         response.Should()
            .NotBeEmpty()
            .And.HaveCount(3)
-           .And.BeInAscendingOrder(x => x.ActNumber);
+           .And.BeInAscendingOrder(x => x.Date);
     }
 
     /// <summary>
@@ -208,10 +208,10 @@ public class ActControllerTests
             .And.BeEquivalentTo(requestActWorks, opt => opt.Excluding(x => x.WorkId));
     }
 
-        /// <summary>
-        /// Провереят работоспособность <see cref="ActController.Delete(Guid, CancellationToken)"/>
-        /// </summary>
-        [Fact]
+    /// <summary>
+    /// Провереят работоспособность <see cref="ActController.Delete(Guid, CancellationToken)"/>
+    /// </summary>
+    [Fact]
     public async Task DeleteShouldReturnValues()
     {
         // Arrange
@@ -221,7 +221,6 @@ public class ActControllerTests
         await webClient.ActDELETEAsync(act.Id);
 
         // Assert
-        context.Entry(act).Reload();
         var newValue = context.Set<Act>().Single(x => x.Id == act.Id);
         newValue.DeletedAt.Should().NotBeNull();
     }

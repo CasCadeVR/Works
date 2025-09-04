@@ -176,7 +176,7 @@ public class ActServicesTests : WorksContextInMemory
         result.Should()
             .NotBeEmpty()
             .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.ActNumber);
+            .And.BeInAscendingOrder(x => x.Date);
     }
 
     /// <summary>
@@ -420,14 +420,14 @@ public class ActServicesTests : WorksContextInMemory
     {
         // Arrange
         var act = await SeedExampleAct();
+
+        var requestActWork = act.ActWorks.First();
         var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
         {
             x.CustomerId = act.CustomerId;
             x.ExecutorId = act.ExecutorId;
-            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = act.ActWorks.First().Work.Id)];
+            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = requestActWork.Work.Id)];
         });
-
-        var requestActWork = request.ActWorks.First();
 
         // Act
         var result = await service.Update(act.Id, request, CancellationToken.None);

@@ -55,7 +55,6 @@ namespace CasCadeVR.Works.Web.Controllers
         public async Task<ActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await service.GetById(id, cancellationToken);
-
             return Ok(mapper.Map<ActApiModel>(result));
         }
 
@@ -82,9 +81,9 @@ namespace CasCadeVR.Works.Web.Controllers
 
         public async Task<ActionResult> Create(ActCreateRequestApiModel request, CancellationToken cancellationToken)
         {
-            var requestModel = mapper.Map<ActCreateModel>(request);
-            await validateService.Validate(requestModel, cancellationToken);
-            var result = await service.Create(requestModel, cancellationToken);
+            var validateService = mapper.Map<ActCreateModel>(request);
+            await this.validateService.Validate(validateService, cancellationToken);
+            var result = await service.Create(validateService, cancellationToken);
 
             return Ok(mapper.Map<ActApiModel>(result));
         }
@@ -101,7 +100,6 @@ namespace CasCadeVR.Works.Web.Controllers
         {
             var requestCreateModel = mapper.Map<ActCreateModel>(request);
             await validateService.Validate(requestCreateModel, cancellationToken);
-
             var result = await service.Update(id, requestCreateModel, cancellationToken);
 
             return Ok(mapper.Map<ActApiModel>(result));
