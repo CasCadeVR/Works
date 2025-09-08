@@ -1,9 +1,8 @@
 ﻿using CasCadeVR.Works.Context.Contracts;
-using CasCadeVR.Works.Entities;
 
 namespace CasCadeVR.Works.Repository.Contracts.IWriteRepositories;
 
 /// <summary>
-/// Репозиторий записи <see cref="UnitOfMeasure"/>
+/// Репозиторий записи <see cref="Entities.UnitOfMeasure"/>
 /// </summary>
-public interface IUnitOfMeasureWriteRepository : IDBWriter<UnitOfMeasure> { }
+public interface IUnitOfMeasureWriteRepository : IDBWriter<Entities.UnitOfMeasure> { }

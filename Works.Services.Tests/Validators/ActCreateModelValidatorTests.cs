@@ -79,6 +79,37 @@ public class ActCreateModelValidatorTests
     }
 
     /// <summary>
+    /// Тест на дубликаты работ
+    /// </summary>
+    [Fact]
+    public async Task DuplicateShouldHaveErrorMessages()
+    {
+        // Arrange
+        var workId = Guid.NewGuid();
+        var model = new ActCreateModel
+        {
+            ActWorks = [
+                new ActWorksCreateModel()
+                {
+                    Quantity = 1,
+                    WorkId = workId,
+                },
+                new ActWorksCreateModel()
+                {
+                    Quantity = 2,
+                    WorkId = workId,
+                },
+            ],
+        };
+
+        // Act
+        var result = await validator.TestValidateAsync(model);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.ActWorks);
+    }
+
+    /// <summary>
     /// Тест на отсутствие ошибок
     /// </summary>
     [Fact]

@@ -12,6 +12,8 @@ using CasCadeVR.Works.Services.Contracts.Models.Acts;
 using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 using CasCadeVR.Works.Services.Contracts.Models.Customers;
 using CasCadeVR.Works.Services.Contracts.Models.Executors;
+using CasCadeVR.Works.Services.Contracts.Models.UnitOfMeasure;
+using CasCadeVR.Works.Services.Contracts.Models.Works;
 using CasCadeVR.Works.Services.Infrastructure;
 using CasCadeVR.Works.Services.Services;
 using FluentAssertions;
@@ -77,53 +79,52 @@ public class ActServicesTests : WorksContextInMemory
         var act = await SeedExampleAct();
         var existingActWork = act.ActWorks.First();
 
+        var expectedResult = new ActModel
+        {
+            Id = act.Id,
+            ActNumber = act.ActNumber,
+            Date = act.Date,
+            Customer = new CustomerModel
+            {
+                Id = act.Customer.Id,
+                FullName = act.Customer.FullName,
+                Firm = act.Customer.Firm,
+                Occupation = act.Customer.Occupation,
+                TaxPayerId = act.Customer.TaxPayerId,
+            },
+            Executor = new ExecutorModel
+            {
+                Id = act.Executor.Id,
+                FullName = act.Executor.FullName,
+                Firm = act.Executor.Firm,
+                Occupation = act.Executor.Occupation,
+                RegistrationNumber = act.Executor.RegistrationNumber,
+            },
+            ActWorks = [new ActWorksModel {
+                Id = existingActWork.Id,
+                Quantity = existingActWork.Quantity,
+                Work = new WorksModel
+                {
+                    Id = existingActWork.Work.Id,
+                    Name = existingActWork.Work.Name,
+                    Description = existingActWork.Work.Description,
+                    Price = existingActWork.Work.Price,
+                    UnitOfMeasure = new UnitOfMeasureModel
+                    {
+                        Id = existingActWork.Work.UnitOfMeasure.Id,
+                        Name = existingActWork.Work.UnitOfMeasure.Name,
+                    },
+                },
+            }]
+        };
+
         // Act
         var result = await service.GetById(act.Id, CancellationToken.None);
-        var resultActWork = result.ActWorks.First();
 
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(new 
-            {
-                Id = act.Id,
-                ActNumber = act.ActNumber,
-                Date = act.Date,
-                Customer = new
-                {
-                    FullName = act.Customer.FullName,
-                    Firm = act.Customer.Firm,
-                    Occupation = act.Customer.Occupation,
-                    TaxPayerId = act.Customer.TaxPayerId,
-                },
-                Executor = new
-                {
-                    FullName = act.Executor.FullName,
-                    Firm = act.Executor.Firm,
-                    Occupation = act.Executor.Occupation,
-                    RegistrationNumber = act.Executor.RegistrationNumber,
-                },
-            });
-
-        resultActWork.Should()
-            .NotBeNull()
-            .And.BeEquivalentTo(new
-            {
-                Quantity = resultActWork.Quantity,
-                Work = new
-                {
-                    Id = resultActWork.Work.Id,
-                    Name = resultActWork.Work.Name,
-                    Description = resultActWork.Work.Description,
-                    Price = resultActWork.Work.Price,
-                    UnitOfMeasureId = resultActWork.Work.UnitOfMeasureId,
-                    UnitOfMeasure = new
-                    {
-                        Id = resultActWork.Work.UnitOfMeasure.Id,
-                        Name = resultActWork.Work.UnitOfMeasure.Name,
-                    },
-                },
-            });
+            .And.BeEquivalentTo(expectedResult);
     }
 
     /// <summary>
@@ -197,32 +198,6 @@ public class ActServicesTests : WorksContextInMemory
     }
 
     /// <summary>
-    /// Проверяет, что cоздание экземпляра падает с ошибкой о дупликате работ
-    /// </summary>
-    [Fact]
-    public async Task CreateShouldThrowByWorksDuplicate()
-    {
-        // Arrange
-        var customer = await SeedExampleCustomer();
-        var executor = await SeedExampleExecutor();
-        var work = await SeedExampleWork();
-
-        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
-        {
-            x.CustomerId = customer.Id;
-            x.ExecutorId = executor.Id;
-            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id),
-                TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id)];
-        });
-
-        // Act
-        var acttion = () => service.Create(request, CancellationToken.None);
-
-        // Assert
-        await acttion.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{work.Id}*");
-    }
-
-    /// <summary>
     /// Проверяет, что cоздание экземпляра падает с ошибкой о ненахождении работ
     /// </summary>
     [Fact]
@@ -275,7 +250,11 @@ public class ActServicesTests : WorksContextInMemory
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.ActWorks));
+            .And.BeEquivalentTo(request, opt => opt
+            .Excluding(x => x.ActWorks)
+            .Excluding(x => x.ExecutorId)
+            .Excluding(x => x.CustomerId)
+            );
 
         resultActWork
             .Should()
@@ -324,33 +303,6 @@ public class ActServicesTests : WorksContextInMemory
 
         // Assert
         await acttion.Should().ThrowAsync<WorksNotFoundException>().WithMessage($"*{id}*");
-    }
-
-    /// <summary>
-    /// Проверяет, что редактирование экземпляра падает с ошибкой о дупликате работ
-    /// </summary>
-    [Fact]
-    public async Task UpdateShouldThrowByWorksDuplicate()
-    {
-        // Arrange
-        var act = await SeedExampleAct();
-        var customer = await SeedExampleCustomer();
-        var executor = await SeedExampleExecutor();
-        var work = await SeedExampleWork();
-
-        var request = TestEntityProvider.Shared.Create<ActCreateModel>(x =>
-        {
-            x.CustomerId = customer.Id;
-            x.ExecutorId = executor.Id;
-            x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id),
-                TestEntityProvider.Shared.Create<ActWorksCreateModel>(y => y.WorkId = work.Id)];
-        });
-
-        // Act
-        var acttion = () => service.Update(act.Id, request, CancellationToken.None);
-
-        // Assert
-        await acttion.Should().ThrowAsync<WorksDuplicateException>().WithMessage($"*{work.Id}*");
     }
 
     /// <summary>
@@ -436,7 +388,11 @@ public class ActServicesTests : WorksContextInMemory
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.ActWorks));
+            .And.BeEquivalentTo(request, opt => opt
+            .Excluding(x => x.ActWorks)
+            .Excluding(x => x.ExecutorId)
+            .Excluding(x => x.CustomerId)
+            );
 
         requestActWork.Should()
             .NotBeNull()

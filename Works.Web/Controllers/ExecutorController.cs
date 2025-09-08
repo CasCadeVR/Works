@@ -12,7 +12,7 @@ namespace CasCadeVR.Works.Web.Controllers
     /// CRUD контроллер по работе с исполнителями
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class ExecutorController : ControllerBase
     {
         private readonly IExecutorServices service;

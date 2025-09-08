@@ -8,6 +8,11 @@ namespace CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 public class ActWorksModel
 {
     /// <summary>
+    /// Идентификатор
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
     /// Объект передачи данных <see cref="WorksModel"/>
     /// </summary>
     public WorksModel Work { get; set; } = null!;

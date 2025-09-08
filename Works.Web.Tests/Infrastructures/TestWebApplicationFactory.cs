@@ -42,7 +42,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                 var dbContextOptions = new DbContextOptions<WorksContext>(new Dictionary<Type, IDbContextOptionsExtension>());
                 var optionsBuilder = new DbContextOptionsBuilder<WorksContext>(dbContextOptions)
                 .UseApplicationServiceProvider(provider)
-                .UseNpgsql(connectionString: string.Format(connectionString!, Guid.NewGuid().ToString("N")));
+                .UseNpgsql(string.Format(connectionString!, Guid.NewGuid().ToString("N")));
 
                 return optionsBuilder.Options;
             });

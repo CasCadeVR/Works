@@ -23,7 +23,11 @@ public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
             .WithMessage("Дата заполнения не может быть в будущем");
 
         RuleFor(act => act.ActWorks)
-            .Must(x => x.Any(y => y.Quantity >= 1))
+            .Must(x => x.All(y => y.Quantity >= 1))
             .WithMessage("Нельзя добавить работу с количеством, меньше единицы");
+
+        RuleFor(act => act.ActWorks)
+           .Must(x => x.Select(x => x.WorkId).Distinct().Count() == x.Count())
+           .WithMessage("Нельзя добавить работу с количеством, меньше единицы");
     }
 }

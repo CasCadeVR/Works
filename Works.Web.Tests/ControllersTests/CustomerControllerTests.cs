@@ -30,7 +30,7 @@ public class CustomerControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="CustomerController.GetById(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="CustomerController.GetById(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetByIdShouldReturnValues()
@@ -54,7 +54,7 @@ public class CustomerControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="CustomerController.GetAll(CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="CustomerController.GetAll(CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetAllShouldReturnValues()
@@ -78,7 +78,7 @@ public class CustomerControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="CustomerController.Create(Models.Customers.CustomerCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="CustomerController.Create(Models.Customers.CustomerCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
@@ -96,7 +96,7 @@ public class CustomerControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="CustomerController.Update(Guid, Models.Customers.CustomerCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="CustomerController.Update(Guid, Models.Customers.CustomerCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
@@ -116,7 +116,7 @@ public class CustomerControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="CustomerController.Delete(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="CustomerController.Delete(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task DeleteShouldReturnValues()

@@ -24,36 +24,22 @@ public class ApiMapper : Profile
     /// </summary>
     public ApiMapper()
     {
-        CreateMap<UnitOfMeasureModel, UnitOfMeasureApiModel>(MemberList.Destination).ReverseMap();
-        CreateMap<UnitOfMeasureCreateRequestApiModel, UnitOfMeasureCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<UnitOfMeasureCreateRequestApiModel, UnitOfMeasureModel>(MemberList.Destination)
-            .ForMember(x => x.Id, opt => opt.Ignore());
+        CreateMap<UnitOfMeasureModel, UnitOfMeasureApiModel>(MemberList.Destination);
+        CreateMap<UnitOfMeasureCreateRequestApiModel, UnitOfMeasureCreateModel>(MemberList.Destination);
 
-        CreateMap<WorksModel, WorkApiModel>(MemberList.Destination).ReverseMap();
-        CreateMap<WorkCreateRequestApiModel, WorksCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<WorkCreateRequestApiModel, WorksModel>(MemberList.Destination)
-            .ForMember(x => x.UnitOfMeasure, opt => opt.MapFrom(y => new UnitOfMeasureModel { Id = y.UnitOfMeasureId }))
-            .ForMember(x => x.Id, opt => opt.Ignore());
+        CreateMap<WorksModel, WorkApiModel>(MemberList.Destination);
+        CreateMap<WorkCreateRequestApiModel, WorksCreateModel>(MemberList.Destination);
 
-        CreateMap<CustomerModel, CustomerApiModel>(MemberList.Destination).ReverseMap();
-        CreateMap<CustomerCreateRequestApiModel, CustomerCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<CustomerCreateRequestApiModel, CustomerModel>(MemberList.Destination)
-            .ForMember(x => x.Id, opt => opt.Ignore());
+        CreateMap<CustomerModel, CustomerApiModel>(MemberList.Destination);
+        CreateMap<CustomerCreateRequestApiModel, CustomerCreateModel>(MemberList.Destination);
 
-        CreateMap<ExecutorModel, ExecutorApiModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ExecutorCreateRequestApiModel, ExecutorCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ExecutorCreateRequestApiModel, ExecutorModel>(MemberList.Destination)
-            .ForMember(x => x.Id, opt => opt.Ignore());
+        CreateMap<ExecutorModel, ExecutorApiModel>(MemberList.Destination);
+        CreateMap<ExecutorCreateRequestApiModel, ExecutorCreateModel>(MemberList.Destination);
 
-        CreateMap<ActWorksModel, ActWorksApiModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ActWorksCreateRequestApiModel, ActWorksCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ActWorksCreateRequestApiModel, ActWorksModel>(MemberList.Destination)
-            .ForMember(x => x.Work, opt => opt.MapFrom(y => new WorksModel { Id = y.WorkId }));
+        CreateMap<ActWorksModel, ActWorksApiModel>(MemberList.Destination);
+        CreateMap<ActWorksCreateRequestApiModel, ActWorksCreateModel>(MemberList.Destination);
 
-        CreateMap<ActModel, ActApiModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ActCreateRequestApiModel, ActCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ActCreateRequestApiModel, ActModel>(MemberList.Destination)
-            .ForMember(x => x.Executor, opt => opt.MapFrom(y => new ExecutorModel { Id = y.ExecutorId }))
-            .ForMember(x => x.Customer, opt => opt.MapFrom(y => new CustomerModel { Id = y.CustomerId }));
+        CreateMap<ActModel, ActApiModel>(MemberList.Destination);
+        CreateMap<ActCreateRequestApiModel, ActCreateModel>(MemberList.Destination);
     }
 }

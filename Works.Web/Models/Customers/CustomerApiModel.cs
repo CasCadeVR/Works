@@ -14,4 +14,4 @@ public record CustomerApiModel(
     string Occupation, 
     string Firm, 
     string TaxPayerId
-);
+) : CustomerCreateRequestApiModel(FullName, Occupation, Firm, TaxPayerId);

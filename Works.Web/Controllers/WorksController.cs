@@ -12,7 +12,7 @@ namespace CasCadeVR.Works.Web.Controllers
     /// CRUD контроллер по работе с работами
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class WorksController : ControllerBase
     {
         private readonly IWorksServices service;

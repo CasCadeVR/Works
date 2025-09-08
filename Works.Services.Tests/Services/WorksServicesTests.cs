@@ -78,6 +78,7 @@ public class WorksServicesTests : WorksContextInMemory
                 .Excluding(x => x.CreatedAt)
                 .Excluding(x => x.UpdatedAt)
                 .Excluding(x => x.DeletedAt)
+                .Excluding(x => x.UnitOfMeasureId)
                 .Excluding(x => x.UnitOfMeasure.CreatedAt)
                 .Excluding(x => x.UnitOfMeasure.UpdatedAt)
                 .Excluding(x => x.UnitOfMeasure.DeletedAt)
@@ -170,7 +171,7 @@ public class WorksServicesTests : WorksContextInMemory
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(request);
+            .And.BeEquivalentTo(request, opt => opt.Excluding(x => x.UnitOfMeasureId));
     }
 
     /// <summary>
@@ -225,7 +226,7 @@ public class WorksServicesTests : WorksContextInMemory
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(model);
+            .And.BeEquivalentTo(model, opt => opt.Excluding(x => x.UnitOfMeasureId));
     }
 
     /// <summary>

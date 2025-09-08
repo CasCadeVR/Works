@@ -30,7 +30,7 @@ public class WorksControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.GetById(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="WorksController.GetById(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetByIdShouldReturnValues()
@@ -56,7 +56,7 @@ public class WorksControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.GetAll(CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="WorksController.GetAll(CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetAllShouldReturnValues()
@@ -80,7 +80,7 @@ public class WorksControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.Create(Models.Works.WorkCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="WorksController.Create(Models.Works.WorkCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
@@ -103,7 +103,7 @@ public class WorksControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.Update(Guid, Models.Works.WorkCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="WorksController.Update(Guid, Models.Works.WorkCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
@@ -127,7 +127,7 @@ public class WorksControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="WorksController.Delete(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="WorksController.Delete(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task DeleteShouldReturnValues()

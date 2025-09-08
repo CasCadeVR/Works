@@ -91,8 +91,6 @@ namespace CasCadeVR.Works.Services.Services
 
             foreach (var actWork in result.ActWorks)
             {
-                actWork.ActId = result.Id;
-                actWork.WorkId = actWork.WorkId;
                 actWorkWriteRepository.Add(actWork);
             }
 
@@ -107,8 +105,10 @@ namespace CasCadeVR.Works.Services.Services
 
         async Task<ActModel> IActServices.Update(Guid id, ActCreateModel model, CancellationToken cancellationToken)
         {
-            var databaseEntity = await readRepository.GetById(id, cancellationToken)
+            var databaseResponseEntity = await readRepository.GetById(id, cancellationToken)
                ?? throw new WorksNotFoundException($"Не удалось найти акт с идентификатором {id}");
+
+            var databaseEntity = mapper.Map<Act>(databaseResponseEntity);
 
             await ValidateConnections(model, cancellationToken);
 
@@ -128,11 +128,12 @@ namespace CasCadeVR.Works.Services.Services
                 {
                     foundActWork.Quantity = actWork.Quantity;
                     actWorkWriteRepository.Update(foundActWork);
-                    continue;
+                } 
+                else
+                {
+                    actWork.ActId = databaseEntity.Id;
+                    actWorkWriteRepository.Add(actWork);
                 }
-
-                actWork.ActId = databaseEntity.Id;
-                actWorkWriteRepository.Add(actWork);
             }
 
             var actWorksIdsToDelete = existingActWorks.Select(x => x.WorkId).Except(modelActWorks.Select(x => x.WorkId));
@@ -145,25 +146,26 @@ namespace CasCadeVR.Works.Services.Services
             writeRepository.Update(databaseEntity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var updatedEntity = await readRepository.GetById(databaseEntity.Id, cancellationToken)
-                ?? throw new InvalidOperationException($"Не удалось найти акт с идентификатором {databaseEntity.Id}");
+            var updatedEntity = await readRepository.GetById(databaseEntity.Id, cancellationToken)!;
 
             return mapper.Map<ActModel>(updatedEntity);
         }
 
         async Task IActServices.Delete(Guid id, CancellationToken cancellationToken)
         {
-            var entity = await readRepository.GetById(id, cancellationToken)
+            var databaseResponseEntity = await readRepository.GetById(id, cancellationToken)
                ?? throw new WorksNotFoundException($"Не удалось найти акт с идентификатором {id}");
 
-            var existingActWorks = entity.ActWorks.ToList();
+            var databaseEntity = mapper.Map<Act>(databaseResponseEntity);
+
+            var existingActWorks = databaseEntity.ActWorks.ToList();
 
             foreach (var existingActWork in existingActWorks)
             {
                 actWorkWriteRepository.Delete(existingActWork);
             }
 
-            writeRepository.Delete(entity);
+            writeRepository.Delete(databaseEntity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
@@ -190,16 +192,9 @@ namespace CasCadeVR.Works.Services.Services
 
             var workIdsInDatabase = existingWorks.Select(x => x.Id);
 
-            var modelWorkIdsDistinct = modelWorkIds.Distinct().ToList();
+            var missingIds = modelWorkIds.Except(workIdsInDatabase);
 
-            if (modelWorkIds.Count != modelWorkIdsDistinct.Count)
-            {
-                throw new WorksDuplicateException($"Нельзя использовать одну и ту же работу с входящми идентификаторами: ({string.Join(", ", modelWorkIds)}) более 1 раза");
-            }
-
-            var missingIds = modelWorkIds.Except(workIdsInDatabase).ToList();
-
-            if (missingIds.Count > 0)
+            if (missingIds.Any())
             {
                 throw new WorksNotFoundException($"Не удалось найти работы с идентификаторами: {string.Join(", ", missingIds)}");
             }

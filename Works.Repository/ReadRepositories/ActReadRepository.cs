@@ -2,6 +2,7 @@
 using CasCadeVR.Works.Context.Contracts;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
+using CasCadeVR.Works.Repository.Contracts.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CasCadeVR.Works.Repository.ReadRepositories;
@@ -24,97 +25,57 @@ public class ActReadRepository : IActReadRepository
         .NotDeletedAt()
         .AnyAsync(action, cancellationToken);
 
-    Task<Act?> IActReadRepository.GetById(Guid id, CancellationToken cancellationToken)
+    Task<ActDbModel?> IActReadRepository.GetById(Guid id, CancellationToken cancellationToken)
          => reader.Read<Act>()
         .NotDeletedAt()
-        .Select(x => new Act
+        .Select(x => new ActDbModel
         {
             Id = x.Id,
             ActNumber = x.ActNumber,
             Date = x.Date,
             Executor = x.Executor,
-            ExecutorId = x.ExecutorId,
             Customer = x.Customer,
-            CustomerId = x.CustomerId,
-            ActWorks = x.ActWorks.Where(y => y.DeletedAt == null).Select(y => new ActWork
+            ActWorks = x.ActWorks.Where(y => y.DeletedAt == null).Select(y => new ActWorkDbModel
             {
                 Id = y.Id,
                 Quantity = y.Quantity,
-                WorkId = y.WorkId,
-                ActId = x.Id,
-                Work = new Work
+                Work = new WorkDbModel
                 {
                     Id = y.Work.Id,
                     Name = y.Work.Name,
                     Description = y.Work.Description,
                     Price = y.Work.Price,
-                    UnitOfMeasureId = y.Work.UnitOfMeasureId,
-                    UnitOfMeasure = new UnitOfMeasure
-                    {
-                        Id = y.Work.UnitOfMeasure.Id,
-                        Name = y.Work.UnitOfMeasure.Name,
-                        CreatedAt = y.Work.UnitOfMeasure.CreatedAt,
-                        UpdatedAt = y.Work.UnitOfMeasure.UpdatedAt,
-                        DeletedAt = y.Work.UnitOfMeasure.DeletedAt,
-                    },
-                    CreatedAt = y.Work.CreatedAt,
-                    UpdatedAt = y.Work.UpdatedAt,
-                    DeletedAt = y.Work.DeletedAt,
+                    UnitOfMeasure = y.Work.UnitOfMeasure,
                 },
-                CreatedAt = y.CreatedAt,
-                UpdatedAt = y.UpdatedAt,
-                DeletedAt = y.DeletedAt,
-            }).ToList(),
-            CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt,
-            DeletedAt = x.DeletedAt,
+            }) .ToList(),
         })
         .ById(id)
         .FirstOrDefaultAsync(cancellationToken);
 
-    Task<IReadOnlyCollection<Act>> IActReadRepository.GetAll(CancellationToken cancellationToken)
+    Task<IReadOnlyCollection<ActDbModel>> IActReadRepository.GetAll(CancellationToken cancellationToken)
         => reader.Read<Act>()
         .NotDeletedAt()
-        .Select(x => new Act
-        {
-            Id = x.Id,
-            ActNumber = x.ActNumber,
-            Date = x.Date,
-            Executor = x.Executor,
-            Customer = x.Customer,
-            ActWorks = x.ActWorks.Where(y => y.DeletedAt == null).Select(y => new ActWork
-            {
-                Id = y.Id,
-                Quantity = y.Quantity,
-                WorkId = y.WorkId,
-                ActId = x.Id,
-                Work = new Work
-                {
-                    Id = y.Work.Id,
-                    Name = y.Work.Name,
-                    Description = y.Work.Description,
-                    Price = y.Work.Price,
-                    UnitOfMeasureId = y.Work.UnitOfMeasureId,
-                    UnitOfMeasure = new UnitOfMeasure
-                    {
-                        Id = y.Work.UnitOfMeasure.Id,
-                        Name = y.Work.UnitOfMeasure.Name,
-                        CreatedAt = y.Work.UnitOfMeasure.CreatedAt,
-                        UpdatedAt = y.Work.UnitOfMeasure.UpdatedAt,
-                        DeletedAt = y.Work.UnitOfMeasure.DeletedAt,
-                    },
-                    CreatedAt = y.Work.CreatedAt,
-                    UpdatedAt = y.Work.UpdatedAt,
-                    DeletedAt = y.Work.DeletedAt,
-                },
-                CreatedAt = y.CreatedAt,
-                UpdatedAt = y.UpdatedAt,
-                DeletedAt = y.DeletedAt,
-            }).ToList(),
-            CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt,
-            DeletedAt = x.DeletedAt,
-        })
+       .Select(x => new ActDbModel
+       {
+           Id = x.Id,
+           ActNumber = x.ActNumber,
+           Date = x.Date,
+           Executor = x.Executor,
+           Customer = x.Customer,
+           ActWorks = x.ActWorks.Where(y => y.DeletedAt == null).Select(y => new ActWorkDbModel
+           {
+               Id = y.Id,
+               Quantity = y.Quantity,
+               Work = new WorkDbModel
+               {
+                   Id = y.Work.Id,
+                   Name = y.Work.Name,
+                   Description = y.Work.Description,
+                   Price = y.Work.Price,
+                   UnitOfMeasure = y.Work.UnitOfMeasure,
+               },
+           }).ToList(),
+       })
         .OrderBy(x => x.Date)
         .ToReadOnlyCollectionAsync(cancellationToken);
 }

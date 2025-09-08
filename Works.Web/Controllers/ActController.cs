@@ -13,7 +13,7 @@ namespace CasCadeVR.Works.Web.Controllers
     /// CRUD контроллер по работе с актами
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class ActController : ControllerBase
     {
         private readonly IActServices service;
@@ -52,7 +52,7 @@ namespace CasCadeVR.Works.Web.Controllers
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ActApiModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetById([FromRoute]Guid id, CancellationToken cancellationToken)
         {
             var result = await service.GetById(id, cancellationToken);
             return Ok(mapper.Map<ActApiModel>(result));

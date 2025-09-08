@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using FluentAssertions;
 using CasCadeVR.Works.Web.Controllers;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;

@@ -14,4 +14,4 @@ public record ExecutorApiModel(
     string Occupation, 
     string Firm, 
     string RegistrationNumber
-);
+) : ExecutorCreateRequestApiModel(FullName, Occupation, Firm, RegistrationNumber);

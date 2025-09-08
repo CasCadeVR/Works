@@ -25,16 +25,6 @@ public class ActModel
     public DateOnly Date { get; set; }
 
     /// <summary>
-    /// Идентификатор исполнителя
-    /// </summary>
-    public Guid ExecutorId { get; set; }
-
-    /// <summary>
-    /// Идентификатор заказчика
-    /// </summary>
-    public Guid CustomerId { get; set; }
-
-    /// <summary>
     /// Объект передачи данных <see cref="ExecutorModel"/>
     /// </summary>
     public ExecutorModel Executor { get; set; } = null!;

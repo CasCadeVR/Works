@@ -12,7 +12,7 @@ namespace CasCadeVR.Works.Web.Controllers
     /// CRUD контроллер по работе с единицами измерения
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class UnitOfMeasureController : ControllerBase
     {
         private readonly IUnitOfMeasureServices service;

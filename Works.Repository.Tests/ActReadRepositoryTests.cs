@@ -4,6 +4,7 @@ using Xunit;
 using CasCadeVR.Works.Entities;
 using CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 using CasCadeVR.Works.Repository.ReadRepositories;
+using CasCadeVR.Works.Repository.Contracts.Models;
 
 namespace CasCadeVR.Works.Repository.Tests;
 
@@ -47,12 +48,35 @@ public class ActReadRepositoryTests : WorksContextInMemory
     {
         // Arrange
         var act = await SeedExampleAct();
+        var existingActWork = act.ActWorks.First();
+
+        var expectedResult = new ActDbModel
+        {
+            Id = act.Id,
+            ActNumber = act.ActNumber,
+            Date = act.Date,
+            Customer = act.Customer,
+            Executor = act.Executor,
+            ActWorks = act.ActWorks.Select(y => new ActWorkDbModel
+            {
+                Id = y.Id,
+                Quantity = y.Quantity,
+                Work = new WorkDbModel
+                {
+                    Id = y.Work.Id,
+                    Name = y.Work.Name,
+                    Description = y.Work.Description,
+                    Price = y.Work.Price,
+                    UnitOfMeasure = y.Work.UnitOfMeasure,
+                }
+            }).ToList(),
+        };
 
         // Act
         var result = await actReadRepository.GetById(act.Id, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(act);
+        result.Should().BeEquivalentTo(expectedResult);
     }
 
     /// <summary>

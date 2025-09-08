@@ -30,7 +30,7 @@ public class UnitOfMeasureControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="UnitOfMeasureController.GetById(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="UnitOfMeasureController.GetById(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetByIdShouldReturnValue()
@@ -56,7 +56,7 @@ public class UnitOfMeasureControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="UnitOfMeasureController.GetAll(CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="UnitOfMeasureController.GetAll(CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetAllShouldReturnValues()
@@ -80,7 +80,7 @@ public class UnitOfMeasureControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="UnitOfMeasureController.Create(Models.UnitOfMeasure.UnitOfMeasureCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="UnitOfMeasureController.Create(Models.UnitOfMeasure.UnitOfMeasureCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
@@ -98,7 +98,7 @@ public class UnitOfMeasureControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="UnitOfMeasureController.Update(Guid, Models.UnitOfMeasure.UnitOfMeasureCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="UnitOfMeasureController.Update(Guid, Models.UnitOfMeasure.UnitOfMeasureCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
@@ -118,7 +118,7 @@ public class UnitOfMeasureControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="UnitOfMeasureController.Delete(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="UnitOfMeasureController.Delete(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task DeleteShouldReturnValues()

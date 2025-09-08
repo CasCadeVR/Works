@@ -9,8 +9,6 @@ namespace CasCadeVR.Works.Services.Validators;
 /// </summary>
 public class ExecutorCreateModelValidator : AbstractValidator<ExecutorCreateModel>
 {
-    
-
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="ExecutorCreateModelValidator"/>
     /// </summary>

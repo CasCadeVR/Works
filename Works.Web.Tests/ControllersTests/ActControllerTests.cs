@@ -6,7 +6,6 @@ using CasCadeVR.Works.Web.Tests.Client;
 using CasCadeVR.Works.Web.Tests.Infrastructures;
 using FluentAssertions;
 using Xunit;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CasCadeVR.Works.Web.Tests.ControllersTests;
 
@@ -115,7 +114,7 @@ public class ActControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.Create(Models.Acts.ActCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ActController.Create(Models.Acts.ActCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
@@ -162,7 +161,7 @@ public class ActControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.Update(Guid, Models.Acts.ActCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ActController.Update(Guid, Models.Acts.ActCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
@@ -209,7 +208,7 @@ public class ActControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ActController.Delete(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ActController.Delete(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task DeleteShouldReturnValues()

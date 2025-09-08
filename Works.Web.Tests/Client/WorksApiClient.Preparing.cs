@@ -3,7 +3,7 @@
 namespace CasCadeVR.Works.Web.Tests.Client;
 
 /// <summary>
-/// Дополнение для <see cref="WorksApiClient"/> для реализации подготовки к запросу
+/// Имитация клиента для Api запросов
 /// </summary>
 partial class WorksApiClient
 {

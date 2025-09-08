@@ -12,7 +12,7 @@ namespace CasCadeVR.Works.Web.Controllers
     /// CRUD контроллер по работе с заказчиками
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerServices service;

@@ -6,6 +6,7 @@ using CasCadeVR.Works.Services.Contracts.Models.Executors;
 using CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
 using CasCadeVR.Works.Services.Contracts.Models.UnitOfMeasure;
+using CasCadeVR.Works.Repository.Contracts.Models;
 
 namespace CasCadeVR.Works.Services.Infrastructure;
 
@@ -19,38 +20,31 @@ public class ServiceProfile : Profile
     /// </summary>
     public ServiceProfile()
     {
-        CreateMap<UnitOfMeasureModel, UnitOfMeasureCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<UnitOfMeasureCreateModel, UnitOfMeasure>(MemberList.Source)
-            .ForMember(x => x.Id, opt => opt.Ignore());
-        CreateMap<UnitOfMeasure, UnitOfMeasureModel>(MemberList.Destination).ReverseMap();
+        CreateMap<UnitOfMeasureCreateModel, UnitOfMeasure>(MemberList.Source);
+        CreateMap<UnitOfMeasure, UnitOfMeasureModel>(MemberList.Destination);
 
-        CreateMap<WorksModel, WorksCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<WorksCreateModel, Work>(MemberList.Source)
-            .ForMember(x => x.Id, opt => opt.Ignore());
+        CreateMap<WorksCreateModel, Work>(MemberList.Source);
         CreateMap<Work, WorksModel>(MemberList.Destination);
 
-        CreateMap<CustomerModel, CustomerCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<CustomerCreateModel, Customer>(MemberList.Source)
-            .ForMember(x => x.Id, opt => opt.Ignore());
-        CreateMap<Customer, CustomerModel>(MemberList.Destination).ReverseMap();
+        CreateMap<CustomerCreateModel, Customer>(MemberList.Source);
+        CreateMap<Customer, CustomerModel>(MemberList.Destination);
 
-        CreateMap<ExecutorModel, ExecutorCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ExecutorCreateModel, Executor>(MemberList.Source)
-            .ForMember(x => x.Id, opt => opt.Ignore());
-        CreateMap<Executor, ExecutorModel>(MemberList.Destination).ReverseMap();
+        CreateMap<ExecutorCreateModel, Executor>(MemberList.Source);
+        CreateMap<Executor, ExecutorModel>(MemberList.Destination);
 
-        CreateMap<ActWorksModel, ActWorksCreateModel>(MemberList.Destination).ReverseMap();
-        CreateMap<ActWork, ActWorksCreateModel>(MemberList.Destination);
-        CreateMap<ActWorksCreateModel, ActWork>(MemberList.Source)
-            .ForMember(x => x.Id, opt => opt.Ignore())
-            .ForMember(x => x.Work, opt => opt.Ignore())
-            .ForMember(x => x.ActId, opt => opt.Ignore())
-            .ForMember(x => x.Act, opt => opt.Ignore());
+        CreateMap<ActWorksCreateModel, ActWork>(MemberList.Source);
+        CreateMap<ActWorksModel, ActWorksCreateModel>(MemberList.Destination);
+        CreateMap<ActWork, ActWorksModel>(MemberList.Destination);
 
-        CreateMap<ActWork, ActWorksModel>(MemberList.Destination).ReverseMap();
-
-        CreateMap<ActModel, ActCreateModel>(MemberList.Destination).ReverseMap();
+        CreateMap<ActModel, ActCreateModel>(MemberList.Destination);
         CreateMap<Act, ActModel>(MemberList.Destination);
 
+        CreateMap<ActDbModel, Act>(MemberList.Source);
+        CreateMap<ActDbModel, ActModel>(MemberList.Source);
+        CreateMap<ActWorkDbModel, ActWork>(MemberList.Source);
+        CreateMap<ActWorkDbModel, ActWorksModel>(MemberList.Source);
+
+        CreateMap<WorkDbModel, Work>(MemberList.Source);
+        CreateMap<WorkDbModel, WorksModel>(MemberList.Source);
     }
 }

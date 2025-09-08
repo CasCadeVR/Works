@@ -30,7 +30,7 @@ public class ExecutorControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.GetById(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ExecutorController.GetById(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetByIdShouldReturnValue()
@@ -60,7 +60,7 @@ public class ExecutorControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.GetAll(CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ExecutorController.GetAll(CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task GetAllShouldReturnValues()
@@ -84,7 +84,7 @@ public class ExecutorControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.Create(Models.Executors.ExecutorCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ExecutorController.Create(Models.Executors.ExecutorCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task CreateShouldReturnValues()
@@ -102,7 +102,7 @@ public class ExecutorControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.Update(Guid, Models.Executors.ExecutorCreateRequestApiModel, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ExecutorController.Update(Guid, Models.Executors.ExecutorCreateRequestApiModel, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task UpdateShouldReturnValues()
@@ -122,7 +122,7 @@ public class ExecutorControllerTests
     }
 
     /// <summary>
-    /// Провереят работоспособность <see cref="ExecutorController.Delete(Guid, CancellationToken)"/>
+    /// Проверяет работоспособность <see cref="ExecutorController.Delete(Guid, CancellationToken)"/>
     /// </summary>
     [Fact]
     public async Task DeleteShouldReturnValues()

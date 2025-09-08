@@ -1,16 +1,16 @@
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using CasCadeVR.Works.Common;
+using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Context;
 using CasCadeVR.Works.Context.Contracts;
 using CasCadeVR.Works.Export.Contracts;
+using CasCadeVR.Works.Export.Excel;
+using CasCadeVR.Works.Repository;
 using CasCadeVR.Works.Services;
 using CasCadeVR.Works.Services.Contracts;
 using CasCadeVR.Works.Services.Infrastructure;
 using CasCadeVR.Works.Web.Infrastructure;
-using CasCadeVR.Works.Common.Contracts;
-using CasCadeVR.Works.Repository;
-using CasCadeVR.Works.Export.Excel;
+using Microsoft.EntityFrameworkCore;
 
 namespace CasCadeVR.Works.Web
 {
@@ -22,7 +22,6 @@ namespace CasCadeVR.Works.Web
         /// <summary>
         /// ¬ходной метод программы
         /// </summary>
-        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -61,7 +60,9 @@ namespace CasCadeVR.Works.Web
             builder.Services.AddServices();
 
             builder.Services.AddScoped<IExporter, ExcelExporter>();
-            builder.Services.AddScoped<IAddedTaxService, AddedTaxService>();
+
+            var addedTaxService = new AddedTaxService(builder.Configuration.GetValue<decimal>("NdsRate"));
+            builder.Services.AddScoped<IAddedTaxService>(x => addedTaxService);
 
             var addedControllers = builder.Services.AddControllers(opt =>
             {

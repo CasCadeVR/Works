@@ -26,7 +26,6 @@ classDiagram
     String Name
     String Description
     Decimal Price
-    UnitOfMeasure UnitOfMeasure
     Guid UnitOfMeasureId
    }
 
@@ -49,10 +48,7 @@ classDiagram
     String ActNumber
     DateOnly Date
     Guid ExecutorId
-    Executor Executor
     Guid CustomerId
-    Customer Customer
-    ICollection<ActWork> Works ActWorks
    }
 
     Customer ||--|> Act

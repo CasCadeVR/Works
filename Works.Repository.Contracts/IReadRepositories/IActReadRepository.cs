@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using CasCadeVR.Works.Entities;
+using CasCadeVR.Works.Repository.Contracts.Models;
 
 namespace CasCadeVR.Works.Repository.Contracts.IReadRepositories;
 
@@ -16,11 +17,11 @@ public interface IActReadRepository
     /// <summary>
     /// Получает <see cref="Act"/> по идентификатору
     /// </summary>
-    Task<Act?> GetById(Guid id, CancellationToken cancellationToken);
+    Task<ActDbModel?> GetById(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает коллекцию <see cref="Act"/>
     /// </summary>
-    Task<IReadOnlyCollection<Act>> GetAll(CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<ActDbModel>> GetAll(CancellationToken cancellationToken);
 }
 

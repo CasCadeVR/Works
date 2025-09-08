@@ -94,11 +94,13 @@ namespace CasCadeVR.Works.Services.Services
 
             writeRepository.Delete(entity);
 
-            var existingActs = await actReadRepository.GetAll(cancellationToken);
+            var existingActsDBRequest = await actReadRepository.GetAll(cancellationToken);
+
+            var existingActs = mapper.Map<ICollection<Act>>(existingActsDBRequest);
 
             foreach (var act in existingActs)
             {
-                if (act.CustomerId == id)
+                if (act.Customer.Id == id)
                 {
                     actWriteRepository.Delete(act);
                 }

@@ -9,5 +9,5 @@ public class ApiValidationExceptionDetail
     /// <summary>
     /// Список ошибок валидации модели АПИ
     /// </summary>
-    public IEnumerable<InvalidateItemModel> Errors { get; set; } = Array.Empty<InvalidateItemModel>();
+    public IEnumerable<InvalidateItemModel> Errors { get; set; } = [];
 }
