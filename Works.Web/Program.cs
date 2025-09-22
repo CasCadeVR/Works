@@ -13,12 +13,12 @@ using Microsoft.EntityFrameworkCore;
 namespace CasCadeVR.Works.Web
 {
     /// <summary>
-    /// Входная точка программы
+    /// Р’С…РѕРґРЅР°СЏ С‚РѕС‡РєР° РїСЂРѕРіСЂР°РјРјС‹
     /// </summary>
     public class Program
     {
         /// <summary>
-        /// Входной метод программы
+        /// Р’С…РѕРґРЅРѕР№ РјРµС‚РѕРґ РїСЂРѕРіСЂР°РјРјС‹
         /// </summary>
         public static void Main(string[] args)
         {
