@@ -76,31 +76,53 @@ namespace CasCadeVR.Works.Services.Services
 
         async Task<ActModel> IActServices.Create(ActCreateModel model, CancellationToken cancellationToken)
         {
-            await ValidateConnections(model, cancellationToken);
+            await ValidateActNumber(model.ActNumber, cancellationToken);
+
+            var existingCustomer = await customerReadRepository.GetById(model.CustomerId, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти заказчика с идентификатором {model.CustomerId}");
+
+            var existingExecutor =  await executorReadRepository.GetById(model.ExecutorId, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {model.ExecutorId}");
 
             var modelActWorks = mapper.Map<ICollection<ActWork>>(model.ActWorks);
+
+            var modelWorkIds = model.ActWorks.Select(x => x.WorkId).ToList();
+
+            var existingWorks = await workReadRepository.GetByIds(modelWorkIds, cancellationToken);
+
+            var workIdsInDatabase = existingWorks.Select(x => x.Id);
+
+            var missingIds = modelWorkIds.Except(workIdsInDatabase);
+
+            if (missingIds.Any())
+            {
+                throw new WorksNotFoundException($"Не удалось найти работы с идентификаторами: {string.Join(", ", missingIds)}");
+            }
+
+            var existingActWorksDictionary = existingWorks.ToDictionary(x => x.Id);
 
             var result = new Act
             {
                 ActNumber = model.ActNumber,
                 Date = model.Date,
                 CustomerId = model.CustomerId,
+                Customer = existingCustomer,
                 ExecutorId = model.ExecutorId,
+                Executor = existingExecutor,
                 ActWorks = modelActWorks,
             };
 
             foreach (var actWork in result.ActWorks)
             {
+                actWork.Work = existingActWorksDictionary[actWork.WorkId];
+                actWork.CapturedPrice = actWork.Work.Price;
                 actWorkWriteRepository.Add(actWork);
             }
 
             writeRepository.Add(result);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var addedEntity = await readRepository.GetById(result.Id, cancellationToken)
-                ?? throw new InvalidOperationException($"Не удалось найти акт с идентификатором {result.Id}");
-
-            return mapper.Map<ActModel>(addedEntity);
+            return mapper.Map<ActModel>(result);
         }
 
         async Task<ActModel> IActServices.Update(Guid id, ActCreateModel model, CancellationToken cancellationToken)
@@ -110,14 +132,36 @@ namespace CasCadeVR.Works.Services.Services
 
             var databaseEntity = mapper.Map<Act>(databaseResponseEntity);
 
-            await ValidateConnections(model, cancellationToken);
+            await ValidateActNumber(model.ActNumber, cancellationToken);
+
+            var existingCustomer = await customerReadRepository.GetById(model.CustomerId, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти заказчика с идентификатором {model.CustomerId}");
+
+            var existingExecutor = await executorReadRepository.GetById(model.ExecutorId, cancellationToken)
+                ?? throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {model.ExecutorId}");
+
+            var modelActWorks = mapper.Map<ICollection<ActWork>>(model.ActWorks);
+
+            var modelWorkIds = model.ActWorks.Select(x => x.WorkId).ToList();
+
+            var existingWorks = await workReadRepository.GetByIds(modelWorkIds, cancellationToken);
+            var existingWorksDictionary = existingWorks.ToDictionary(x => x.Id);
+
+            var workIdsInDatabase = existingWorks.Select(x => x.Id);
+
+            var missingIds = modelWorkIds.Except(workIdsInDatabase).ToList();
+
+            if (missingIds.Count > 0)
+            {
+                throw new WorksNotFoundException($"Не удалось найти работы с идентификаторами: {string.Join(", ", missingIds)}");
+            }
 
             databaseEntity.ActNumber = model.ActNumber;
             databaseEntity.Date = model.Date;
             databaseEntity.CustomerId = model.CustomerId;
+            databaseEntity.Customer = existingCustomer;
             databaseEntity.ExecutorId = model.ExecutorId;
-
-            var modelActWorks = mapper.Map<ICollection<ActWork>>(model.ActWorks);
+            databaseEntity.Executor = existingExecutor;
 
             var existingActWorks = databaseEntity.ActWorks;
             var existingActWorksDictionary = existingActWorks.ToDictionary(x => x.WorkId);
@@ -132,23 +176,34 @@ namespace CasCadeVR.Works.Services.Services
                 else
                 {
                     actWork.ActId = databaseEntity.Id;
+                    actWork.Work = existingWorksDictionary[actWork.WorkId];
+                    actWork.CapturedPrice = actWork.Work.Price;
                     actWorkWriteRepository.Add(actWork);
                 }
             }
 
-            var actWorksIdsToDelete = existingActWorks.Select(x => x.WorkId).Except(modelActWorks.Select(x => x.WorkId));
+            var actWorksIdsToDelete = existingActWorks.Select(x => x.WorkId).Except(modelActWorks.Select(x => x.WorkId)).ToList();
 
             foreach (var actWorkId in actWorksIdsToDelete)
             {
-                actWorkWriteRepository.Delete(existingActWorksDictionary[actWorkId]);
+                if (existingActWorksDictionary.TryGetValue(actWorkId, out var foundActWork))
+                {
+                    actWorkWriteRepository.Delete(foundActWork);
+                }
             }
 
             writeRepository.Update(databaseEntity);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var updatedEntity = await readRepository.GetById(databaseEntity.Id, cancellationToken)!;
+            foreach (var actWorkId in actWorksIdsToDelete)
+            {
+                if (existingActWorksDictionary.TryGetValue(actWorkId, out var foundActWork))
+                {
+                    existingActWorks.Remove(foundActWork);
+                }
+            }
 
-            return mapper.Map<ActModel>(updatedEntity);
+            return mapper.Map<ActModel>(databaseEntity);
         }
 
         async Task IActServices.Delete(Guid id, CancellationToken cancellationToken)
@@ -158,7 +213,7 @@ namespace CasCadeVR.Works.Services.Services
 
             var databaseEntity = mapper.Map<Act>(databaseResponseEntity);
 
-            var existingActWorks = databaseEntity.ActWorks.ToList();
+            var existingActWorks = databaseEntity.ActWorks;
 
             foreach (var existingActWork in existingActWorks)
             {
@@ -169,34 +224,11 @@ namespace CasCadeVR.Works.Services.Services
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task ValidateConnections(ActCreateModel model, CancellationToken cancellationToken)
+        private async Task ValidateActNumber(string ActNumber, CancellationToken cancellationToken)
         {
-            if (await readRepository.Any(x => x.ActNumber == model.ActNumber, cancellationToken))
+            if (await readRepository.Any(x => x.ActNumber == ActNumber, cancellationToken))
             {
-                throw new WorksDuplicateException($"Акт с номером {model.ActNumber} уже существует");
-            }
-
-            if (await customerReadRepository.GetById(model.CustomerId, cancellationToken) == null)
-            {
-               throw new WorksNotFoundException($"Не удалось найти заказчика с идентификатором {model.CustomerId}");
-            }
-
-            if (await executorReadRepository.GetById(model.ExecutorId, cancellationToken) == null)
-            {
-                throw new WorksNotFoundException($"Не удалось найти исполнителя с идентификатором {model.ExecutorId}");
-            }
-
-            var modelWorkIds = model.ActWorks.Select(x => x.WorkId).ToList();
-
-            var existingWorks = await workReadRepository.GetByIds(modelWorkIds, cancellationToken);
-
-            var workIdsInDatabase = existingWorks.Select(x => x.Id);
-
-            var missingIds = modelWorkIds.Except(workIdsInDatabase);
-
-            if (missingIds.Any())
-            {
-                throw new WorksNotFoundException($"Не удалось найти работы с идентификаторами: {string.Join(", ", missingIds)}");
+                throw new WorksDuplicateException($"Акт с номером {ActNumber} уже существует");
             }
         }
     }

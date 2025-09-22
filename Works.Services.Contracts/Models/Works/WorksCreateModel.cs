@@ -3,23 +3,8 @@
 /// <summary>
 /// Модель создания работы
 /// </summary>
-public class WorksCreateModel
+public class WorksCreateModel : WorksGenericModel
 {
-    /// <summary>
-    /// Наименование
-    /// </summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Описание
-    /// </summary>
-    public string Description { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Цена
-    /// </summary>
-    public decimal Price { get; set; } = 0;
-
     /// <summary>
     /// Идентификатор единицы измерения
     /// </summary>

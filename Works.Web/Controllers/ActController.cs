@@ -40,8 +40,7 @@ namespace CasCadeVR.Works.Web.Controllers
         [ProducesResponseType(typeof(ApiExceptionDetail), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> ExportById([FromRoute]Guid id, CancellationToken cancellationToken)
         {
-            var result = await service.GetById(id, cancellationToken);
-            var exportedData = exporter.Export(result);
+            var exportedData = await service.Export(id, cancellationToken);
 
             return File(exportedData.ExportedMemoryStream.ToArray(), exportedData.FileType, exportedData.FileName);
         }
@@ -81,9 +80,9 @@ namespace CasCadeVR.Works.Web.Controllers
 
         public async Task<ActionResult> Create(ActCreateRequestApiModel request, CancellationToken cancellationToken)
         {
-            var validateService = mapper.Map<ActCreateModel>(request);
-            await this.validateService.Validate(validateService, cancellationToken);
-            var result = await service.Create(validateService, cancellationToken);
+            var requestCreateModel = mapper.Map<ActCreateModel>(request);
+            await validateService.Validate(requestCreateModel, cancellationToken);
+            var result = await service.Create(requestCreateModel, cancellationToken);
 
             return Ok(mapper.Map<ActApiModel>(result));
         }

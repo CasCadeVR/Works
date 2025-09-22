@@ -3,9 +3,10 @@
 /// <summary>
 /// Модель создания работы для акта
 /// </summary>
-/// <param name="WorkId">Идентификатор работы</param>
-/// <param name="Quantity">Количество</param>
-public record ActWorksCreateRequestApiModel(
-    Guid WorkId, 
-    int Quantity
-);
+public class ActWorksCreateRequestApiModel : ActWorkApiGenericModel
+{
+    /// <summary>
+    /// Идентификатор работы
+    /// </summary>
+    public Guid WorkId { get; set; }
+}

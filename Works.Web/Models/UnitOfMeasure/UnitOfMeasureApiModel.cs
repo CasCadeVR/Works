@@ -3,9 +3,10 @@
 /// <summary>
 /// Модель единицы измерения
 /// </summary>
-/// <param name="Id">Идентификатор</param>
-/// <param name="Name">Имя единицы измерения</param>
-public record UnitOfMeasureApiModel(
-    Guid Id, 
-    string Name
-) : UnitOfMeasureCreateRequestApiModel(Name);
+public class UnitOfMeasureApiModel : UnitOfMeasureCreateRequestApiModel
+{
+    /// <summary>
+    /// Идентификатор
+    /// </summary>
+    public Guid Id { get; set; }
+}

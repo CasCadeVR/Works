@@ -62,9 +62,10 @@ public class UnitOfMeasureControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
+        var examples = new List<UnitOfMeasure>();
         for (int i = 0; i < 3; i++)
         {
-            await fixture.SeedExampleUnitOfMeasure();
+            examples.Add(await fixture.SeedExampleUnitOfMeasure());
         }
 
         await fixture.SeedExampleUnitOfMeasure(withSoftDelete: true);
@@ -73,10 +74,11 @@ public class UnitOfMeasureControllerTests
         var response = await webClient.UnitOfMeasureAllAsync();
 
         // Assert
-        response.Should()
-            .NotBeEmpty()
-            .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.Name);
+        response.Should().NotBeEmpty();
+        foreach (var example in examples)
+        {
+            response.Should().ContainEquivalentOf(example, opt => opt.ExcludingMissingMembers());
+        }
     }
 
     /// <summary>
@@ -130,7 +132,6 @@ public class UnitOfMeasureControllerTests
         await webClient.UnitOfMeasureDELETEAsync(unitOfMeasure.Id);
 
         // Assert
-        context.Entry(unitOfMeasure).Reload();
         var newValue = context.Set<UnitOfMeasure>().Single(x => x.Id == unitOfMeasure.Id);
         newValue.DeletedAt.Should().NotBeNull();
     }

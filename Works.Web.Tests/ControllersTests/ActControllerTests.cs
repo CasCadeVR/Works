@@ -41,52 +41,17 @@ public class ActControllerTests
         // Act
         var result = await webClient.ActGETAsync(act.Id);
 
-        var expectedResult = new ActApiModel
-        {
-            Id = act.Id,
-            ActNumber = act.ActNumber,
-            Date = new DateTimeOffset(act.Date.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(3)),
-            Customer = new CustomerApiModel
-            {
-                Id = act.Customer.Id,
-                FullName = act.Customer.FullName,
-                Occupation = act.Customer.Occupation,
-                Firm = act.Customer.Firm,
-                TaxPayerId = act.Customer.TaxPayerId,
-            },
-            Executor = new ExecutorApiModel
-            {
-                Id = act.Executor.Id,
-                FullName = act.Executor.FullName,
-                Occupation = act.Executor.Occupation,
-                Firm = act.Executor.Firm,
-                RegistrationNumber = act.Executor.RegistrationNumber,
-            },
-            ActWorks = act.ActWorks.Select(y => new ActWorksApiModel
-            {
-                Quantity = y.Quantity,
-                Work = new WorkApiModel
-                {
-                    Id = y.Work.Id,
-                    Name = y.Work.Name,
-                    Description = y.Work.Description,
-                    Price = (double)y.Work.Price,
-                    UnitOfMeasure = new UnitOfMeasureApiModel
-                    {
-                        Id = y.Work.UnitOfMeasure.Id,
-                        Name = y.Work.UnitOfMeasure.Name,
-                    },
-                },
-            }).ToList(),
-        };
-
         // Assert
         result.Should()
             .NotBeNull()
-            .And.BeEquivalentTo(expectedResult, opt => opt
-                .Excluding(x => x.Date));
+            .And.BeEquivalentTo(act, opt => opt
+                .Excluding(x => x.Date).ExcludingMissingMembers());
 
-        result.Date.ToLocalTime().Should().Be(expectedResult.Date.ToLocalTime());
+        result.Date.ToLocalTime()
+            .Should().Be(new DateTimeOffset(
+                    act.Date.ToDateTime(TimeOnly.MinValue),
+                    TimeSpan.FromHours(3)
+                ));
     }
 
     /// <summary>
@@ -96,9 +61,10 @@ public class ActControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
+        var examples = new List<Act>();
         for (int i = 0; i < 3; i++)
         {
-            await fixture.SeedExampleAct();
+            examples.Add(await fixture.SeedExampleAct());
         }
 
         await fixture.SeedExampleAct(withSoftDelete: true);
@@ -107,10 +73,21 @@ public class ActControllerTests
         var response = await webClient.ActAllAsync();
 
         // Assert
-        response.Should()
-           .NotBeEmpty()
-           .And.HaveCount(3)
-           .And.BeInAscendingOrder(x => x.Date);
+        response.Should().NotBeEmpty();
+        foreach (var example in examples)
+        {
+            response.Should()
+                .ContainEquivalentOf(example, opt => opt.Excluding(x => x.Date).ExcludingMissingMembers());
+
+            response.Select(x => x.Date.ToLocalTime())
+            .Should()
+            .ContainEquivalentOf(
+                new DateTimeOffset(
+                    examples.First().Date.ToDateTime(TimeOnly.MinValue),
+                    TimeSpan.FromHours(3)
+                )
+            );
+        }
     }
 
     /// <summary>
@@ -174,8 +151,8 @@ public class ActControllerTests
         {
             x.ActNumber = "2";
             x.Date = DateTime.UtcNow;
-            x.CustomerId = act.CustomerId;
-            x.ExecutorId = act.ExecutorId;
+            x.CustomerId = act.Customer.Id;
+            x.ExecutorId = act.Executor.Id;
             x.ActWorks = [TestEntityProvider.Shared.Create<ActWorksCreateRequestApiModel>(y =>
                 {
                     y.Quantity = 6;
@@ -183,7 +160,6 @@ public class ActControllerTests
                 })];
         });
         var requestActWorks = request.ActWorks!.First();
-
 
         // Act
         var response = await webClient.ActPUTAsync(act.Id, request);

@@ -76,7 +76,7 @@ public class WorksApiFixture: IAsyncLifetime
     public async Task<Customer> SeedExampleCustomer(bool withSoftDelete = false)
     {
         var customer = TestEntityProvider.Shared.Create<Customer>(x =>
-            x.TaxPayerId = Random.Shared.NextInt64(1000000001, 10000000000).ToString());
+            x.TaxPayerId = Random.Shared.NextInt64(1000000001, 9999999999).ToString());
 
         if (withSoftDelete)
         {
@@ -95,7 +95,7 @@ public class WorksApiFixture: IAsyncLifetime
     public async Task<Executor> SeedExampleExecutor(bool withSoftDelete = false)
     {
         var executor = TestEntityProvider.Shared.Create<Executor>(x =>
-           x.RegistrationNumber = Random.Shared.NextInt64(1000000000001, 10000000000000).ToString());
+           x.RegistrationNumber = Random.Shared.NextInt64(1000000000001, 9999999999999).ToString());
 
         if (withSoftDelete)
         {
@@ -145,11 +145,11 @@ public class WorksApiFixture: IAsyncLifetime
         var executor = TestEntityProvider.Shared.Create<Executor>(x =>
           x.RegistrationNumber = Random.Shared.NextInt64(1000000000001, 10000000000000).ToString());
 
-        var unitOfMeasure = TestEntityProvider.Shared.Create<UnitOfMeasure>(x => x.Name = $"{nameof(x.Name)}{Guid.NewGuid()}");
+        var unitOfMeasure = TestEntityProvider.Shared.Create<UnitOfMeasure>(x => x.Name = $"{nameof(x.Name)}_{Guid.NewGuid()}");
 
         var work = TestEntityProvider.Shared.Create<Work>(x =>
         {
-            x.Name = $"{nameof(x.Name)}{Guid.NewGuid()}";
+            x.Name = $"{nameof(x.Name)}_{Guid.NewGuid()}";
             x.UnitOfMeasureId = unitOfMeasure.Id;
         });
 
@@ -157,6 +157,7 @@ public class WorksApiFixture: IAsyncLifetime
         {
             x.ActId = id;
             x.Quantity = 5;
+            x.CapturedPrice = work.Price;
             x.WorkId = work.Id;
         });
 

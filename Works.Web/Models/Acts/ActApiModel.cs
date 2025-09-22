@@ -7,17 +7,25 @@ namespace CasCadeVR.Works.Web.Models.Acts;
 /// <summary>
 /// Модель создания акта
 /// </summary>
-/// <param name="Id">Идентификатор акта</param>
-/// <param name="Date">Дата подписания акта</param>
-/// <param name="ActNumber">Номер акта</param>
-/// <param name="Executor">Исполнитель</param>
-/// <param name="Customer">Заказчик</param>
-/// <param name="ActWorks">Список работ</param>
-public record ActApiModel(
-    Guid Id,
-    string ActNumber,
-    DateOnly Date,
-    ExecutorApiModel Executor,
-    CustomerApiModel Customer,
-    ICollection<ActWorksApiModel> ActWorks
-);
+public class ActApiModel : ActApiGenericModel
+{
+    /// <summary>
+    /// Идентификатор
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Объект передачи данных <see cref="ExecutorApiModel"/>
+    /// </summary>
+    public ExecutorApiModel Executor { get; set; } = null!;
+
+    /// <summary>
+    /// Объект передачи данных <see cref="CustomerApiModel"/>
+    /// </summary>
+    public CustomerApiModel Customer { get; set; } = null!;
+
+    /// <summary>
+    /// Объект передачи данных списка <see cref="ActWorksApiModel"/>
+    /// </summary>
+    public ICollection<ActWorksApiModel> ActWorks { get; set; } = [];
+}

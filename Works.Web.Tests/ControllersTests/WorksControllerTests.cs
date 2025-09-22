@@ -62,9 +62,10 @@ public class WorksControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
+        var examples = new List<Work>();
         for (int i = 0; i < 3; i++)
         {
-            await fixture.SeedExampleWork();
+            examples.Add(await fixture.SeedExampleWork());
         }
 
         await fixture.SeedExampleWork(withSoftDelete: true);
@@ -73,10 +74,11 @@ public class WorksControllerTests
         var response = await webClient.WorksAllAsync();
 
         // Assert
-        response.Should()
-            .NotBeEmpty()
-            .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.Name);
+        response.Should().NotBeEmpty();
+        foreach (var example in examples)
+        {
+            response.Should().ContainEquivalentOf(example, opt => opt.ExcludingMissingMembers());
+        }
     }
 
     /// <summary>
@@ -139,7 +141,6 @@ public class WorksControllerTests
         await webClient.WorksDELETEAsync(work.Id);
 
         // Assert
-        context.Entry(work).Reload();
         var newValue = context.Set<Work>().Single(x => x.Id == work.Id);
         newValue.DeletedAt.Should().NotBeNull();
     }

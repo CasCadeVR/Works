@@ -5,18 +5,8 @@ namespace CasCadeVR.Works.Services.Contracts.Models.Acts;
 /// <summary>
 /// Модель акта
 /// </summary>
-public class ActCreateModel
+public class ActCreateModel : ActGenericModel
 {
-    /// <summary>
-    /// Номер акта
-    /// </summary>
-    public string ActNumber { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Дата подписания
-    /// </summary>
-    public DateOnly Date { get; set; }
-
     /// <summary>
     /// Идентификатор исполнителя
     /// </summary>
@@ -28,7 +18,7 @@ public class ActCreateModel
     public Guid CustomerId { get; set; }
 
     /// <summary>
-    /// Список работ <see cref="ActWorksCreateModel"/>
+    /// Объект передачи данных списка <see cref="ActWorksCreateModel"/>
     /// </summary>
-    public ICollection<ActWorksCreateModel> ActWorks { get; set; } = new List<ActWorksCreateModel>();
+    public ICollection<ActWorksCreateModel> ActWorks { get; set; } = [];
 }

@@ -1,5 +1,4 @@
-﻿using CasCadeVR.Works.Common.Contracts;
-using CasCadeVR.Works.Export.Contracts;
+﻿using CasCadeVR.Works.Export.Contracts;
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
 using CasCadeVR.Works.Services.Contracts.Models.Export;
 using DocumentFormat.OpenXml;
@@ -13,20 +12,11 @@ namespace CasCadeVR.Works.Export.Excel;
 /// </summary>
 public class ExcelExporter : IExporter
 {
-    private readonly IAddedTaxService addedTaxService;
     private readonly string excelFileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-    /// <summary>
-    /// Инициализирует новый экземпляр <see cref="ExcelExporter"/>
-    /// </summary>
-    public ExcelExporter(IAddedTaxService addedTaxService)
-    {
-        this.addedTaxService = addedTaxService;
-    }
 
     ExportedData IExporter.Export(ActModel act)
     {
-        ExcelCollector.CalculateFinalTotalPrices(act, addedTaxService);
+        ExcelCollector.CalculateFinalTotalPrices(act);
 
         using var memoryStream = new MemoryStream();
         

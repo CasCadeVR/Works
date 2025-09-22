@@ -23,6 +23,11 @@ public class ActWork : DataBaseEntity
     public int Quantity { get; set; }
 
     /// <summary>
+    /// Цена работы на момент создания акта
+    /// </summary>
+    public decimal CapturedPrice { get; set; }
+
+    /// <summary>
     /// Навигационное свойство <see cref="Work"/>
     /// </summary>
     public Work Work { get; set; } = null!;

@@ -1,13 +1,11 @@
 using AutoMapper;
 using CasCadeVR.Works.Common;
-using CasCadeVR.Works.Common.Contracts;
 using CasCadeVR.Works.Context;
 using CasCadeVR.Works.Context.Contracts;
 using CasCadeVR.Works.Export.Contracts;
 using CasCadeVR.Works.Export.Excel;
 using CasCadeVR.Works.Repository;
 using CasCadeVR.Works.Services;
-using CasCadeVR.Works.Services.Contracts;
 using CasCadeVR.Works.Services.Infrastructure;
 using CasCadeVR.Works.Web.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +24,6 @@ namespace CasCadeVR.Works.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -41,9 +37,6 @@ namespace CasCadeVR.Works.Web
             builder.Services.AddScoped<IWriter>(x => x.GetRequiredService<WorksContext>());
             builder.Services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<WorksContext>());
             
-            builder.Services.AddSingleton<IValidateService, ValidateService>();
-            builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-
             builder.Services.AddSingleton(_ =>
             {
                 var mapConfig = new MapperConfiguration(cfg =>
@@ -57,21 +50,17 @@ namespace CasCadeVR.Works.Web
             });
 
             builder.Services.AddRepositories();
+            builder.Services.RegisterCommonServices();
             builder.Services.AddServices();
 
             builder.Services.AddScoped<IExporter, ExcelExporter>();
-
-            var addedTaxService = new AddedTaxService(builder.Configuration.GetValue<decimal>("NdsRate"));
-            builder.Services.AddScoped<IAddedTaxService>(x => addedTaxService);
 
             var addedControllers = builder.Services.AddControllers(opt =>
             {
                 opt.Filters.Add<WorksExceptionFilter>();
             });
 
-            var itegrationEnviroment = builder.Configuration.GetValue<string>("Enviroments:IntegrationEnviroment");
-
-            if (builder.Environment.EnvironmentName == itegrationEnviroment)
+            if (builder.Environment.EnvironmentName == EnviromentProvider.IntegrationEnviroment)
             {
                 addedControllers.AddControllersAsServices();
             }

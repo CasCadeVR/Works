@@ -3,13 +3,25 @@
 /// <summary>
 /// Модель создания исполнителя
 /// </summary>
-/// <param name="FullName">ФИО</param>
-/// <param name="Occupation">Должность</param>
-/// <param name="Firm">Фирма</param>
-/// <param name="RegistrationNumber">ОГРН</param>
-public record ExecutorCreateRequestApiModel(
-    string FullName, 
-    string Occupation, 
-    string Firm, 
-    string RegistrationNumber
-);
+public class ExecutorCreateRequestApiModel
+{
+    /// <summary>
+    /// ФИО
+    /// </summary>
+    public string FullName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Должность
+    /// </summary>
+    public string Occupation { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Фирма
+    /// </summary>
+    public string Firm { get; set; } = string.Empty;
+
+    /// <summary>
+    /// ОГРН
+    /// </summary>
+    public string RegistrationNumber { get; set; } = string.Empty;
+}

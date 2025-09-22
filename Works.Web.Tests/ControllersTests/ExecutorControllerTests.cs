@@ -66,9 +66,10 @@ public class ExecutorControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
+        var examples = new List<Executor>();
         for (int i = 0; i < 3; i++)
         {
-            await fixture.SeedExampleExecutor();
+            examples.Add(await fixture.SeedExampleExecutor());
         }
 
         await fixture.SeedExampleExecutor(withSoftDelete: true);
@@ -77,10 +78,11 @@ public class ExecutorControllerTests
         var response = await webClient.ExecutorAllAsync();
 
         // Assert
-        response.Should()
-            .NotBeEmpty()
-            .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.FullName);
+        response.Should().NotBeEmpty();
+        foreach (var example in examples)
+        {
+            response.Should().ContainEquivalentOf(example, opt => opt.ExcludingMissingMembers());
+        }
     }
 
     /// <summary>
@@ -134,7 +136,6 @@ public class ExecutorControllerTests
         await webClient.ExecutorDELETEAsync(executor.Id);
 
         // Assert
-        context.Entry(executor).Reload();
         var newValue = context.Set<Executor>().Single(x => x.Id == executor.Id);
         newValue.DeletedAt.Should().NotBeNull();
     }

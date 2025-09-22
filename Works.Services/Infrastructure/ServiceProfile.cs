@@ -42,7 +42,7 @@ public class ServiceProfile : Profile
         CreateMap<ActDbModel, Act>(MemberList.Source);
         CreateMap<ActDbModel, ActModel>(MemberList.Source);
         CreateMap<ActWorkDbModel, ActWork>(MemberList.Source);
-        CreateMap<ActWorkDbModel, ActWorksModel>(MemberList.Source);
+        CreateMap<ActWorkDbModel, ActWorksModel>(MemberList.Destination);
 
         CreateMap<WorkDbModel, Work>(MemberList.Source);
         CreateMap<WorkDbModel, WorksModel>(MemberList.Source);

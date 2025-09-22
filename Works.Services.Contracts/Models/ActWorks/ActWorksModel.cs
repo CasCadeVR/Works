@@ -5,7 +5,7 @@ namespace CasCadeVR.Works.Services.Contracts.Models.ActWorks;
 /// <summary>
 /// Модель работы для акта
 /// </summary>
-public class ActWorksModel
+public class ActWorksModel :  ActWorksGenericModel
 {
     /// <summary>
     /// Идентификатор
@@ -13,12 +13,12 @@ public class ActWorksModel
     public Guid Id { get; set; }
 
     /// <summary>
+    /// Цена работы на момент создания акта
+    /// </summary>
+    public decimal CapturedPrice { get; set; } = 0;
+
+    /// <summary>
     /// Объект передачи данных <see cref="WorksModel"/>
     /// </summary>
     public WorksModel Work { get; set; } = null!;
-
-    /// <summary>
-    /// Количество
-    /// </summary>
-    public int Quantity { get; set; }
 }

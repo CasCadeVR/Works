@@ -11,9 +11,19 @@ public class ActWorkDbModel
     public Guid Id { get; set; }
 
     /// <summary>
+    /// Идентификатор акта
+    /// </summary>
+    public Guid ActId { get; set; }
+
+    /// <summary>
     /// Наименование работы
     /// </summary>
     public int Quantity { get; set; }
+
+    /// <summary>
+    /// Цена работы на момент создания акта
+    /// </summary>
+    public decimal CapturedPrice { get; set; } = 0;
 
     /// <summary>
     /// Навигационное свойство <see cref="WorkDbModel"/>

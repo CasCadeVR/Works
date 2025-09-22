@@ -1,16 +1,17 @@
-﻿using CasCadeVR.Works.Services.Contracts.IServices;
+﻿using CasCadeVR.Works.Services.Contracts;
+using CasCadeVR.Works.Services.Contracts.IServices;
 using CasCadeVR.Works.Services.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CasCadeVR.Works.Services;
 
 /// <summary>
-/// Статический класс для регистрации репозиториев
+/// Статический класс для регистрации сервисов
 /// </summary>
-public static class RegisterRepositories
+public static class RegisterAnchor
 {
     /// <summary>
-    /// Зарегистрировать репозитории
+    /// Зарегистрировать сервисы
     /// </summary>
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
@@ -19,6 +20,8 @@ public static class RegisterRepositories
         services.AddScoped<ICustomerServices, CustomerService>();
         services.AddScoped<IExecutorServices, ExecutorServices>();
         services.AddScoped<IActServices, ActServices>();
+
+        services.AddScoped<IValidateService, ValidateService>();
 
         return services;
     }

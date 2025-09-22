@@ -1,4 +1,4 @@
-﻿using CasCadeVR.Works.Common.Contracts;
+﻿using CasCadeVR.Works.Common;
 using CasCadeVR.Works.Services.Contracts.Models.Acts;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -12,16 +12,14 @@ public static class ExcelCollector
     private static decimal actTotalPrice;
     private static decimal actPriceAddedTax;
     private static decimal actTotalPriceWithAddedTax;
-    private static IAddedTaxService addedTaxService = null!;
 
     /// <summary>
     /// Вычислить итоговые данные
     /// </summary>
-    public static void CalculateFinalTotalPrices(ActModel act, IAddedTaxService existingAddedTaxService)
+    public static void CalculateFinalTotalPrices(ActModel act)
     {
-        addedTaxService = existingAddedTaxService;
-        actTotalPrice = act.ActWorks.Sum(x => x.Quantity * x.Work.Price);
-        actPriceAddedTax = actTotalPrice * addedTaxService.GetNdsRate() / 100;
+        actTotalPrice = act.ActWorks.Sum(x => x.Quantity * x.CapturedPrice);
+        actPriceAddedTax = actTotalPrice * TaxConstants.TaxRate / 100;
         actTotalPriceWithAddedTax = actTotalPrice + actPriceAddedTax;
     }
 
@@ -56,15 +54,10 @@ public static class ExcelCollector
         sheetData.Append(new Row());
 
         sheetData.Append(ExcelConstructor.CreateRow(["Мы, нижеподписавшиеся:"]));
-
-        sheetData.Append(ExcelConstructor.CreateRow([$"представитель Исполнителя: должность {act.Executor.Occupation} фирма {act.Executor.Firm} ОГРН {act.Executor.RegistrationNumber}",
-        ]));
+        sheetData.Append(ExcelConstructor.CreateRow([$"представитель Исполнителя: должность {act.Executor.Occupation} фирма {act.Executor.Firm} ОГРН {act.Executor.RegistrationNumber}",]));
         sheetData.Append(ExcelConstructor.CreateRow([$"в лице {act.Executor.FullName}"]));
-
-        sheetData.Append(ExcelConstructor.CreateRow([$"представитель Заказчика: должность {act.Customer.Occupation} фирма {act.Customer.Firm} ИНН {act.Customer.TaxPayerId}",
-        ]));
+        sheetData.Append(ExcelConstructor.CreateRow([$"представитель Заказчика: должность {act.Customer.Occupation} фирма {act.Customer.Firm} ИНН {act.Customer.TaxPayerId}",]));
         sheetData.Append(ExcelConstructor.CreateRow([$"в лице {act.Customer.FullName}"]));
-
         sheetData.Append(new Row());
 
         sheetData.Append(ExcelConstructor.CreateRow(["составили настоящий акт о том, что Исполнителем были выполнены следующие работы"]));
@@ -108,7 +101,7 @@ public static class ExcelCollector
 
         sheetData.Append(ExcelConstructor.CreateIndentedRow(
             [
-                ExcelConstructor.CreateCell($"В тол. числе НДС ({addedTaxService.GetNdsRate()}%)", ExcelStyleIndexes.NormalBold),
+                ExcelConstructor.CreateCell($"В тол. числе НДС ({TaxConstants.TaxRate}%)", ExcelStyleIndexes.NormalBold),
                 ExcelConstructor.CreateCell(actPriceAddedTax.ToString("N2"), ExcelStyleIndexes.NormalBorder),
             ], 4)
         );

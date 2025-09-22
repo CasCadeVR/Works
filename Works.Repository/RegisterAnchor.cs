@@ -31,7 +31,6 @@ public static class RegisterAnchor
         services.AddScoped<IActReadRepository, ActReadRepository>();
         services.AddScoped<IActWriteRepository, ActWriteRepository>();
 
-
         services.AddScoped<IActWorkWriteRepository, ActWorkWriteRepository>();
 
         return services;

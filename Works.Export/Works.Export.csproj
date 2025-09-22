@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Works.Common\Works.Common.csproj" />
     <ProjectReference Include="..\Works.Export.Contracts\Works.Export.Contracts.csproj" />
   </ItemGroup>
 

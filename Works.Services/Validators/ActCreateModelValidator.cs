@@ -27,7 +27,7 @@ public class ActCreateModelValidator : AbstractValidator<ActCreateModel>
             .WithMessage("Нельзя добавить работу с количеством, меньше единицы");
 
         RuleFor(act => act.ActWorks)
-           .Must(x => x.Select(x => x.WorkId).Distinct().Count() == x.Count())
-           .WithMessage("Нельзя добавить работу с количеством, меньше единицы");
+           .Must(x => x.Select(y => y.WorkId).Distinct().Count() == x.Count)
+           .WithMessage("Нельзя добавить 2 и более одинаковых работ");
     }
 }

@@ -3,7 +3,10 @@
 /// <summary>
 /// Модель создания единицы измерения
 /// </summary>
-/// <param name="Name">Имя единицы измерения</param>
-public record UnitOfMeasureCreateRequestApiModel(
-    string Name
-);
+public class UnitOfMeasureCreateRequestApiModel
+{
+    /// <summary>
+    /// Наименование
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+}

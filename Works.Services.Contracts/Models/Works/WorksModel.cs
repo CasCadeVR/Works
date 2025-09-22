@@ -5,7 +5,7 @@ namespace CasCadeVR.Works.Services.Contracts.Models.Works;
 /// <summary>
 /// Модель работы
 /// </summary>
-public class WorksModel
+public class WorksModel : WorksGenericModel
 {
     /// <summary>
     /// Идентификатор
@@ -13,22 +13,7 @@ public class WorksModel
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Наименование
-    /// </summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Описание
-    /// </summary>
-    public string Description { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Цена
-    /// </summary>
-    public decimal Price { get; set; } = 0;
-
-    /// <summary>
-    /// Объект передачи данных <see cref="UnitOfMeasure"/>
+    /// Объект передачи данных <see cref="UnitOfMeasureModel"/>
     /// </summary>
     public UnitOfMeasureModel UnitOfMeasure { get; set; } = null!;
 }

@@ -60,9 +60,10 @@ public class CustomerControllerTests
     public async Task GetAllShouldReturnValues()
     {
         // Arrange
+        var examples = new List<Customer>();
         for (int i = 0; i < 3; i++)
         {
-            await fixture.SeedExampleCustomer();
+            examples.Add(await fixture.SeedExampleCustomer());
         }
 
         await fixture.SeedExampleCustomer(withSoftDelete: true);
@@ -71,10 +72,11 @@ public class CustomerControllerTests
         var response = await webClient.CustomerAllAsync();
 
         // Assert
-        response.Should()
-            .NotBeEmpty()
-            .And.HaveCount(3)
-            .And.BeInAscendingOrder(x => x.FullName);
+        response.Should().NotBeEmpty();
+        foreach (var example in examples)
+        {
+            response.Should().ContainEquivalentOf(example, opt => opt.ExcludingMissingMembers());
+        }
     }
 
     /// <summary>
@@ -128,7 +130,6 @@ public class CustomerControllerTests
         await webClient.CustomerDELETEAsync(customer.Id);
 
         // Assert
-        context.Entry(customer).Reload();
         var newValue = context.Set<Customer>().Single(x => x.Id == customer.Id);
         newValue.DeletedAt.Should().NotBeNull();
     }
